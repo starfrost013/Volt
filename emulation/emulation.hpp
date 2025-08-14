@@ -1,0 +1,17 @@
+//
+// Emulation Core
+//
+
+#pragma once
+#include <common/common.hpp>
+#include <emulation/component.hpp>
+#include <emulation/machine.hpp>
+#include <emulation/components/storage/storage_address_space.hpp>
+
+namespace Volt
+{
+    void Emulation_Init();
+    void Emulation_Frame(); 
+    void Emulation_Tick();
+    void Emulation_Shutdown();
+}

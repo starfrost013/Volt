@@ -1,0 +1,21 @@
+XT
+
+	Intel 8088 CPU
+	Intel 8237 DMA controller
+	Intel 8255 Programmable Peripheral Interface
+	Intel 8253 Programmable Interval Timer
+	Intel 8259 Programmable Interrupt Controller
+	IBM MDA / compatible (Hercules ...) or CGA / compatible (in expansion slots)	
+	RAM
+	IBM 5161 Expansion Unit
+	Option ROMs (HDC, EGA+)
+	IBM FDC
+		MS-DOS
+		Multitasking MS-DOS
+		XENIX
+		CP-M/86
+		Coherent 
+		PC/IX
+	 
+	
+	
