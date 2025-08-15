@@ -10,7 +10,7 @@ namespace Volt
     {
         Render_Init();
 
-        CPU8086* cpu_808x = Memory_Alloc<CPU8086, 1>(TAG_EMU_GUEST_MEM);
+        CPU8086* cpu_808x = Memory_Alloc<CPU8086>(TAG_EMU_GUEST_MEM);
 
         test_machine.AddComponent(cpu_808x);
 

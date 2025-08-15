@@ -52,7 +52,7 @@ namespace Volt
 	{
 		uint16_t magic;
 		uint32_t tag;
-		uint32_t size; // would we need to allocate above 4tb??
+		size_t size; // would we need to allocate above 4gb??
 	  	MemAlloc<T, N>* prev;
 		MemAlloc<T, N>* next;
 	};
@@ -62,7 +62,7 @@ namespace Volt
 	extern void* memalloc_head;
 	extern void* memalloc_tail;
 
-	extern uint32_t memalloc_total_size;
+	extern size_t memalloc_total_size;
 
 	template <typename T, int32_t N = 1>
 	T* Memory_Alloc(uint32_t tag)

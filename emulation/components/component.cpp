@@ -6,23 +6,5 @@
 
 namespace Volt
 {
-    void Component::Init()
-    {  
-       
-    }
 
-    void Component::Tick()
-    {
-
-    }
-
-    void Component::Frame()
-    {
-        
-    }
-
-    void Component::Shutdown()
-    {
-
-    }
 }

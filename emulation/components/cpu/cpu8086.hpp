@@ -65,14 +65,14 @@ namespace Volt
             // Union registers
             enum CPU8086CurrentSegmentRegister
             {
-                seg_override_cs = 0,
-                seg_override_ds = 0,
-                seg_override_es = 0,
-                seg_override_ss = 0,
+                seg_override_none = 0,
+                seg_override_cs = 1,
+                seg_override_ds = 2,
+                seg_override_es = 3,
+                seg_override_ss = 4,
             };
 
-            uint16_t* seg_current;
-            uint16_t* seg_override;         // Used to implement segment override prefixes
+            CPU8086CurrentSegmentRegister seg_override;         // Used to implement segment override prefixes
 
             union 
             {
@@ -205,6 +205,7 @@ namespace Volt
             //
             void Op_Nop();
             
+            
             // Defined size used so that we can look up the opcode as a table
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
             {
@@ -247,16 +248,16 @@ namespace Volt
             uint8_t* register_table8[CPU8086_NUM_REGISTERS] = { &al, &cl, &dl, &bl, &ah, &ch, &dh, &bh };
             uint16_t* register_table16[CPU8086_NUM_REGISTERS] = { &ax, &cx, &dx, &bx, &sp, &bp, &si, &di };
             
-            uint16_t* rm_table[CPU8086_NUM_REGISTERS] = 
+            uint16_t rm_table[CPU8086_NUM_REGISTERS] = 
             {
-                &address_space->access_word[(*seg_current << 4) + bx + si],
-                &address_space->access_word[(*seg_current << 4) + bx + di],
-                &address_space->access_word[(*seg_current << 4) + bp + si],
-                &address_space->access_word[(*seg_current << 4) + bp + di],
-                &address_space->access_word[(*seg_current << 4) + si],
-                &address_space->access_word[(*seg_current << 4) + di],
-                &address_space->access_word[(*seg_current << 4) + bp],
-                &address_space->access_word[(*seg_current << 4) + bx],
+                (uint16_t)(bx + si),
+                (uint16_t)(bx + di),
+                (uint16_t)(bp + si),
+                (uint16_t)(bp + di),
+                si,
+                di,
+                bp,
+                bx,
             };
 
     };

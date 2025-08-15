@@ -11,19 +11,24 @@ namespace Volt
 {
     class Component
     {
-        public:
-            const char* name;
+    public:
+        const char* name;
 
-            // Does this component need to be updated? 
-            // A CPU needs to be ticked.
-            // A printer card does not need to be ticked.
-            bool update; 
-            
-            virtual void Init();
-            virtual void Tick();
-            virtual void Frame();       // Video only
-            virtual void Shutdown();
-        protected:
-        private: 
+        // Does this component need to be updated? 
+        // A CPU needs to be ticked.
+        // A printer card does not need to be ticked.
+        bool update; 
+        
+        virtual void Init() = 0;
+        virtual void Tick() = 0;
+        virtual void Frame() = 0;       // Video only
+        virtual void Shutdown() = 0;
+
+        Component()
+        {
+
+        }
+    protected:
+    private: 
     };
 }
