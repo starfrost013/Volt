@@ -13,6 +13,8 @@ namespace Volt
     {
     public:
         const char* name;
+        uint64_t clock_hz;
+        uint64_t clock_skip;
 
         // Does this component need to be updated? 
         // A CPU needs to be ticked.

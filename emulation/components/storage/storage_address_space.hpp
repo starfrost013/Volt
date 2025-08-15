@@ -24,8 +24,6 @@ namespace Volt
     template <uint32_t Size>
     AddressSpace* AddressSpace_Add()
     {
-        constexpr int32_t v = 1000000;
-
         AddressSpace* addr = Memory_Alloc<AddressSpace>(TAG_EMU_ADDR);
 
         if (!addr)
