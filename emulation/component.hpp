@@ -19,10 +19,10 @@ namespace Volt
             // A printer card does not need to be ticked.
             bool update; 
             
-            void Init();
-            void Tick();
-            void Frame();       // Video only
-            void Shutdown();
+            virtual void Init();
+            virtual void Tick();
+            virtual void Frame();       // Video only
+            virtual void Shutdown();
         protected:
         private: 
     };

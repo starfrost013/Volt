@@ -14,4 +14,7 @@ namespace Volt
     void Emulation_Frame(); 
     void Emulation_Tick();
     void Emulation_Shutdown();
+
+    // Test machine
+    extern Machine test_machine;
 }

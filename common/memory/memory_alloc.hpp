@@ -13,12 +13,26 @@
 // Memory allocation header so we can see if the memory got corrupted.
 #define MEMALLOC_HEADER 				0x7C7C
 
-// Memory tag for filesystem allocations
+// Memory tag for filesystem allocations (little endian)
 #define TAG_COMMAND     				0x434D4430  // Command system allocations 		'CMD0'
 #define TAG_CVAR 						0x43564152	// Convar system allocations		'CVAR'
 #define TAG_FILESYSTEM                  0x46494C45 	// Filesystem allocations 			'FILE'  
 #define TAG_EMU_ADDR					0x41444452	// Emulation address spaces			'ADDR'
-#define TAG_EMU_GUEST_MEM				0x4D454D30	// Emulation address allocations	'MEM0'      
+#define TAG_EMU_GUEST_MEM				0x4D454D30	// Emulation address allocations	'MEM0'
+
+#define TAG_EMU_COMPONENT_CPU			0x30555043	// CPU component					'CPU0'
+#define TAG_EMU_COMPONENT_GPU			0x30555047	// GPU component					'GPU0'
+#define TAG_EMU_COMPONENT_FPU			0x30555046	// FPU component					'FPU0'
+#define TAG_EMU_COMPONENT_SND			0x30444E53	// Sound component					'SND0'
+#define TAG_EMU_COMPONENT_DMA			0x43414D44	// DMA component					'DMAC'
+#define TAG_EMU_COMPONENT_TIMER			0x43524D54	// Timer component					'TMRC'
+#define TAG_EMU_COMPONENT_INTERRUPT		0x52544E49	// Interrupt component				'INTR'
+#define TAG_EMU_COMPONENT_PERIPHERAL	0x35353238	// Peripheral component				'8255'
+#define TAG_EMU_COMPONENT_BUS			0x30535542	// Bus component					'BUS0'
+#define TAG_EMU_COMPONENT_FLOPPY		0x504F4C46	// Floppy component					'FLOP'
+#define TAG_EMU_COMPONENT_HDD			0x30444448	// HDD component					'HDD0'
+#define TAG_EMU_COMPONENT_NET			0x3054454E	// Network component				'NET0'
+// More to come...
 
 namespace Volt
 {

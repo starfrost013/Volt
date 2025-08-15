@@ -13,6 +13,23 @@ namespace Volt
 
     void CPU8086::Init()
     {
+        // cannot use constructor here due to MemAlloc limitations
+        if (!variant)
+            variant = CPU8086Variant::cpu808x_8086;
+
+        switch (variant)
+        {
+            case CPU8086Variant::cpu808x_8086:
+                name = "[1978] Intel 8086 CPU";
+                break;
+            case CPU8086Variant::cpu808x_8088:
+                name = "[1979] Intel 8088 CPU";
+                break; 
+            default:
+                name = "Intel 808x Family CPU";
+                break;
+        }
+
         //add primary address space
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>(); 
     }

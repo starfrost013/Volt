@@ -14,6 +14,8 @@ namespace Volt
     #define CPU8086_ADDR_SPACE_SIZE     1000000
     #define CPU8086_NUM_OPCODES         256
     #define CPU8086_NUM_REGISTERS       8
+    #define CPU8086_PREFETCH_QUEUE_SIZE 6
+    #define CPU8088_PREFETCH_QUEUE_SIZE 4
 
     class CPU8086 : public Component
     {
@@ -22,12 +24,20 @@ namespace Volt
 
             AddressSpace* address_space; 
             
-            void Init();
-            void Tick();
-            void Frame();
-            void Shutdown();
+            enum CPU8086Variant
+            {
+                cpu808x_8086 = 0x8086,
+                cpu808x_8088 = 0x8088,
+            };
 
-            
+            CPU8086Variant variant;
+
+            void Init() override;
+            void Tick() override;
+            void Frame() override;
+            void Shutdown() override;
+
+        
             // REGISTERS
             // Public so that we can inherit these for future cpus
 
@@ -136,6 +146,9 @@ namespace Volt
             CPU8086Flags flags; 
 
 
+        protected:
+        private: 
+
             // Intel 8086 instruction encoding 
             struct CPU8086Instruction
             {
@@ -178,9 +191,6 @@ namespace Volt
                 uint16_t* reg_ptr16;
             };
 
-
-        protected:
-        private: 
             // Prefetch Queue
             uint16_t q0;        // UPPER 2
             uint16_t q1;        // MIDDLE 2
@@ -247,7 +257,7 @@ namespace Volt
                 &address_space->access_word[(*seg_current << 4) + di],
                 &address_space->access_word[(*seg_current << 4) + bp],
                 &address_space->access_word[(*seg_current << 4) + bx],
-            }
+            };
 
     };
 }

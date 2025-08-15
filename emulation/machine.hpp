@@ -19,7 +19,15 @@ namespace Volt
 
             // Should these components be dynamically allocated?
             template <typename T>
-            void AddComponent(T* component);
+            void AddComponent(T* component)
+            {   
+                // Ensure we are actually adding a component
+                //assert(component == dynamic_cast<Component*>(component), "Machine::AddComponent requires allocated component");
+
+                components.push_back(component);       
+                
+                return; 
+            }
 
             std::vector<Component*> components;
             
@@ -27,13 +35,6 @@ namespace Volt
             {
                 components.reserve(RESERVED_COMPONENTS);
             }
-
-            #ifdef DEBUG
-
-            // Internal initialisation entry point for Pre-Alpha builds
-            void DebugInit();
-
-            #endif 
         protected: 
         
         
