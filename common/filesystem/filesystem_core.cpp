@@ -172,23 +172,27 @@ namespace Volt
 
         if (entry->mode == FileMode_Binary)
             stream >> n;
-
+    
         char next_str_byte = 0x00; 
+        
+        bool line_done = false; 
 
         for (uint32_t byte = 0; byte < n; byte++)
         {
-            if (stream.eof())
-            {
-                entry->eof = true;
-                return;
-            }
-                
+
             // check if we are about to overflow
             if (byte >= n)
                 break;
                 
             stream >> fs_buf[byte];
 
+            if (stream.eof())
+            {
+                entry->eof = true;
+                return;
+            }
+                
+            // do we want to do this in text mode? (UTF-16?)
             if (fs_buf[byte] == '\0')
                 break;
 
