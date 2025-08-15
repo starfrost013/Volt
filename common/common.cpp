@@ -22,7 +22,6 @@ namespace Volt
     // Initialise cvars
     void Common_InitCvar()
     {
-        tickrate_emu = Cvar_Get("tickrate_emu", "14318180", true);
         common_tickrate = Cvar_Get("common_tickrate", "60", true);
     }
 
