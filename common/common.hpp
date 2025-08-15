@@ -21,7 +21,7 @@ namespace Volt
     extern double max_time;              // Time of the last frame
     extern double common_last_frametime;
     extern double common_last_updatetime;
-    extern Cvar* server_tickrate; 
+    extern Cvar* common_tickrate;
     extern bool common_is_running;                 // Determines if the app is running
 
     // Base component headers

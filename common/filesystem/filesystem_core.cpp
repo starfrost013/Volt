@@ -39,7 +39,6 @@ namespace Volt
     
     void Filesystem_Shutdown()
     {
-
         if (filesystem->head)
         {
             // walk through the linked list of open files and close them all

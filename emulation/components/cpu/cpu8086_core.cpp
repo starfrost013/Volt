@@ -11,6 +11,9 @@
 namespace Volt
 {
 
+    // TEMP convar
+    Cvar* emu_clk_8086;
+
     void CPU8086::Init()
     {
         // cannot use constructor here due to MemAlloc limitations
@@ -35,6 +38,12 @@ namespace Volt
         //add primary address space
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>();
         
+        emu_clk_8086 = Cvar_Get("emu_clk_8086", "4772726", false);
+
+        clock_hz = uint64_t(emu_clk_8086->value);
+        
+        Logging_LogChannel("8086: Clock speed = %d Hz", LogChannel::Debug, clock_hz);
+
         update = true; 
     }
 
@@ -48,6 +57,8 @@ namespace Volt
             (this->*instruction_table[opcode].run_function)();
 
         ip += instruction_table[opcode].size;
+
+        //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
         ip &= 0xFFFF; // wrap around
    

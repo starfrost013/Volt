@@ -78,7 +78,7 @@ namespace Volt
 
 		alloc->header.magic = MEMALLOC_HEADER;
 		alloc->header.tag = tag;
-		alloc->header.size = sizeof(T);
+		alloc->header.size = sizeof(T) * N;
 
 		MemAlloc<T, N>* head = (MemAlloc<T, N>*)memalloc_head;
 		MemAlloc<T, N>* tail = (MemAlloc<T, N>*)memalloc_tail;
@@ -97,7 +97,7 @@ namespace Volt
 		}
 			
 		memalloc_count++;
-		memalloc_total_size += sizeof(T);
+		memalloc_total_size += alloc->header.size;
 
 		// set the head of the list if it is not present
 		if (!memalloc_head)
@@ -108,7 +108,7 @@ namespace Volt
 
 		// todo: cvar
 		
-		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08x", LogChannel::Debug, sizeof(T), tag);
+		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08x", LogChannel::Debug, alloc->header.size, tag);
 
 		// this is a pointer to a memalloc_t*, so we need to simply increment it to skip past the magic
 		return alloc->obj; // handle word size

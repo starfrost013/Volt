@@ -11,7 +11,7 @@
 namespace Volt
 {
     // Holds the tickrate.
-    Cvar* server_tickrate; 
+    Cvar* common_tickrate; 
     bool common_is_running;                 // Determines if common is actually active
 
     // Usually these would be the last framerate
@@ -22,7 +22,8 @@ namespace Volt
     // Initialise cvars
     void Common_InitCvar()
     {
-        server_tickrate = Cvar_Get("server_tickrate", "60", true);
+        tickrate_emu = Cvar_Get("tickrate_emu", "14318180", true);
+        common_tickrate = Cvar_Get("common_tickrate", "60", true);
     }
 
     // Prints a sign-on message.
@@ -98,19 +99,18 @@ namespace Volt
 
             bool run_tick = real_milliseconds > target_milliseconds;
 
-            // Update the world if it's time too
-            if (run_tick)
-            {
-                Common_Tick();
+            
+            // This runs every component on its own clockrate
+            Emulation_Tick();
 
-                // ruun emulation tick 
-            }
+            // Run non-emulation ticked stuff last
+            if (run_tick)
+                Common_Tick();
 
             end = Util_GetMicroseconds();
 
             /* we have to check a tick actually ran before we update update_milliseconds */
-            if (run_tick)
-                update_milliseconds = double(end - frame_end) / 1000.0;
+            update_milliseconds = double(end - frame_end) / 1000.0;
 
             render_milliseconds = double(frame_end - start) / 1000.0;
 
@@ -119,7 +119,7 @@ namespace Volt
             else   
                 real_milliseconds += double(end - start) / 1000.0;
             
-            target_milliseconds = 1000.0 * (1 / server_tickrate->value);
+            target_milliseconds = 1000.0 * (1 / common_tickrate->value);
 
             // store the last full time and framerate
             max_time = target_milliseconds;
