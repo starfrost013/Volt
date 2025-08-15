@@ -8,8 +8,15 @@
 
 namespace Volt
 {
-    uint32_t CPU8086::Decode_ModRM(uint32_t modrm)
+    CPU8086::CPU8086InstructionModRM CPU8086::Decode_ModRM(bool w, uint32_t modrm)
     {
-        return 0; 
+        CPU8086InstructionModRM modrm_decode; 
+
+        switch (modrm)
+        {
+            
+        }
+
+        return modrm_decode; 
     }
 }

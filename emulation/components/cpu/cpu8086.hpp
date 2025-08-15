@@ -12,6 +12,7 @@
 namespace Volt
 {
     #define CPU8086_ADDR_SPACE_SIZE     1000000
+    #define CPU8086_NUM_OPCODES         256
 
     class CPU8086 : public Component
     {
@@ -119,7 +120,8 @@ namespace Volt
             };
 
             CPU8086Flags flags; 
-            
+
+
             // Intel 8086 instruction encoding 
             struct CPU8086Instruction
             {
@@ -136,6 +138,13 @@ namespace Volt
                 
                 };
                 
+                void (CPU8086::*run_function)();
+
+                uint8_t size;
+            }; 
+
+            struct CPU8086InstructionModRM
+            {
                 union
                 {
                     uint8_t modrm;
@@ -147,42 +156,30 @@ namespace Volt
                         uint8_t reg : 3;
                         uint8_t mod : 2;
                     };
-                    
                 };
-
-                union
-                {
-                    uint16_t operand1_16; 
-
-                    struct 
-                    {
-                        uint8_t operand1_8_low;
-                        uint8_t operand1_8_high;  
-                        /* data */
-                    };
-                }; 
-
-                union
-                {
-                    uint16_t operand2_16; 
-
-                    struct 
-                    {
-                        uint8_t operand2_8_low;
-                        uint8_t operand2_8_high;  
-                        /* data */
-                    };
-                }; 
-            }; 
-
-
+            };
 
         protected:
         private: 
             // Prefetch Queue
-            uint32_t q0;        // UPPER 4   
-            uint16_t q1;        // LOWER 2
-        
-            uint32_t Decode_ModRM(uint32_t modrm);
+            uint16_t q0;        // UPPER 2
+            uint16_t q1;        // MIDDLE 2
+            uint16_t q2;        // LOWER 2
+            uint8_t hl;
+            bool mt;
+
+            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint32_t modrm);
+
+            //
+            // Operations
+            //
+            void Op_Nop();
+            
+            // Defined size used so that we can look up the opcode as a table
+            static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
+            {
+                { 0x90, Op_Nop, 1 },
+            };
     };
 }
+    

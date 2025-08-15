@@ -10,6 +10,7 @@
 
 namespace Volt
 {
+
     void CPU8086::Init()
     {
         //add primary address space
@@ -18,7 +19,13 @@ namespace Volt
 
     void CPU8086::Tick()
     {
+        //TODO: PREFETCH QUEUE IMPLEMENTATION
+        uint8_t opcode = address_space->access_byte[(cs << 4) + ip];
 
+        if (instruction_table[opcode].run_function)
+            (this->*instruction_table[opcode].run_function)();
+
+        ip += instruction_table[opcode].size;
     }
 
     void CPU8086::Frame()
@@ -27,6 +34,15 @@ namespace Volt
     }
 
     void CPU8086::Shutdown()
+    {
+
+    }
+
+    //
+    // OPcodes (move to own file)
+    //
+
+    void CPU8086::Op_Nop()
     {
 
     }

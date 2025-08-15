@@ -178,7 +178,7 @@ namespace Volt
 
 		if (channel & LogChannel::SuperFatal)
 		{
-			printf("MEMORY COMPLETELY HOSED. NOT SAFE TO CLEANLY SHUT DOWN - LET'S GET THE HELL OUT OF HERE!!!\n");
+			std::cout << "MEMORY COMPLETELY HOSED. NOT SAFE TO CLEANLY SHUT DOWN - LET'S GET THE HELL OUT OF HERE!!!" << std::endl;
 			exit(ITS_OVER);
 		}
 
