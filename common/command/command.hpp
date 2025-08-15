@@ -42,6 +42,7 @@ namespace Volt
 
     uint32_t Command_Argc();                                                                                // Get the parameter count of the last executed command.
     const char* Command_Argv(uint32_t argv);                                                                // Get a parameter of the last executed command.
+    const char* Command_AllTextAfterName();                                                              // Get all text after the name of the last executed command.
 
     void Command_Execute(const char* cmd, CommandType origin);                                              // Execute a command string.
     void Command_ExecuteGlobal(const char* cmd);                                                            // Execute a command that can be executed from anywhere.
@@ -54,4 +55,7 @@ namespace Volt
 
     // COMMANDS STORED IN DIFFERENT FILES
     void Command_Exec(CommandType origin);
+    void Command_MemStats(CommandType origin);
+    void Command_ListAllocs(CommandType origin);
+
 }

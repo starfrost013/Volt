@@ -10,62 +10,56 @@ project ("Volt")
 add_executable (Volt  
 
 # EXTERNAL
-"external/glad/include/glad/glad.h"
-"external/glad/include/KHR/khrplatform.h"
 "external/glad/src/glad.c"
 
 # CORE
-"Volt.cpp" "Volt.hpp"
-"Volt.hpp" 
+"Volt.cpp"
 
 # COMMON
-"common/common.hpp" "common/common.cpp" 
-"common/memory/memory_alloc.hpp" "common/memory/memory_alloc.cpp" 
-"common/cvar/cvar.hpp" "common/cvar/cvar.cpp" 
-"common/command/command.hpp" "common/command/command.cpp"
-"common/command/commands_basic.cpp" "common/command/commands_exec.cpp"
+"common/common.cpp" 
+"common/memory/memory_alloc.cpp"
+"common/cvar/cvar.cpp" 
+"common/command/command.cpp"
+"common/command/commands_basic.cpp" "common/command/commands_exec.cpp" "common/command/commands_memory.cpp"
 "common/cmdline/cmdline.cpp"
-"common/console/console.hpp" "common/console/console.cpp"
-"common/net/net.hpp" "common/net/net_core.cpp" "common/net/types/net_loopback.cpp"
+"common/console/console.cpp"
+"common/net/net_core.cpp" "common/net/types/net_loopback.cpp"
 "common/filesystem/filesystem.hpp" "common/filesystem/filesystem_core.cpp"
 
 # UTIL
 "util/util.hpp" "util/util.cpp" 
 "util/math/math.hpp" "util/math/math.cpp"
-"util/logging/logging.cpp" "util/logging/logging.hpp" 
+"util/logging/logging.cpp" 
 "util/console/console.cpp"
 
 # EMULATION
 
 # Emulation Core
-"emulation/emulation.hpp" "emulation/emulation.cpp"
-"emulation/component.hpp" "emulation/components/component.cpp"
-"emulation/machine.hpp" "emulation/machine/machine.cpp"
+"emulation/emulation.cpp"
+"emulation/components/component.cpp"
+"emulation/machine/machine.cpp"
 
 # Emulation Components 
 
 # Storage
-"emulation/components/storage/storage_address_space.hpp" "emulation/components/storage/storage_address_space.cpp"
+"emulation/components/storage/storage_address_space.cpp"
 
 # CPU
 
 # 8086
-"emulation/components/cpu/cpu8086.hpp" "emulation/components/cpu/cpu8086_core.cpp" "emulation/components/cpu/cpu8086_modrm.cpp"
+"emulation/components/cpu/cpu8086_core.cpp" "emulation/components/cpu/cpu8086_modrm.cpp"
 
 # RENDER
-"render/render.hpp"
 "render/render_core.cpp"
 
 # RENDERER - OPENGL 3
-"render/gl3/render_gl3.hpp"
 "render/gl3/gl3_core.cpp"
 
 # RENDERER - NULL
-"render/null/render_null.hpp"
 "render/null/null_core.cpp"
 
 # SYS
-"sys/sys.hpp")
+)
 
 # Base include directories
 include_directories(".")

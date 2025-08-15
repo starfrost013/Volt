@@ -78,21 +78,33 @@ namespace Volt
         // restore the original
         strncpy(last_token, last_command, MAX_STRING_LENGTH);
 
-        char* cmd_name = strtok(last_token, STRING_SINGLE_SPACE);
+        char* cmd_name = strtok(last_token, STRING_WHITESPACE_DELIMITERS);
 
         uint32_t amount = 0;
 
         // skip the command name
 
-        char* tok = strtok(NULL, STRING_SINGLE_SPACE);
+        char* tok = strtok(NULL, STRING_WHITESPACE_DELIMITERS);
 
         while (tok)
         {
             amount++;
-            tok = strtok(NULL, STRING_SINGLE_SPACE);
+            tok = strtok(NULL, STRING_WHITESPACE_DELIMITERS);
         }
 
         return amount; 
+    }
+
+    // Return all the text after the command
+    const char* Command_AllTextAfterName()
+    {
+        // restore the original
+        strncpy(last_token, last_command, MAX_STRING_LENGTH);
+        char* cmd_name = strtok(last_token, STRING_WHITESPACE_DELIMITERS);
+        // skip the command name
+
+        char* tok = strtok(NULL, STRING_WHITESPACE_DELIMITERS);
+        return tok; 
     }
 
     // Return parameter "argv" of command "command".
@@ -120,7 +132,7 @@ namespace Volt
         strncpy(last_command, cmd, MAX_STRING_LENGTH);
         strncpy(last_token, cmd, MAX_STRING_LENGTH);
 
-        char* cmd_name = strtok(last_token, STRING_SINGLE_SPACE);
+        char* cmd_name = strtok(last_token, STRING_WHITESPACE_DELIMITERS);
 
         Command* command_ptr = Command_FindByName(cmd_name);
 

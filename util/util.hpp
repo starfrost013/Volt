@@ -20,6 +20,7 @@ namespace Volt
 	// DO NOT WRITE
 	extern const char* STRING_EMPTY;
 	extern const char* STRING_SINGLE_SPACE;
+	extern const char* STRING_WHITESPACE_DELIMITERS;
 
 	// Date utilities
 	void Util_DateGetCurrentString(char *dateStr);								// Gets the current date and returns it as a C time format string.

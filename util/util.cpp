@@ -15,6 +15,7 @@ namespace Volt
 {
 	const char* STRING_EMPTY = "";
 	const char* STRING_SINGLE_SPACE = " ";
+	const char* STRING_WHITESPACE_DELIMITERS = " \n\r\t\f\v";
 
 	void Util_DateGetCurrentString(char *str)
 	{

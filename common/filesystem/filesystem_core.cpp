@@ -179,7 +179,6 @@ namespace Volt
 
         for (uint32_t byte = 0; byte < n; byte++)
         {
-
             // check if we are about to overflow
             if (byte >= n)
                 break;
@@ -191,10 +190,6 @@ namespace Volt
                 entry->eof = true;
                 return;
             }
-                
-            // do we want to do this in text mode? (UTF-16?)
-            if (fs_buf[byte] == '\0')
-                break;
 
             // if we reached a new line and it is text mode, end
             if (entry->mode == FileMode_Text)

@@ -1,3 +1,4 @@
+#include "command.hpp"
 #include <common/command/command.hpp>
 
 //
@@ -25,6 +26,13 @@ namespace Volt
 #ifdef DEBUG
         Command_Add("echo", CommandType::GlobalCommand, Command_Echo);
 #endif
+
+        // Memory commands
+        Command_Add("memstats", CommandType::GlobalCommand, Command_MemStats);
+        Command_Add("meminfo", CommandType::GlobalCommand, Command_MemStats); // alias
+        Command_Add("listallocs", CommandType::GlobalCommand, Command_ListAllocs); 
+        Command_Add("memlist", CommandType::GlobalCommand, Command_ListAllocs); // alias
+
     }
 
     void Command_CvarCreate(CommandType origin)
@@ -71,7 +79,7 @@ namespace Volt
 #ifdef DEBUG
     void Command_Echo(CommandType origin)
     {
-        Logging_LogAll(Command_Argv(1));
+        Logging_LogAll(Command_AllTextAfterName());
     }
 #endif
 }
