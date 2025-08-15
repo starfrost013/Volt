@@ -20,12 +20,17 @@ namespace Volt
     void CPU8086::Tick()
     {
         //TODO: PREFETCH QUEUE IMPLEMENTATION
-        uint8_t opcode = address_space->access_byte[(cs << 4) + ip];
+        uint8_t opcode = address_space->access_byte[linear_pc];
+
+        if (seg_override != seg_current)
+            seg_current = seg_override; 
 
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)();
 
         ip += instruction_table[opcode].size;
+
+        ip &= 0xFFFF; // wrap around
     }
 
     void CPU8086::Frame()

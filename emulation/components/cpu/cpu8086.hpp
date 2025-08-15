@@ -13,6 +13,7 @@ namespace Volt
 {
     #define CPU8086_ADDR_SPACE_SIZE     1000000
     #define CPU8086_NUM_OPCODES         256
+    #define CPU8086_NUM_REGISTERS       8
 
     class CPU8086 : public Component
     {
@@ -48,7 +49,20 @@ namespace Volt
             uint16_t ip;                // Instruction pointer
             uint16_t pc;                // Internal register
 
+            // Current linear address
+            uint32_t linear_pc = (cs << 4) + ip;
+
             // Union registers
+            enum CPU8086CurrentSegmentRegister
+            {
+                seg_override_cs = 0,
+                seg_override_ds = 0,
+                seg_override_es = 0,
+                seg_override_ss = 0,
+            };
+
+            uint16_t* seg_current;
+            uint16_t* seg_override;         // Used to implement segment override prefixes
 
             union 
             {
@@ -157,7 +171,13 @@ namespace Volt
                         uint8_t mod : 2;
                     };
                 };
+
+                uint16_t* ea_ptr; 
+
+                uint8_t* reg_ptr8;
+                uint16_t* reg_ptr16;
             };
+
 
         protected:
         private: 
@@ -168,7 +188,7 @@ namespace Volt
             uint8_t hl;
             bool mt;
 
-            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint32_t modrm);
+            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint8_t modrm);
 
             //
             // Operations
@@ -180,6 +200,23 @@ namespace Volt
             {
                 { 0x90, Op_Nop, 1 },
             };
+
+            // register table for ordering various operations
+            // mod=11 and reg use the same order table!
+            uint8_t* register_table8[CPU8086_NUM_REGISTERS] = { &al, &cl, &dl, &bl, &ah, &ch, &dh, &bh };
+            uint16_t* register_table16[CPU8086_NUM_REGISTERS] = { &ax, &cx, &dx, &bx, &sp, &bp, &si, &di };
+            uint16_t* rm_table[CPU8086_NUM_REGISTERS] = 
+            {
+                &address_space->access_word[(*seg_current << 4) + bx + si],
+                &address_space->access_word[(*seg_current << 4) + bx + di],
+                &address_space->access_word[(*seg_current << 4) + bp + si],
+                &address_space->access_word[(*seg_current << 4) + bp + di],
+                &address_space->access_word[(*seg_current << 4) + si],
+                &address_space->access_word[(*seg_current << 4) + di],
+                &address_space->access_word[(*seg_current << 4) + bp],
+                &address_space->access_word[(*seg_current << 4) + bx],
+            }
+
     };
 }
     
