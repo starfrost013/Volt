@@ -50,15 +50,14 @@ namespace Volt
 
         common_is_running = true;
         
-       
-        //  Last step: Run autoexec.s7cmd
+        //  Last step: Run autoexec.volt
         
-        Console_ExecuteCommand("exec autoexec.s7cmd");
+        Console_ExecuteCommand("exec autoexec.volt");
         
         Logging_LogChannel("******** Common_Init done! ********", LogChannel::Message);
 
         // For now, clear all the backscroll
-        Util_ConsoleClearScreen();
+        //Util_ConsoleClearScreen();
 
         Common_Main();
     }
@@ -66,7 +65,7 @@ namespace Volt
     /* Update function for the common component */
     void Common_Frame()
     {
-        Console_Render();
+        Console_Frame();
 
         Emulation_Frame();
     }
@@ -114,7 +113,12 @@ namespace Volt
                 update_milliseconds = double(end - frame_end) / 1000.0;
 
             render_milliseconds = double(frame_end - start) / 1000.0;
-            real_milliseconds = double(end - start) / 1000.0;
+
+            if (real_milliseconds > target_milliseconds)
+                real_milliseconds = double(end - start) / 1000.0;
+            else   
+                real_milliseconds += double(end - start) / 1000.0;
+            
             target_milliseconds = 1000.0 * (1 / server_tickrate->value);
 
             // store the last full time and framerate

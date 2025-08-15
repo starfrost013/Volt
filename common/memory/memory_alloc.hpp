@@ -72,7 +72,7 @@ namespace Volt
 
 		if (!alloc)
 		{
-			Logging_LogChannel("Memory_Alloc new call failed size=%d tag=%d", LogChannel::SuperFatal, sizeof(T), tag);
+			Logging_LogChannel("Memory_Alloc new call failed size=%d tag=0x%08x", LogChannel::SuperFatal, sizeof(T), tag);
 			return nullptr;
 		}
 
@@ -108,7 +108,7 @@ namespace Volt
 
 		// todo: cvar
 		
-		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%04X", LogChannel::Debug, sizeof(T), tag);
+		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08x", LogChannel::Debug, sizeof(T), tag);
 
 		// this is a pointer to a memalloc_t*, so we need to simply increment it to skip past the magic
 		return alloc->obj; // handle word size
@@ -121,12 +121,12 @@ namespace Volt
 		if (memalloc_count == 0
 			|| memalloc_head == nullptr)
 		{
-			Logging_LogChannel("Tried to free memory with no memory allocated", LogChannel::SuperFatal);
+			Logging_LogChannel("Tried to free memory with no memory allocated!", LogChannel::SuperFatal);
 		}
 
 		if (!ptr)
 		{
-			Logging_LogChannel("Tried to call Memory_Free with nullptr", LogChannel::SuperFatal); // does not return
+			Logging_LogChannel("Tried to call Memory_Free with nullptr!", LogChannel::SuperFatal); // does not return
 		}
 
 		// get the pointer to the memalloc structure
@@ -144,7 +144,7 @@ namespace Volt
 		// there is no memalloc, double free attempted
 		if (!memalloc)
 		{
-			Logging_LogChannel("Tried to double-free memory. Heap corruption", LogChannel::SuperFatal);
+			Logging_LogChannel("Tried to double-free memory. Heap corruption!", LogChannel::SuperFatal);
 			return; //shutup compiler
 		}
 
@@ -174,7 +174,7 @@ namespace Volt
 				memalloc->header.next->header.prev = memalloc->header.prev;
 		}
 
-		Logging_LogChannel("About to free %d bytes at 0x%p tag=0x%08X", LogChannel::Debug, memalloc->header.size, (void*)memalloc, memalloc->header.tag);
+		Logging_LogChannel("About to free %d bytes at 0x%p tag=0x%08x", LogChannel::Debug, memalloc->header.size, (void*)memalloc, memalloc->header.tag);
 
 		memalloc_total_size -= memalloc->header.size;
 		memalloc_count--;

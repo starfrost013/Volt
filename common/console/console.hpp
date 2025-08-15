@@ -22,7 +22,7 @@ namespace Volt
 
     void Console_Init(ConsoleType type);
 
-    void Console_Render();
+    void Console_Frame();
     void Console_ExecuteCommand(const char* cmd);
     void Console_Shutdown();
 }

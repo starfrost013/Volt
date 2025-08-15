@@ -30,9 +30,9 @@ namespace Volt
         "exit::shikari();",
         "TOO EXTREM",
         "The one thing G.U.N. fears...",
-        "No animals were harmed in the making of this game engine",
+        "No animals were harmed in the making of this emulator",
         "Brought to you by the Ultor Corporation",
-        "The first modern game engine EXCLUSIVELY for the S3 ViRGE!",
+        "The first emulator EXCLUSIVELY for the S3 ViRGE!",
         "Grand Theft Original Idea (G.T.O.I.)",
         "With pioneering new \"Ion\" technology, \"Electron\"s won't be bothering you anymore!",
     };
@@ -48,11 +48,10 @@ namespace Volt
     {
         console_type = type; 
         funny_message_id = rand() % NUM_FUNNY_MESSAGES;
-
-
+        printf("Console Initiailsed: %s\n", funny_console_messages[funny_message_id]);
     }
 
-    void Console_Render()
+    void Console_Frame()
     {
 
         switch (console_type)
@@ -68,22 +67,23 @@ namespace Volt
 
     void Console_RenderCommandLine()
     {
+        /*
         Util_ConsoleSaveCursorPosition();
         Util_ConsoleSetPosition(0, 0);
         Util_ConsoleSetBackgroundColor(ConsoleColor::BrightBlue);
         Util_ConsoleSetForegroundColor(ConsoleColor::BrightWhite);
+
+
         printf(APP_NAME " " VERSION " " BUILD_DATE "\n");
         printf("%s\n", funny_console_messages[funny_message_id]);
+        
         printf("Tickrate - %.2f; %.2f FPS (%.2fms last update + %.2fms last render. Max time for this tickrate = %.2fms)\n", 
             server_tickrate->value, 1000.0 / common_last_frametime, common_last_updatetime, common_last_frametime, max_time);
-        
-        // can't expose this to render code?
-        Cvar* renderer = Cvar_Get("renderer", "gl3", false);
-        printf("Using renderer: %s", renderer->string);
 
         Util_ConsoleResetBackgroundColor();
         Util_ConsoleResetForegroundColor();
         Util_ConsoleRestoreCursorPosition();
+        */
     }
 
     void Console_RenderGame()
