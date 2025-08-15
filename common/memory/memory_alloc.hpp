@@ -14,11 +14,11 @@
 #define MEMALLOC_HEADER 				0x7C7C
 
 // Memory tag for filesystem allocations (little endian)
-#define TAG_COMMAND     				0x434D4430  // Command system allocations 		'CMD0'
-#define TAG_CVAR 						0x43564152	// Convar system allocations		'CVAR'
-#define TAG_FILESYSTEM                  0x46494C45 	// Filesystem allocations 			'FILE'  
-#define TAG_EMU_ADDR					0x41444452	// Emulation address spaces			'ADDR'
-#define TAG_EMU_GUEST_MEM				0x4D454D30	// Emulation address allocations	'MEM0'
+#define TAG_COMMAND     				0x30444D43  // Command system allocations 		'CMD0'
+#define TAG_CVAR 						0x52415643	// Convar system allocations		'CVAR'
+#define TAG_FILESYSTEM                  0x454C4946	// Filesystem allocations 			'FILE'  
+#define TAG_EMU_ADDR					0x52444441	// Emulation address spaces			'ADDR'
+#define TAG_EMU_GUEST_MEM				0x304D454D	// Emulation address allocations	'MEM0'
 
 #define TAG_EMU_COMPONENT_CPU			0x30555043	// CPU component					'CPU0'
 #define TAG_EMU_COMPONENT_GPU			0x30555047	// GPU component					'GPU0'
@@ -72,7 +72,7 @@ namespace Volt
 
 		if (!alloc)
 		{
-			Logging_LogChannel("Memory_Alloc new call failed size=%d tag=0x%08x", LogChannel::SuperFatal, sizeof(T), tag);
+			Logging_LogChannel("Memory_Alloc new call failed size=%d tag=0x%08X (%.4s)", LogChannel::SuperFatal, sizeof(T), tag, &tag);
 			return nullptr;
 		}
 
@@ -108,7 +108,7 @@ namespace Volt
 
 		// todo: cvar
 		
-		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08x", LogChannel::Debug, alloc->header.size, tag);
+		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08X (%.4s)", LogChannel::Debug, alloc->header.size, tag, &tag);
 
 		// this is a pointer to a memalloc_t*, so we need to simply increment it to skip past the magic
 		return alloc->obj; // handle word size
@@ -174,7 +174,7 @@ namespace Volt
 				memalloc->header.next->header.prev = memalloc->header.prev;
 		}
 
-		Logging_LogChannel("About to free %d bytes at 0x%p tag=0x%08x", LogChannel::Debug, memalloc->header.size, (void*)memalloc, memalloc->header.tag);
+		Logging_LogChannel("About to free %d bytes at 0x%p tag=0x%08X (%.4s)", LogChannel::Debug, memalloc->header.size, (void*)memalloc, memalloc->header.tag, &memalloc->header.tag);
 
 		memalloc_total_size -= memalloc->header.size;
 		memalloc_count--;

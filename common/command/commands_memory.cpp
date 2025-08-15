@@ -22,7 +22,9 @@ namespace Volt
 
         while (alloc_current)
         {
-            Logging_LogChannel("Alloc %d: %.4c (%d bytes)", LogChannel::Message, alloc_num, (char*)alloc_current->header.tag, alloc_current->header.size);
+            // this may be a bad idea but i do not care
+            Logging_LogChannel("Alloc %d: Tag %08X/%.4s (%d bytes) header=0x%08X item=0x%08X", 
+                LogChannel::Message, alloc_num, alloc_current->header.tag, &alloc_current->header.tag, alloc_current->header.size, &alloc_current->header, &alloc_current->obj);
             alloc_current = alloc_current->header.next; 
             alloc_num++; 
         }

@@ -95,7 +95,7 @@ namespace Volt
         return amount; 
     }
 
-    // Return all the text after the command
+    // Return all the text after the command name for the last command executed
     const char* Command_AllTextAfterName()
     {
         // restore the original
@@ -103,7 +103,12 @@ namespace Volt
         char* cmd_name = strtok(last_token, STRING_WHITESPACE_DELIMITERS);
         // skip the command name
 
-        char* tok = strtok(NULL, STRING_WHITESPACE_DELIMITERS);
+        uint32_t name_length = strlen(cmd_name);
+
+        if (name_length >= MAX_STRING_LENGTH)
+            return last_token; 
+
+        char* tok = last_token + name_length + 1;
         return tok; 
     }
 
