@@ -30,13 +30,14 @@ namespace Volt
                 break;
         }
 
+        Logging_LogChannel("8086: Initialising address space (variant: %s)", LogChannel::Debug, name);
+
         //add primary address space
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>(); 
     }
 
     void CPU8086::Tick()
     {
-        
         //TODO: PREFETCH QUEUE IMPLEMENTATION
         uint8_t opcode = address_space->access_byte[linear_pc];
 

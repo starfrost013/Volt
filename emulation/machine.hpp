@@ -24,7 +24,9 @@ namespace Volt
                 // Ensure we are actually adding a component
                 //assert(component == dynamic_cast<Component*>(component), "Machine::AddComponent requires allocated component");
 
-                components.push_back(component);       
+                components.push_back(component);     
+                
+                component->Init();
                 
                 return; 
             }
