@@ -13,7 +13,7 @@ namespace Volt
                 
         CPU8086InstructionModRM modrm_decode = {0}; 
 
-        modrm_decode.modrm = address_space->access_byte[linear_pc + 1];
+        modrm_decode.modrm = address_space->access_byte[linear_pc() + 1];
 
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway
@@ -30,7 +30,7 @@ namespace Volt
                 if (modrm_decode.mod == 0x00 
                     && modrm_decode.rm == 6)
                 {
-                        modrm_decode.ea_ptr = &address_space->access_word[(linear_pc + 2) >> 1];
+                        modrm_decode.ea_ptr = &address_space->access_word[(linear_pc() + 2) >> 1];
                         return modrm_decode; //return early
                 }
                  // now decode the RM
@@ -55,14 +55,14 @@ namespace Volt
                 {
                     // make pointer arithmetic a bit easier here
                     uint8_t* temp = (uint8_t*)modrm_decode.ea_ptr;
-                    temp += (address_space->access_byte[linear_pc + 2]);
+                    temp += (address_space->access_byte[linear_pc() + 2]);
                     modrm_decode.ea_ptr = (uint16_t*)temp;
                     return modrm_decode;
                 }
                 else if (modrm_decode.mod == 0x02) // +disp16
                 {
                     uint8_t* temp = (uint8_t*)modrm_decode.ea_ptr;
-                    temp += (address_space->access_word[linear_pc + 2]);
+                    temp += (address_space->access_word[linear_pc() + 2]);
                     modrm_decode.ea_ptr = (uint16_t*)temp;
  
                     return modrm_decode;

@@ -26,6 +26,7 @@ namespace Volt
         bool update; 
         
         virtual void Init() = 0;
+        virtual void Start() = 0;
         virtual void Tick() = 0;
         virtual void Frame() = 0;       // Video only
         virtual void Shutdown() = 0;

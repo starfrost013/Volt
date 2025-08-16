@@ -14,6 +14,15 @@ namespace Volt
 
         test_machine.AddComponent(cpu_808x);
 
+        // random bytes to test the prefetch queeu
+        for (uint32_t i = 0; i < CPU8086_ADDR_SPACE_SIZE; i++)
+        {
+            cpu_808x->address_space->access_byte[i] = rand() % 255; 
+        }
+
+        cpu_808x->Start(); // this will be done by machine initialisation in the future
+
+
     }
 
     void Emulation_Frame()
