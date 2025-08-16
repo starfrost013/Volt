@@ -42,13 +42,13 @@ namespace Volt
         if (filesystem->head)
         {
             // walk through the linked list of open files and close them all
-            VoltFileEntry* entry = filesystem->head;
+            VoltFile* entry = filesystem->head;
             
             while (entry->next) 
             {
                 entry->file.close();
 
-                VoltFileEntry* to_be_freed = entry; 
+                VoltFile* to_be_freed = entry; 
 
                 entry = entry->next;
                 free(to_be_freed);
@@ -67,10 +67,10 @@ namespace Volt
 
     // Open a file and, if the cached parameter is true, optionally cache it/
     //
-    VoltFileEntry* Filesystem_OpenFile(const char* path, FileMode mode, bool cached)
+    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode, bool cached)
     {
         // allocate a new open file entry
-        VoltFileEntry* entry = Memory_Alloc<VoltFileEntry>(TAG_FILESYSTEM);
+        VoltFile* entry = Memory_Alloc<VoltFile>(TAG_FILESYSTEM);
         entry->mode = mode; 
         
         strncpy(entry->path, path, FS_MAX_PATH);
@@ -85,7 +85,7 @@ namespace Volt
             // open the file in binary mode, check if it works
             std::ios_base::openmode mode_stream = std::ios::out | std::ios::in;
 
-            if (mode == FileMode_Binary)
+            if (mode == VoltFileMode::Binary)
                 mode_stream |= std::ios::binary;
 
             entry->file.open(real_path, mode_stream);
@@ -93,7 +93,7 @@ namespace Volt
             if (!entry->file.good())
             {
                 Logging_LogChannel("Failed to open file %s using FS_Folder method\n", LogChannel::Warning, path);
-                Memory_Free<VoltFileEntry>(entry);
+                Memory_Free<VoltFile>(entry);
                 return nullptr; 
             }   
 
@@ -109,7 +109,7 @@ namespace Volt
         } 
         else
         {
-            VoltFileEntry* prev = filesystem->tail;
+            VoltFile* prev = filesystem->tail;
             filesystem->tail->next = entry;
             filesystem->tail = entry; 
             entry->next = nullptr; 
@@ -124,7 +124,7 @@ namespace Volt
     //
     // Closes a file that the game has already opened.,
     //
-    void Filesystem_CloseFile(VoltFileEntry* entry)
+    void Filesystem_CloseFile(VoltFile* entry)
     {
         assert(entry);
 
@@ -159,7 +159,7 @@ namespace Volt
     }
 
 
-    void Filesystem_ReadString(VoltFileEntry* entry, char* fs_buf, uint32_t n)
+    void Filesystem_ReadString(VoltFile* entry, char* fs_buf, uint32_t n)
     {
         // fs_buf DEFAULT is fs_string_buf (NOT compatible with MULTI-THREADING!!!!!)
 
@@ -181,7 +181,7 @@ namespace Volt
         }
             
 
-        if (entry->mode == FileMode_Binary)
+        if (entry->mode == VoltFileMode::Binary)
             stream >> n;
     
         char next_str_byte = 0x00; 
@@ -203,7 +203,7 @@ namespace Volt
             }
 
             // if we reached a new line and it is text mode, end
-            if (entry->mode == FileMode_Text)
+            if (entry->mode == Text)
             {
                 if (fs_buf[byte] == '\r'
                 || fs_buf[byte] == '\n')
@@ -215,14 +215,14 @@ namespace Volt
          
     }
 
-    void Filesystem_WriteString(VoltFileEntry* entry, char* string)
+    void Filesystem_WriteString(VoltFile* entry, char* string)
     {
         if (!string)
             return; 
 
         uint32_t length = ARRAY_SIZE(string);                  // ONLY valid for SINGLE-BYTE ENCODING!
 
-        if (entry->mode == FileMode_Binary)
+        if (entry->mode == VoltFileMode::Binary)
             entry->file << length;
 
         // blast the whole string at once for efficiency reasons
@@ -231,7 +231,7 @@ namespace Volt
 
     // Write to the filesystem.
 
-    void Filesystem_Flush(VoltFileEntry* entry)
+    void Filesystem_Flush(VoltFile* entry)
     {
         assert(entry);
 

@@ -45,7 +45,6 @@ namespace Volt
         Net_Init(NetworkType::Loopback);                // Initialise the network
 
         // Initialise emulation layer.
-        // Should this be a part of the code to the
         Emulation_Init();
 
         common_is_running = true;
@@ -55,6 +54,9 @@ namespace Volt
         Console_ExecuteCommand("exec autoexec.volt");
         
         Logging_LogChannel("******** Common_Init done! ********", LogChannel::Message);
+
+        // Start emulating
+        Emulation_Start(); 
 
         // For now, clear all the backscroll
         //Util_ConsoleClearScreen();

@@ -11,7 +11,7 @@
 
 namespace Volt
 {
-    #define CPU8086_ADDR_SPACE_SIZE     1000000
+    #define CPU8086_ADDR_SPACE_SIZE     0x100000 //1048576
     #define CPU8086_NUM_OPCODES         256
     #define CPU8086_NUM_REGISTERS       8
     #define CPU8086_PREFETCH_QUEUE_SIZE 6
@@ -39,6 +39,8 @@ namespace Volt
             void Tick() override;
             void Frame() override;
             void Shutdown() override;
+
+            // Is the CPU in reset?
 
         
             // REGISTERS

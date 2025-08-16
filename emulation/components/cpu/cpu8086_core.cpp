@@ -51,11 +51,20 @@ namespace Volt
     // The start method is run after all components have initialised.
     void CPU8086::Start()
     {
+        // Open the IBM PC 5160 BIOS as a test
+        //TODO: MACHINE CONFIG, BIOS CONFIG, ANTI-86BOX CONFIG!
+        VoltFile* bios_low = Filesystem_OpenFile("BIOS_5160_09MAY86_U19_62X0819_68X4370_27256_F000.BIN", VoltFileMode::Binary);
+        VoltFile* bios_high = Filesystem_OpenFile("BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", VoltFileMode::Binary);
+
+        // this is very bad and slow make a bulk read function
+        bios_low->file.read((char*)&address_space->access_byte[0xF0000], 32768);
+        bios_high->file.read((char*)&address_space->access_byte[0xF8000], 32768);
+    
         cs = CPU8086_START_LOCATION_CS;
         ip = CPU8086_START_LOCATION_IP;
 
-        //read in 6 bytes of prefetch so we can start executingjh
-        Prefetch_Advance(6);
+        //read in 6 bytes of prefetch so we can start executing 
+        Prefetch_Advance(6); 
     }
 
     //
@@ -92,10 +101,9 @@ namespace Volt
         return ret; 
     }
 
-    void CPU8086::Prefetch_Advance(uint32_t opcode)
+    void CPU8086::Prefetch_Advance(uint32_t size)
     {
         uint8_t prefetch_size = (variant == CPU8086Variant::cpu808x_8088) ? CPU8088_PREFETCH_QUEUE_SIZE : CPU8086_PREFETCH_QUEUE_SIZE;
-        uint8_t size = instruction_table[opcode].size;
 
         // ensure a valid size
         if (size > prefetch_size) 
@@ -107,13 +115,13 @@ namespace Volt
         // we are throwing everything away anyway so don't bother
         // Example: 1 byte opcode: preserve 5 elements, drop the last
         // 0 1 2 3 4 5 -> 1 2 3 4 5 0
-        if (size < prefetch_size)
+        if (size > 0)
         {
-            for (int32_t i = 0; i < prefetch_size - size; i++)
+            for (int32_t i = 0; i <= (prefetch_size - size); i++)
                 prefetch[i % prefetch_size] = prefetch[(i + size) % prefetch_size];
         }
 
-        for (int32_t i = size; i < prefetch_size; i++)
+        for (int32_t i = (prefetch_size - size); i < prefetch_size; i++)
             prefetch[i] = address_space->access_byte[linear_pc() + i];
 
         prefetch_ptr -= size; 

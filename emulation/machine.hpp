@@ -31,6 +31,14 @@ namespace Volt
                 return; 
             }
 
+            void Start()
+            {
+                for (auto component : components)
+                {
+                    component->Start();
+                }
+            }
+
             std::vector<Component*> components;
             
             Machine()

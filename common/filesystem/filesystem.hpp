@@ -33,11 +33,11 @@ namespace Volt
         FS_Folder = 0,
     };
 
-    enum FileMode
+    enum VoltFileMode
     {
-        FileMode_Binary = 0,
+        Binary = 0,
 
-        FileMode_Text = 1,
+        Text = 1,
     };
 
     /* Game image file header */
@@ -57,16 +57,16 @@ namespace Volt
     //
     // Defines an open file in the game.
     //
-    struct VoltFileEntry 
+    struct VoltFile 
     {
         uint32_t length;
         uint32_t start_position;                // Irrelevant if type == FS_GameImage
-        FileMode mode;                          // the mode to open the file in
+        VoltFileMode mode;                      // the mode to open the file in
         char path[FS_MAX_PATH];                 // the path to the file relative to fs_basedir
         bool eof;                               // Irrelevant if type == FS_Folder
         std::fstream file;                      // Irrelevant if type == FS_GameImage
-        VoltFileEntry* prev; 
-        VoltFileEntry* next; 
+        VoltFile* prev; 
+        VoltFile* next; 
 
         template <typename T>
         std::ostream& operator<<(T const &p)
@@ -90,8 +90,8 @@ namespace Volt
     {
         VoltFilesystemType type;                 
         VoltFileHeader header;             // Irrelevant if type == FS_Folder
-        VoltFileEntry* head;               // Irrelevant if type == FS_Folder
-        VoltFileEntry* tail;               // Irrelevant if type == FS_Folder
+        VoltFile* head;               // Irrelevant if type == FS_Folder
+        VoltFile* tail;               // Irrelevant if type == FS_Folder
         std::fstream stream;
         bool loaded; 
     };
@@ -113,13 +113,13 @@ namespace Volt
     void Filesystem_Shutdown();
 
     // File open/close functions
-    VoltFileEntry* Filesystem_OpenFile(const char* path, FileMode mode = FileMode_Binary, bool cached = false);
-    void Filesystem_CloseFile(VoltFileEntry* entry);
+    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode = Binary, bool cached = false);
+    void Filesystem_CloseFile(VoltFile* entry);
 
     // File read/write functions
     // For most functions, we can use the contents of the stream in order to read/write
 
     // READ CV1
-    void Filesystem_ReadString(VoltFileEntry* entry, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
-    void Filesystem_WriteString(VoltFileEntry* entry, char* string);
+    void Filesystem_ReadString(VoltFile* entry, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
+    void Filesystem_WriteString(VoltFile* entry, char* string);
 }

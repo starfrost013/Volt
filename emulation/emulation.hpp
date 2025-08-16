@@ -11,6 +11,7 @@
 namespace Volt
 {
     void Emulation_Init();
+    void Emulation_Start();
     void Emulation_Frame(); 
     void Emulation_Tick();
     void Emulation_Shutdown();

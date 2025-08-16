@@ -7,7 +7,7 @@
 
 namespace Volt
 {
-    VoltFileEntry* exec_cfg_ptr = nullptr;
+    VoltFile* exec_cfg_ptr = nullptr;
 
     void Command_Exec(CommandType origin)
     {       
@@ -19,7 +19,7 @@ namespace Volt
 
         const char* file_path = Command_Argv(1);
 
-        exec_cfg_ptr = Filesystem_OpenFile(file_path, FileMode_Text, true);
+        exec_cfg_ptr = Filesystem_OpenFile(file_path, Text, true);
 
         if (!exec_cfg_ptr)
         {
@@ -27,7 +27,7 @@ namespace Volt
             return;
         }
 
-        VoltFileEntry &exec_cfg = *exec_cfg_ptr; //so we can use streams
+        VoltFile &exec_cfg = *exec_cfg_ptr; //so we can use streams
 
         while (!exec_cfg.eof)
         {
