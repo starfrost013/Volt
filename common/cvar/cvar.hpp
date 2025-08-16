@@ -37,7 +37,8 @@ namespace Volt
 	Cvar* Cvar_Get(const char* name, const char* string = "", CvarFlags flags = Cvar_Default, bool internal = false);
     void Cvar_Set(const char* name, const char* string = "", bool internal = false);
 	void Cvar_Set(const char* name, const char* string = "", CvarFlags flags = Cvar_Default, bool internal = false);
-
+    void Cvar_List();
+	
 	// Functions for ancillary functionality it doesn't make sense to stuff into parameters.
 	void Cvar_SetOnGetCallback(Cvar* cvar, void (*on_get)());
 	void Cvar_SetOnSetCallback(Cvar* cvar, void (*on_set)());

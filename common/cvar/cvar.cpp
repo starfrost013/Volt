@@ -155,6 +155,19 @@ namespace Volt
             cvar->on_set = on_set; 
     }
 
+    void Cvar_List()
+    {
+        Cvar* cvar = cvarlist_head;
+
+        Logging_LogChannel("Convar list:", LogChannel::Message);
+
+        while (cvar)
+        {
+            Logging_LogChannel("%s: %s [flags: %d]", LogChannel::Message, cvar->name, cvar->string, cvar->flags);
+            cvar = cvar->next;
+        }
+    }
+
     // Shuts down the convar system.
     void Cvar_Shutdown()
     {

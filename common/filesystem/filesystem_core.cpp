@@ -170,6 +170,17 @@ namespace Volt
         // Also, we can't do operator overrides on pointers.
         std::fstream& stream = entry->file;
 
+        uint32_t length = strlen(fs_buf);
+
+        // terminate the string
+        if (fs_buf[0] != '\0'
+            && length < n)
+        {
+            //clear the previous string that was there
+            memset(fs_buf, 0x00, length);
+        }
+            
+
         if (entry->mode == FileMode_Binary)
             stream >> n;
     

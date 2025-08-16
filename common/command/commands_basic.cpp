@@ -14,6 +14,7 @@ namespace Volt
 #ifdef DEBUG
     void Command_Echo(CommandType origin);
 #endif
+    void Command_CvarList(CommandType origin);
 
     void Command_CreateBasicCommands()
     {
@@ -32,6 +33,7 @@ namespace Volt
         Command_Add("meminfo", CommandType::GlobalCommand, Command_MemStats); // alias
         Command_Add("listallocs", CommandType::GlobalCommand, Command_ListAllocs); 
         Command_Add("memlist", CommandType::GlobalCommand, Command_ListAllocs); // alias
+        Command_Add("cvarlist", CommandType::GlobalCommand, Command_CvarList); // alias
 
     }
 
@@ -82,4 +84,9 @@ namespace Volt
         Logging_LogAll(Command_AllTextAfterName());
     }
 #endif
+
+    void Command_CvarList(CommandType origin)
+    {
+        Cvar_List();
+    }
 }
