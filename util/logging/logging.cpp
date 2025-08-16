@@ -146,7 +146,7 @@ namespace Volt
 				case LogChannel::Message: //shutup GCC
 					break;
 				case LogChannel::Debug:
-					Util_ConsoleSetForegroundColor(ConsoleColor::Blue);
+					Util_ConsoleSetForegroundColor(ConsoleColor::BrightBlue);
 					break;
 				case LogChannel::Warning:
 					Util_ConsoleSetForegroundColor(ConsoleColor::BrightYellow);
