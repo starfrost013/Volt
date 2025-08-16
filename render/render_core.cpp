@@ -18,11 +18,7 @@ namespace Volt
     Cvar* render_window_title;
 
     // Globals
-
-    RendererType render_type; //default value does not matter
-    bool renderer_running = false;
-
-    #define WINDOW_TITLE_BUF_SIZE       256
+    RendererState renderer_state_global;
 
     // Selects and initialises the renderer.
     void Render_Init()
@@ -36,10 +32,10 @@ namespace Volt
         render_height = Cvar_Get("render_height", "768", false);
         render_fullscreen = Cvar_Get("render_fullscreen", "0", false);
         
-        char window_title[WINDOW_TITLE_BUF_SIZE] = {0};
-        snprintf(window_title, WINDOW_TITLE_BUF_SIZE, "%s Window (%s @ %s)", APP_NAME, VERSION, BUILD_DATE);
+        snprintf(renderer_state_global.window_title, WINDOW_TITLE_BUF_SIZE, "%s Window (%s @ %s)", APP_NAME, VERSION, BUILD_DATE);
 
-        render_window_title = Cvar_Get("render_window_title", window_title, false);
+        // todo - have global renderer state be separate to specific render state
+        render_window_title = Cvar_Get("render_window_title", renderer_state_global.window_title, false);
 
         // because SOMEONE decided to run the engine with "+set render_width -1"
         // check for sane width and height values and set them
@@ -53,11 +49,11 @@ namespace Volt
         
         // set render_type and the rendere based on the "render" cvar
         if (!strcasecmp(renderer->string, "gl3"))
-            render_type = RendererType::GL3;
+            renderer_state_global.type = RendererType::GL3;
         else if (!strcasecmp(renderer->string, "null"))
-            render_type = RendererType::Null;
+            renderer_state_global.type = RendererType::Null;
 
-        switch (render_type)
+        switch (renderer_state_global.type)
         {
             case RendererType::GL3: // gl3 renderer
                 Logging_LogChannel("Selected Renderer: OpenGL 3.3, Core Profile", LogChannel::Message);
@@ -69,13 +65,13 @@ namespace Volt
                 break;
         }
 
-        renderer_running = true; 
+        renderer_state_global.running = true; 
     }
 
     void Render_Frame()
     {
         // call the function depending on the type of renderer
-        switch (render_type)
+        switch (renderer_state_global.type)
         {
             case RendererType::GL3:
                 R_GL3_Frame();
@@ -90,7 +86,7 @@ namespace Volt
     // TODO: Shutdown when render size changes
     void Render_Shutdown()
     {
-        switch (render_type)
+        switch (renderer_state_global.type)
         {
             case RendererType::GL3:
                 Logging_LogChannel("Shutting down renderer: GL3", LogChannel::Message);
@@ -102,6 +98,6 @@ namespace Volt
                 break;
         }
 
-        renderer_running = false; 
+        renderer_state_global.running = false; 
     }
 }

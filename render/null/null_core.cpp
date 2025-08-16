@@ -3,7 +3,7 @@
 namespace Volt
 {
     /* Globals */
-    NullRendererState null_render_state;
+    RendererStateNull render_state_null;
 
     // Initialises the GL3 renderer
     void R_Null_Init()
@@ -22,6 +22,6 @@ namespace Volt
     // Shuts down the renderer
     void R_Null_Shutdown()
     {
-        renderer_running = false; 
+        renderer_state_global.running = false; 
     }
 }

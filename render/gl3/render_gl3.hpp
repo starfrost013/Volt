@@ -11,8 +11,10 @@
 namespace Volt
 {
     // Holds the OpenGL 3.x renderer state.
-    struct GL3RendererState
+    struct RendererStateGL3
     {
+        RendererState global;
+
         GLFWwindow* window;
         GLFWmonitor* monitor_primary; 
 
@@ -21,7 +23,7 @@ namespace Volt
         int32_t last_window_pos_y;
     };
 
-    extern GL3RendererState gl3_render_state;
+    extern RendererStateGL3 render_state_gl3;
 
     /* Functions */
 

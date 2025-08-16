@@ -11,12 +11,13 @@
 namespace Volt
 {
     // Holds the OpenGL 3.x renderer state.
-    struct NullRendererState
+    struct RendererStateNull
     {
+
         //deliberately blank
     };
 
-    extern NullRendererState null_render_state;
+    extern RendererStateNull render_state_null;
 
     /* Functions */
 

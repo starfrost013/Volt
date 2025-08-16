@@ -7,7 +7,7 @@
 namespace Volt
 {
     /* Globals */
-    GL3RendererState gl3_render_state;
+    RendererStateGL3 render_state_gl3;
 
     /* Functions only used in this translation unit */
     void R_GL3_SetViewportSize(GLFWwindow* window, int32_t width, int32_t height);
@@ -43,13 +43,13 @@ namespace Volt
         Cvar_SetOnSetCallback(render_fullscreen, R_GL3_OnFullscreenChanged);
 
         // create the window and store the primary monitor
-        gl3_render_state.window = glfwCreateWindow(int(render_width->value), int(render_height->value),
+        render_state_gl3.window = glfwCreateWindow(int(render_width->value), int(render_height->value),
         render_window_title->string, NULL, NULL);
-        gl3_render_state.monitor_primary = glfwGetPrimaryMonitor();
+        render_state_gl3.monitor_primary = glfwGetPrimaryMonitor();
 
-        glfwMakeContextCurrent(gl3_render_state.window);
-        glfwSetFramebufferSizeCallback(gl3_render_state.window, R_GL3_SetViewportSize);
-        glfwSetWindowCloseCallback(gl3_render_state.window, R_GL3_Close);
+        glfwMakeContextCurrent(render_state_gl3.window);
+        glfwSetFramebufferSizeCallback(render_state_gl3.window, R_GL3_SetViewportSize);
+        glfwSetWindowCloseCallback(render_state_gl3.window, R_GL3_Close);
 
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             Logging_LogChannel("GL3 Renderer failed to initialise. gladLoadGLLoader failed. Can only run with +set renderer none.", LogChannel::Fatal);
@@ -98,17 +98,17 @@ namespace Volt
             glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
 
             // leave fullscreen
-            glfwSetWindowSize(gl3_render_state.window, int(render_width->value), int(render_height->value));
+            glfwSetWindowSize(render_state_gl3.window, int(render_width->value), int(render_height->value));
 
             // restore the window position
-            glfwSetWindowPos(gl3_render_state.window, gl3_render_state.last_window_pos_x, gl3_render_state.last_window_pos_y);
+            glfwSetWindowPos(render_state_gl3.window, render_state_gl3.last_window_pos_x, render_state_gl3.last_window_pos_y);
         }
         else 
         {
             Logging_LogChannel("Entering borderless fullscreen", LogChannel::Debug);
 
             // remember the old window position
-            glfwGetWindowPos(gl3_render_state.window, &gl3_render_state.last_window_pos_x, &gl3_render_state.last_window_pos_y);
+            glfwGetWindowPos(render_state_gl3.window, &render_state_gl3.last_window_pos_x, &render_state_gl3.last_window_pos_y);
 
             // In glfw fullscreen works by setting the window size to teh current window omde
             GLFWmonitor* monitor = glfwGetPrimaryMonitor();
@@ -121,7 +121,7 @@ namespace Volt
             glfwWindowHint(GLFW_BLUE_BITS, video_mode->blueBits);
             
             // this kills the window position
-            glfwSetWindowMonitor(gl3_render_state.window, monitor, 0, 0, video_mode->width, video_mode->height, video_mode->refreshRate); 
+            glfwSetWindowMonitor(render_state_gl3.window, monitor, 0, 0, video_mode->width, video_mode->height, video_mode->refreshRate); 
            
         }
     }
@@ -145,14 +145,14 @@ namespace Volt
 
         /* THE END OF THE RENDERER LOOP */
         glfwPollEvents(); 
-        glfwSwapBuffers(gl3_render_state.window);
+        glfwSwapBuffers(render_state_gl3.window);
 
         clear_frame_number++; 
     }
 
     void R_GL3_Close(GLFWwindow* window)
     {
-        // renderer_running is set to false in render_core.cpp
+        // renderer_state_global.running is set to false in render_core.cpp
         // because the renderer exists, we know this_client exists
         //emulation.initialised = false
     }
@@ -161,8 +161,8 @@ namespace Volt
     void R_GL3_Shutdown()
     {
         // destroy the window
-        glfwDestroyWindow(gl3_render_state.window);
-        gl3_render_state.window = nullptr;
+        glfwDestroyWindow(render_state_gl3.window);
+        render_state_gl3.window = nullptr;
         glfwTerminate();
     }
 }
