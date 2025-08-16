@@ -48,6 +48,7 @@ add_executable (Volt
 
 # 8086
 "emulation/components/cpu/cpu8086_core.cpp" "emulation/components/cpu/cpu8086_modrm.cpp"
+"emulation/components/cpu/cpu8086_ops_control.cpp"
 
 # RENDER
 "render/render_core.cpp"

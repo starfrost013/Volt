@@ -90,7 +90,7 @@ namespace Volt
         uint8_t prefetch_size = (variant == CPU8086Variant::cpu808x_8088) ? CPU8088_PREFETCH_QUEUE_SIZE : CPU8086_PREFETCH_QUEUE_SIZE;
 
         //prefetch_ptr guaranteed to never exceed prefetch_size but +1 might
-        uint16_t ret = prefetch[prefetch_ptr] << 8 | prefetch[(prefetch_ptr + 1) % prefetch_size];
+        uint16_t ret = prefetch[(prefetch_ptr + 1) % prefetch_size] << 8 | prefetch[prefetch_ptr];
         prefetch_ptr += 2;
     
         if (variant == CPU8086Variant::cpu808x_8086)
@@ -135,15 +135,14 @@ namespace Volt
         //TODO: PREFETCH QUEUE IMPLEMENTATION
 
         // Keep the prefetch queue filled up
-
-        uint8_t opcode = prefetch[prefetch_ptr];
-        Prefetch_Advance(instruction_table[opcode].size); 
+        uint8_t opcode = Prefetch_Pop8();
 
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)();
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
+        Prefetch_Advance(instruction_table[opcode].size); 
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
