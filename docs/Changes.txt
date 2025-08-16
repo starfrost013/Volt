@@ -1,0 +1,88 @@
+S7_Engine
+
+Pre-Alpha 0.7
+XX June 2025 (Was busy)
+
+Changes:
+* Moved from MSVC to GCC (mingw64-msys2 on windows)
+* Implement the filesystem subsystem
+	* Can load files from the fs_basedir cvar or (in the future) a package file
+	* Implement the exec command
+		* Runs a ".s7cmd" file containing commands
+* Rewrite the memory allocation system to use templates and C++ memory management, so that c++ objects get constructed when the tagged memory allocator is called.
+* Added optional callbacks to run when a convar is set and when it is retrieved (similar to getters and setters in languages like C# and Java). The callbacks can be set using the Cvar_SetOnGetCallback and Cvar_SetOnSetCallback functions, which take a pointer to a Cvar object and a function pointer of the type void (*function)(const char* string), where string is the value of the convar as a string after it gets set.
+* Implemented render_window_title convar that sets the window title of the window.
+* The server is now initialised before the client
+* In Common_Main the Tick and Frame functions are run first for the server and then for the client, not the other way around
+* Logging improvements part 1237123:
+	* Logger file name is only set if you didn't already set it 
+	* Logger_SetOptions removed, just set the options manually
+	* Logger settings now have a void(*)() function pointer called fatal_function to set the function to call when a fatal error occurs
+		* Fatal errors now call Common_Fatal instead of just exiting, currently it just calls Common_Shutdown but may be changed in the future
+		* Common_Shutdown can now take an optional error code (0 = success, non-0 = failure)
+	* Implemented "SuperFatal" errors that cannot be preempted, do not call Common_Shutdown and immediately exit. There is n
+* Logging system now uses snprintf instead of ridiculously bad strncat
+* Set up proper release and debug defines in CMake
+* Use GLFW for time calls, not platform-specific stuff
+
+Older Release Notes:
+
+Pre-Alpha 0.62 (March 6, 2025)
+* Defined strcasecmp to stricmp on MSVC so case insensitive comparisons can be used more easily.
+* Fixed a crash that could happen if render_width and render_height were set too high.
+* Added a debug string stating what renderer was being used.
+
+Pre-Alpha 0.61 (March 6, 2025)
+* Fixed a crash that could happen if render_width and render_height were set too low.
+* Allowed the null renderer to be selected.
+
+Pre-Alpha 0.6 (March 6, 2025)
+* Implemented separated tickrate and render times. The convar server_tickrate sets the tickrate, it is currently 60. Therefore the engine actually stays running now
+* It now renders something!!!!
+	* Implemented a renderer framework. The only renderers that exist currently is opengl 3.3 core profile and a null renderer.
+	* Integrated GLFW and GLAD, they are now statically linked
+	* Now creates a window and context at startup
+	* The client, server and common all have Tick functions that are called each tick and Frame functions that are called each frame.
+	* Added shutdown functions that are called by Common_Shutdown on client and server shutdown
+	* Cvars:
+		* renderer is the current renderer. Either none (not currently implemented) or "gl3".
+		* render_width is the current width.
+		* render_height is the current height.
+
+* Added the "+set" command line option that creates a cvar at bootup.
+* Started working on the console subsystem
+	* It will print the time taken for a tick (NOT the time between ticks!) and the time taken to render a frame.
+* Cvar changes:
+	* Cvar_Create is not directly accessible. Cvar_Get and Cvar_Set are now the main ways to interact with ConVars. Convars passed to these functions will be implicitly created if they don't exist by calling Cvar_Create.
+	* Added Cvar_Exists, an internal function that returns the pointer to a cvar specified by name if the convar exists, while returning a nullptr if it doesn't
+	* Renamed Cvar_SetValue to Cvar_Set
+	* Added Cvar_Replicate for convars that will be, in the future, replicated from server to client. 
+* Added M_PI and M_PI_D defines for pi
+* Added "create" and "set" commands that explicitly create and explicitly set convars (they are both capable of implicitly creating convars)
+
+Pre-Alpha 0.5 (March 1, 2025)
+* Implemented commands into the engine.
+* Began work on the common subsystem. 
+* Removed Util_EnumHasFlag.
+
+Pre-Alpha 0.4 (February 24, 2025)
+* Implemented convars into the engine. 
+* Functions:
+	* Cvar_Create: Create a convar.
+	* Cvar_Get: Get a convar.
+	* Cvar_Set: Sets a convar.
+* Implemented the network infrastructure into the engine.
+
+Pre-Alpha 0.3 (February 16, 2025)
+
+
+Pre-Alpha 0.2 (February 16, 2025)
+* Renamed the engine from Euphoria2 to Step7 (later S7_Engine).
+
+* Added a command-line parser subsystem.
+
+Pre-Alpha 0.1 (November 18, 2024)
+* Initial experimental release.
+* Implemented a tagged memory allocator.
+* Implemented various basic vector and matrix operation functions
+	* These are implemented Vector2, Vector3, Vector4, Mat22, Mat33 and Mat44 structs

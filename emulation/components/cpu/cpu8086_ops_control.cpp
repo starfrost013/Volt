@@ -19,5 +19,8 @@ namespace Volt
     
         cs = new_cs;
         ip = new_ip;
+
+        // flush the prefetch queue
+        Prefetch_Advance(6); 
     }
 }

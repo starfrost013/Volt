@@ -142,6 +142,7 @@ namespace Volt
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
+        
         Prefetch_Advance(instruction_table[opcode].size); 
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
