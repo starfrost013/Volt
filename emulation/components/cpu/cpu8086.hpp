@@ -128,27 +128,27 @@ namespace Volt
 
             // OVERRIDABLE
             // Apparently starting at bit 0
-            struct CPU8086Flags 
+            enum CPU8086Flags
             {
-                bool carry : 1;         // 1 << 0
-                bool reserved1 : 1;     // 1 << 1
-                bool parity : 1;        // 1 << 2
-                bool reserved3 : 1;     // 1 << 3
-                bool auxcarry : 1;      // 1 << 4
-                bool reserved5 : 1;     // 1 << 5
-                bool zero : 1;          // 1 << 6
-                bool sign : 1;          // 1 << 7
-                bool trap : 1;          // 1 << 8
-                bool intr_enable : 1;   // 1 << 9
-                bool direction : 1;     // 1 << 10
-                bool overflow : 1;      // 1 << 11
-                bool reserved12 : 1;    // 1 << 12 
-                bool reserved13 : 1;    // 1 << 13 
-                bool reserved14 : 1;    // 1 << 14 
-                bool reserved15 : 1;    // 1 << 15 
+                Carry = 1 << 0,
+                Reserved1 = 1 << 1,
+                Parity = 1 << 2,
+                Reserved3 = 1 << 3,
+                AuxCarry = 1 << 4,
+                Reserved5 = 1 << 5,
+                Zero = 1 << 6,
+                Sign = 1 << 7,
+                Trap = 1 << 8,
+                IntrEnable = 1 << 9,
+                Direction = 1 << 10,
+                Overflow = 1 << 11,
+                Reserved12 = 1 << 12,
+                Reserved13 = 1 << 13,
+                Reserved14 = 1 << 14,
+                Reserved15 = 1 << 15,
             };
 
-            CPU8086Flags flags; 
+            uint16_t flags; 
 
 
         protected:
@@ -204,10 +204,12 @@ namespace Volt
             uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
             // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
             int8_t prefetch_ptr; 
+            bool prefetch_flushed; // don't process prefetch queue as it's been flushed
             
             uint8_t Prefetch_Pop8();
             uint16_t Prefetch_Pop16();
             void Prefetch_Advance(uint32_t size);
+            void Prefetch_Flush();
 
             // 
             // Decode
@@ -219,8 +221,19 @@ namespace Volt
             // Operations
             //
             void Op_Nop();
+
+            // Control
             void Op_JmpFar();
             
+            // Flag set/clear
+            void Op_Sti();
+            void Op_Cli();
+            void Op_Clc();
+            void Op_Stc();
+            void Op_Cmc();
+            void Op_Cld();
+            void Op_Std();
+
             // Defined size used so that we can look up the opcode as a table
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
             {
@@ -254,8 +267,8 @@ namespace Volt
                 { 0xD8, Op_Nop, 1, 1 }, { 0xD9, Op_Nop, 1, 1 }, { 0xDA, Op_Nop, 1, 1 },  { 0xDB, Op_Nop, 1, 1 },  { 0xDC, Op_Nop, 1, 1 }, { 0xDD, Op_Nop, 1, 1 }, { 0xDE, Op_Nop, 1, 1 },  { 0xDF, Op_Nop, 1, 1 }, 
                 { 0xE0, Op_Nop, 1, 1 }, { 0xE1, Op_Nop, 1, 1 }, { 0xE2, Op_Nop, 1, 1 },  { 0xE3, Op_Nop, 1, 1 },  { 0xE4, Op_Nop, 1, 1 }, { 0xE5, Op_Nop, 1, 1 }, { 0xE6, Op_Nop, 1, 1 },  { 0xE7, Op_Nop, 1, 1 }, 
                 { 0xE8, Op_Nop, 1, 1 }, { 0xE9, Op_Nop, 1, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_Nop, 1, 1 },  { 0xEC, Op_Nop, 1, 1 }, { 0xED, Op_Nop, 1, 1 }, { 0xEE, Op_Nop, 1, 1 },  { 0xEF, Op_Nop, 1, 1 }, 
-                { 0xF0, Op_Nop, 1, 1 }, { 0xF1, Op_Nop, 1, 1 }, { 0xF2, Op_Nop, 1, 1 },  { 0xF3, Op_Nop, 1, 1 },  { 0xF4, Op_Nop, 1, 1 }, { 0xF5, Op_Nop, 1, 1 }, { 0xF6, Op_Nop, 1, 1 },  { 0xF7, Op_Nop, 1, 1 }, 
-                { 0xF8, Op_Nop, 1, 1 }, { 0xF9, Op_Nop, 1, 1 }, { 0xFA, Op_Nop, 1, 1 },  { 0xFB, Op_Nop, 1, 1 },  { 0xFC, Op_Nop, 1, 1 }, { 0xFD, Op_Nop, 1, 1 }, { 0xFE, Op_Nop, 1, 1 },  { 0xFF, Op_Nop, 1, 1 }, 
+                { 0xF0, Op_Nop, 1, 1 }, { 0xF1, Op_Nop, 1, 1 }, { 0xF2, Op_Nop, 1, 1 },  { 0xF3, Op_Nop, 1, 1 },  { 0xF4, Op_Nop, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Nop, 1, 1 },  { 0xF7, Op_Nop, 1, 1 }, 
+                { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Nop, 1, 1 },  { 0xFF, Op_Nop, 1, 1 }, 
             };
 
             // register table for ordering various operations

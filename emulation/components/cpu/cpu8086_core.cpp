@@ -64,7 +64,7 @@ namespace Volt
         ip = CPU8086_START_LOCATION_IP;
 
         //read in 6 bytes of prefetch so we can start executing 
-        Prefetch_Advance(6); 
+        Prefetch_Flush();
     }
 
     //
@@ -115,7 +115,7 @@ namespace Volt
         // we are throwing everything away anyway so don't bother
         // Example: 1 byte opcode: preserve 5 elements, drop the last
         // 0 1 2 3 4 5 -> 1 2 3 4 5 0
-        if (size > 0)
+        if (size < prefetch_size)
         {
             for (int32_t i = 0; i <= (prefetch_size - size); i++)
                 prefetch[i % prefetch_size] = prefetch[(i + size) % prefetch_size];
@@ -125,9 +125,26 @@ namespace Volt
             prefetch[i] = address_space->access_byte[linear_pc() + i];
 
         prefetch_ptr -= size; 
-        prefetch_ptr %= prefetch_size; // make sure it does not go below 0   
+        
+        //t his is terrible but make the queue CIRCULAR
+        if (prefetch_ptr < 0)
+            prefetch_ptr = (prefetch_size - abs(prefetch_ptr));
 
         Logging_LogChannel("Prefetch is: %02x %02x %02x %02x %02x %02x", LogChannel::Debug, prefetch[0], prefetch[1], prefetch[2], prefetch[3], prefetch[4], prefetch[5]);
+    }
+
+    void CPU8086::Prefetch_Flush()
+    {
+        uint8_t prefetch_size = (variant == CPU8086Variant::cpu808x_8088) ? CPU8088_PREFETCH_QUEUE_SIZE : CPU8086_PREFETCH_QUEUE_SIZE;
+
+        for (int32_t i = 0; i < prefetch_size; i++)
+            prefetch[i] = address_space->access_byte[linear_pc() + i];
+
+        Logging_LogChannel("Prefetch flush: %02x %02x %02x %02x %02x %02x", LogChannel::Debug, prefetch[0], prefetch[1], prefetch[2], prefetch[3], prefetch[4], prefetch[5]);
+
+        prefetch_ptr = 0;
+
+        prefetch_flushed = true; 
     }
 
     void CPU8086::Tick()
@@ -143,7 +160,10 @@ namespace Volt
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
         
-        Prefetch_Advance(instruction_table[opcode].size); 
+        if (!prefetch_flushed)
+            Prefetch_Advance(instruction_table[opcode].size); 
+
+        prefetch_flushed = false; 
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
