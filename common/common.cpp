@@ -37,9 +37,9 @@ namespace Volt
         logger.settings.fatal_function = Common_Fatal;  // Initialise logging
         Logging_Init();                                 
         Console_Init(ConsoleType::CommandLineConsole);  // Initialise the console
-        Filesystem_Init();                              // Initialise the filesystem
         Common_InitCvar();                              // Initialise cvars
         Common_SignonMessage();                         // Print the sign-on message
+        Filesystem_Init();                              // Initialise the filesystem
         Cmdline_Init(argc, argv);                       // Initialise the command line
         Command_Init();                                 // Initialise the command system
         Net_Init(NetworkType::Loopback);                // Initialise the network

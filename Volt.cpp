@@ -24,10 +24,7 @@ namespace Volt
 		// test a nonexistent command
 		Command_Execute("afhasdhasdhasdhsada", CommandType::GlobalCommand);
 
-		Common_Shutdown();
-
-		Logging_LogChannel("Done! Shutting down now...", LogChannel::Message);
-		return 0;
+		Common_Shutdown();		return 0;
 	}
 }
 
