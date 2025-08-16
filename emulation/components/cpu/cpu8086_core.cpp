@@ -80,7 +80,9 @@ namespace Volt
         prefetch_ptr++;
 
         prefetch_ptr %= prefetch_size;
+
         // read in another byte
+        Prefetch_Advance(sizeof(uint8_t)); 
 
         return ret; 
     }
@@ -98,6 +100,9 @@ namespace Volt
         else
             prefetch_ptr %= CPU8088_PREFETCH_QUEUE_SIZE;
 
+            
+        Prefetch_Advance(sizeof(uint16_t)); 
+        
         return ret; 
     }
 
@@ -129,8 +134,6 @@ namespace Volt
         //t his is terrible but make the queue CIRCULAR
         if (prefetch_ptr < 0)
             prefetch_ptr = (prefetch_size - abs(prefetch_ptr));
-
-        Logging_LogChannel("Prefetch is: %02x %02x %02x %02x %02x %02x", LogChannel::Debug, prefetch[0], prefetch[1], prefetch[2], prefetch[3], prefetch[4], prefetch[5]);
     }
 
     void CPU8086::Prefetch_Flush()
@@ -140,11 +143,7 @@ namespace Volt
         for (int32_t i = 0; i < prefetch_size; i++)
             prefetch[i] = address_space->access_byte[linear_pc() + i];
 
-        Logging_LogChannel("Prefetch flush: %02x %02x %02x %02x %02x %02x", LogChannel::Debug, prefetch[0], prefetch[1], prefetch[2], prefetch[3], prefetch[4], prefetch[5]);
-
         prefetch_ptr = 0;
-
-        prefetch_flushed = true; 
     }
 
     void CPU8086::Tick()
@@ -159,11 +158,6 @@ namespace Volt
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
-        
-        if (!prefetch_flushed)
-            Prefetch_Advance(instruction_table[opcode].size); 
-
-        prefetch_flushed = false; 
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 

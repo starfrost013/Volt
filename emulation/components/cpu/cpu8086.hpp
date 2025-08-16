@@ -204,7 +204,6 @@ namespace Volt
             uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
             // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
             int8_t prefetch_ptr; 
-            bool prefetch_flushed; // don't process prefetch queue as it's been flushed
             
             uint8_t Prefetch_Pop8();
             uint16_t Prefetch_Pop16();
@@ -233,6 +232,8 @@ namespace Volt
             void Op_Cmc();
             void Op_Cld();
             void Op_Std();
+            void Op_Lahf();
+            void Op_Sahf();
 
             // Defined size used so that we can look up the opcode as a table
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
@@ -256,7 +257,7 @@ namespace Volt
                 { 0x80, Op_Nop, 1, 1 }, { 0x81, Op_Nop, 1, 1 }, { 0x82, Op_Nop, 1, 1 },  { 0x83, Op_Nop, 1, 1 },  { 0x84, Op_Nop, 1, 1 }, { 0x85, Op_Nop, 1, 1 }, { 0x86, Op_Nop, 1, 1 },  { 0x87, Op_Nop, 1, 1 }, 
                 { 0x88, Op_Nop, 1, 1 }, { 0x89, Op_Nop, 1, 1 }, { 0x8A, Op_Nop, 1, 1 },  { 0x8B, Op_Nop, 1, 1 },  { 0x8C, Op_Nop, 1, 1 }, { 0x8D, Op_Nop, 1, 1 }, { 0x8E, Op_Nop, 1, 1 },  { 0x8F, Op_Nop, 1, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_Nop, 1, 1 }, { 0x92, Op_Nop, 1, 1 },  { 0x93, Op_Nop, 1, 1 },  { 0x94, Op_Nop, 1, 1 }, { 0x95, Op_Nop, 1, 1 }, { 0x96, Op_Nop, 1, 1 },  { 0x97, Op_Nop, 1, 1 }, 
-                { 0x98, Op_Nop, 1, 1 }, { 0x99, Op_Nop, 1, 1 }, { 0x9A, Op_Nop, 1, 1 },  { 0x9B, Op_Nop, 1, 1 },  { 0x9C, Op_Nop, 1, 1 }, { 0x9D, Op_Nop, 1, 1 }, { 0x9E, Op_Nop, 1, 1 },  { 0x9F, Op_Nop, 1, 1 }, 
+                { 0x98, Op_Nop, 1, 1 }, { 0x99, Op_Nop, 1, 1 }, { 0x9A, Op_Nop, 1, 1 },  { 0x9B, Op_Nop, 1, 1 },  { 0x9C, Op_Nop, 1, 1 }, { 0x9D, Op_Nop, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
                 { 0xA0, Op_Nop, 1, 1 }, { 0xA1, Op_Nop, 1, 1 }, { 0xA2, Op_Nop, 1, 1 },  { 0xA3, Op_Nop, 1, 1 },  { 0xA4, Op_Nop, 1, 1 }, { 0xA5, Op_Nop, 1, 1 }, { 0xA6, Op_Nop, 1, 1 },  { 0xA7, Op_Nop, 1, 1 }, 
                 { 0xA8, Op_Nop, 1, 1 }, { 0xA9, Op_Nop, 1, 1 }, { 0xAA, Op_Nop, 1, 1 },  { 0xAB, Op_Nop, 1, 1 },  { 0xAC, Op_Nop, 1, 1 }, { 0xAD, Op_Nop, 1, 1 }, { 0xAE, Op_Nop, 1, 1 },  { 0xAF, Op_Nop, 1, 1 }, 
                 { 0xB0, Op_Nop, 1, 1 }, { 0xB1, Op_Nop, 1, 1 }, { 0xB2, Op_Nop, 1, 1 },  { 0xB3, Op_Nop, 1, 1 },  { 0xB4, Op_Nop, 1, 1 }, { 0xB5, Op_Nop, 1, 1 }, { 0xB6, Op_Nop, 1, 1 },  { 0xB7, Op_Nop, 1, 1 }, 

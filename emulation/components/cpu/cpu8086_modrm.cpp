@@ -68,9 +68,7 @@ namespace Volt
                     return modrm_decode;
                 }
 
-               
-                break;
-        
+                break;        
             case 0x03:  // 11
                 // This is a bit stupid. We cast it to 8 bit for 8 bit opcodes.
                 if (!w)

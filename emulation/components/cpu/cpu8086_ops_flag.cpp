@@ -61,4 +61,25 @@ namespace Volt
 
         flags |= CPU8086Flags::Direction;
     }
+
+    void CPU8086::Op_Lahf()
+    {
+        Logging_LogChannel("LAHF", LogChannel::Debug);
+
+        // the order of the flags is the same as 
+        ah = (flags & 0xFF);
+
+        //ensure invalid bits are correct
+        ah &= ~CPU8086Flags::Reserved5;
+        ah &= ~CPU8086Flags::Reserved3;
+        ah |= CPU8086Flags::Reserved1;
+    }
+
+    void CPU8086::Op_Sahf()
+    {
+        Logging_LogChannel("SAHF", LogChannel::Debug);
+
+        // preserve bits 15-8 of flags
+        flags |= (ah & 0xFF);
+    }
 }

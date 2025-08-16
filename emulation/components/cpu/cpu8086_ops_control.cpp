@@ -22,6 +22,5 @@ namespace Volt
 
         // flush the prefetch queue
         Prefetch_Flush(); 
-        prefetch_flushed = true;
     }
 }
