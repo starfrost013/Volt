@@ -15,7 +15,7 @@ namespace Volt
 
     // Globals
     bool fs_initialised = false;
-    GameImage* filesystem;
+    VoltFilesystem* filesystem;
 
     // NOT thread safe...Default buffer to read strings into.
     char fs_string_buf[FS_MAX_STRING_LENGTH] = {0}; 
@@ -27,11 +27,11 @@ namespace Volt
         fs_type = Cvar_Get("type", "0", true);
         fs_basedir = Cvar_Get("fs_basedir", ".", true);
 
-        filesystem = Memory_Alloc<GameImage>(TAG_FILESYSTEM);
+        filesystem = Memory_Alloc<VoltFilesystem>(TAG_FILESYSTEM);
 
-        filesystem->type = static_cast<FilesystemType>(fs_type->value);
+        filesystem->type = static_cast<VoltFilesystemType>(fs_type->value);
 
-        if (filesystem->type == FilesystemType::FS_Folder)
+        if (filesystem->type == VoltFilesystemType::FS_Folder)
             Logging_LogChannel("Filesystem Init: Type = FS_Folder", LogChannel::Message);
 
         fs_initialised = true;
@@ -42,13 +42,13 @@ namespace Volt
         if (filesystem->head)
         {
             // walk through the linked list of open files and close them all
-            GameImageFileEntry* entry = filesystem->head;
+            VoltFileEntry* entry = filesystem->head;
             
             while (entry->next) 
             {
                 entry->file.close();
 
-                GameImageFileEntry* to_be_freed = entry; 
+                VoltFileEntry* to_be_freed = entry; 
 
                 entry = entry->next;
                 free(to_be_freed);
@@ -67,10 +67,10 @@ namespace Volt
 
     // Open a file and, if the cached parameter is true, optionally cache it/
     //
-    GameImageFileEntry* Filesystem_OpenFile(const char* path, FileMode mode, bool cached)
+    VoltFileEntry* Filesystem_OpenFile(const char* path, FileMode mode, bool cached)
     {
         // allocate a new open file entry
-        GameImageFileEntry* entry = Memory_Alloc<GameImageFileEntry>(TAG_FILESYSTEM);
+        VoltFileEntry* entry = Memory_Alloc<VoltFileEntry>(TAG_FILESYSTEM);
         entry->mode = mode; 
         
         strncpy(entry->path, path, FS_MAX_PATH);
@@ -80,7 +80,7 @@ namespace Volt
         // Determine what to do on the basis of the filesystem type
         snprintf(real_path, FS_MAX_PATH, "%s/%s", fs_basedir->string, path);    
 
-        if (filesystem->type == FilesystemType::FS_Folder)
+        if (filesystem->type == VoltFilesystemType::FS_Folder)
         {
             // open the file in binary mode, check if it works
             std::ios_base::openmode mode_stream = std::ios::out | std::ios::in;
@@ -93,7 +93,7 @@ namespace Volt
             if (!entry->file.good())
             {
                 Logging_LogChannel("Failed to open file %s using FS_Folder method\n", LogChannel::Warning, path);
-                Memory_Free<GameImageFileEntry>(entry);
+                Memory_Free<VoltFileEntry>(entry);
                 return nullptr; 
             }   
 
@@ -109,7 +109,7 @@ namespace Volt
         } 
         else
         {
-            GameImageFileEntry* prev = filesystem->tail;
+            VoltFileEntry* prev = filesystem->tail;
             filesystem->tail->next = entry;
             filesystem->tail = entry; 
             entry->next = nullptr; 
@@ -124,11 +124,11 @@ namespace Volt
     //
     // Closes a file that the game has already opened.,
     //
-    void Filesystem_CloseFile(GameImageFileEntry* entry)
+    void Filesystem_CloseFile(VoltFileEntry* entry)
     {
         assert(entry);
 
-        if (static_cast<int32_t>(fs_type->value) == FilesystemType::FS_Folder)
+        if (static_cast<int32_t>(fs_type->value) == VoltFilesystemType::FS_Folder)
         {
             entry->file.close();
         }
@@ -159,7 +159,7 @@ namespace Volt
     }
 
 
-    void Filesystem_ReadString(GameImageFileEntry* entry, char* fs_buf, uint32_t n)
+    void Filesystem_ReadString(VoltFileEntry* entry, char* fs_buf, uint32_t n)
     {
         // fs_buf DEFAULT is fs_string_buf (NOT compatible with MULTI-THREADING!!!!!)
 
@@ -204,7 +204,7 @@ namespace Volt
          
     }
 
-    void Filesystem_WriteString(GameImageFileEntry* entry, char* string)
+    void Filesystem_WriteString(VoltFileEntry* entry, char* string)
     {
         if (!string)
             return; 
@@ -220,7 +220,7 @@ namespace Volt
 
     // Write to the filesystem.
 
-    void Filesystem_Flush(GameImageFileEntry* entry)
+    void Filesystem_Flush(VoltFileEntry* entry)
     {
         assert(entry);
 

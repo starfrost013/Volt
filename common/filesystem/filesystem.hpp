@@ -13,6 +13,8 @@
 
     It uses c++ streams and memory mapped files that are nicely abstracted behind
     a set of clean APIs
+
+    This is called VoltFilesystem to prevent confusion with the C++ std filesystem library
 */
 namespace Volt
 {
@@ -25,7 +27,7 @@ namespace Volt
 
 
     // Structures
-    enum FilesystemType
+    enum VoltFilesystemType
     {
         // Filesystem mounted from a folder.
         FS_Folder = 0,
@@ -39,7 +41,7 @@ namespace Volt
     };
 
     /* Game image file header */
-    struct GameImageFileHeader
+    struct VoltFileHeader
     {
         // the version of the image file
         uint8_t version;
@@ -55,7 +57,7 @@ namespace Volt
     //
     // Defines an open file in the game.
     //
-    struct GameImageFileEntry 
+    struct VoltFileEntry 
     {
         uint32_t length;
         uint32_t start_position;                // Irrelevant if type == FS_GameImage
@@ -63,8 +65,8 @@ namespace Volt
         char path[FS_MAX_PATH];                 // the path to the file relative to fs_basedir
         bool eof;                               // Irrelevant if type == FS_Folder
         std::fstream file;                      // Irrelevant if type == FS_GameImage
-        GameImageFileEntry* prev; 
-        GameImageFileEntry* next; 
+        VoltFileEntry* prev; 
+        VoltFileEntry* next; 
 
         template <typename T>
         std::ostream& operator<<(T const &p)
@@ -84,12 +86,12 @@ namespace Volt
     };
 
     // Game Image 
-    struct GameImage
+    struct VoltFilesystem
     {
-        FilesystemType type;                 
-        GameImageFileHeader header;             // Irrelevant if type == FS_Folder
-        GameImageFileEntry* head;               // Irrelevant if type == FS_Folder
-        GameImageFileEntry* tail;               // Irrelevant if type == FS_Folder
+        VoltFilesystemType type;                 
+        VoltFileHeader header;             // Irrelevant if type == FS_Folder
+        VoltFileEntry* head;               // Irrelevant if type == FS_Folder
+        VoltFileEntry* tail;               // Irrelevant if type == FS_Folder
         std::fstream stream;
         bool loaded; 
     };
@@ -100,7 +102,7 @@ namespace Volt
 
     // Globals
     extern bool fs_initialised;
-    extern GameImage* filesystem;
+    extern VoltFilesystem* filesystem;
 
     extern char fs_string_buf[FS_MAX_STRING_LENGTH]; 
 
@@ -111,13 +113,13 @@ namespace Volt
     void Filesystem_Shutdown();
 
     // File open/close functions
-    GameImageFileEntry* Filesystem_OpenFile(const char* path, FileMode mode = FileMode_Binary, bool cached = false);
-    void Filesystem_CloseFile(GameImageFileEntry* entry);
+    VoltFileEntry* Filesystem_OpenFile(const char* path, FileMode mode = FileMode_Binary, bool cached = false);
+    void Filesystem_CloseFile(VoltFileEntry* entry);
 
     // File read/write functions
     // For most functions, we can use the contents of the stream in order to read/write
 
     // READ CV1
-    void Filesystem_ReadString(GameImageFileEntry* entry, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
-    void Filesystem_WriteString(GameImageFileEntry* entry, char* string);
+    void Filesystem_ReadString(VoltFileEntry* entry, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
+    void Filesystem_WriteString(VoltFileEntry* entry, char* string);
 }
