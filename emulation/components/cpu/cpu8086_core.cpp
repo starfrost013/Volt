@@ -153,13 +153,12 @@ namespace Volt
 
         // Keep the prefetch queue filled up
         uint8_t opcode = Prefetch_Pop8();
-        
+
         if (emu_8086_disasm->value)
             Disasm(opcode);
 
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)(opcode);
-
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;

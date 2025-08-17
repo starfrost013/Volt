@@ -52,7 +52,7 @@ namespace Volt
         if (opcode == CPU8086_DISASM_FAR_JUMP
         || opcode == CPU8086_DISASM_FAR_CALL)
         {
-            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04x:%04x", address_space->access_word(linear_pc() + 3), address_space->access_word(linear_pc() + 1) >> 1);
+            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04x:%04x", address_space->access_word(linear_pc() + 3), address_space->access_word(linear_pc() + 1));
 
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             return;
