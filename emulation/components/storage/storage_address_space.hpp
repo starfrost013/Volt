@@ -14,8 +14,15 @@ namespace Volt
     struct AddressSpace
     {
         uint8_t* access_byte;
-        uint16_t* access_word;
-        uint32_t* access_dword;
+
+        inline uint16_t access_word(uint32_t index) { return (access_byte[index + 1] << 8 | access_byte[index]); };
+
+        inline uint32_t access_dword(uint32_t index) 
+        { 
+            return access_byte[index + 3] << 24 | access_byte[index + 2] << 16
+            | access_byte[index + 1] << 8 | access_byte[index];
+        };
+
         AddressSpace* next; 
     };
 
@@ -32,9 +39,7 @@ namespace Volt
             return nullptr; 
         }
 
-        addr->access_byte = Memory_Alloc<uint8_t, Size>(TAG_EMU_GUEST_MEM);
-        addr->access_word = (uint16_t*)addr->access_byte;
-        addr->access_dword = (uint32_t*)addr->access_byte;
+        addr->access_byte = Memory_Alloc<uint8_t, Size>(TAG_EMU_GUEST_MEM);;
         
         if (!address_space_primary)
             address_space_primary = addr; 

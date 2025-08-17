@@ -13,35 +13,35 @@ namespace Volt
 {
     void CPU8086::Op_Cli(uint8_t opcode)
     {
-        Logging_LogChannel("CLI", LogChannel::Debug);
+        //Logging_LogChannel("CLI", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::IntrEnable;
     }
     
     void CPU8086::Op_Sti(uint8_t opcode)
     {
-        Logging_LogChannel("STI", LogChannel::Debug);
+        //Logging_LogChannel("STI", LogChannel::Debug);
 
         flags |= CPU8086Flags::IntrEnable;
     }
 
     void CPU8086::Op_Clc(uint8_t opcode)
     {
-        Logging_LogChannel("CLC", LogChannel::Debug);
+        //Logging_LogChannel("CLC", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::Carry;
     }
     
     void CPU8086::Op_Stc(uint8_t opcode)
     {
-        Logging_LogChannel("STC", LogChannel::Debug);
+        //Logging_LogChannel("STC", LogChannel::Debug);
 
         flags |= CPU8086Flags::Carry;
     }
 
     void CPU8086::Op_Cmc(uint8_t opcode)
     {
-        Logging_LogChannel("CMC", LogChannel::Debug);
+        //Logging_LogChannel("CMC", LogChannel::Debug);
 
         if (flags & CPU8086Flags::Carry)
             flags &= ~CPU8086Flags::Carry;
@@ -51,21 +51,21 @@ namespace Volt
 
     void CPU8086::Op_Cld(uint8_t opcode)
     {
-        Logging_LogChannel("CLD", LogChannel::Debug);
+        //Logging_LogChannel("CLD", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::Direction;
     }
     
     void CPU8086::Op_Std(uint8_t opcode)
     {
-        Logging_LogChannel("STD", LogChannel::Debug);
+        //Logging_LogChannel("STD", LogChannel::Debug);
 
         flags |= CPU8086Flags::Direction;
     }
 
     void CPU8086::Op_Lahf(uint8_t opcode)
     {
-        Logging_LogChannel("LAHF", LogChannel::Debug);
+        //Logging_LogChannel("LAHF", LogChannel::Debug);
 
         // the order of the flags is the same as 
         ah = (flags & 0xFF);
@@ -78,7 +78,7 @@ namespace Volt
 
     void CPU8086::Op_Sahf(uint8_t opcode)
     {
-        Logging_LogChannel("SAHF", LogChannel::Debug);
+        //Logging_LogChannel("SAHF", LogChannel::Debug);
 
         // preserve bits 15-8 of flags
         flags |= (ah & 0xFF);

@@ -29,7 +29,8 @@ namespace Volt
                 if (modrm_decode.mod == 0x00 
                     && modrm_decode.rm == 6)
                 {
-                        modrm_decode.ea_ptr = &address_space->access_word[(linear_pc() + 2) >> 1];
+                        modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[linear_pc() + 2];
+
                         Prefetch_Pop16(); // pop prefetch, but don't return a pointer to it
                         return modrm_decode; //return early
                 }
@@ -48,8 +49,8 @@ namespace Volt
                         break;
                 }
 
-                // >> 1 in order to fix the indes
-                modrm_decode.ea_ptr = &address_space->access_word[((reg << 4) >> 1) + rm_table[modrm_decode.rm]];
+                // >> 1 in order to fix the index
+                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[(reg << 4) + rm_table[modrm_decode.rm]];
 
                 if (modrm_decode.mod == 0x01) // +disp8
                 {

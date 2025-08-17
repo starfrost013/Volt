@@ -10,9 +10,9 @@
 
 namespace Volt
 {
-
     // TEMP convar
-    Cvar* emu_clk_8086;
+    Cvar* emu_8086_clk;
+    Cvar* emu_8086_disasm;
 
     void CPU8086::Init()
     {
@@ -38,9 +38,10 @@ namespace Volt
         //add primary address space
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>();
         
-        emu_clk_8086 = Cvar_Get("emu_clk_8086", "4772726", false);
+        emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
+        emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);
 
-        clock_hz = uint64_t(emu_clk_8086->value);
+        clock_hz = uint64_t(emu_8086_clk->value);
         
         Logging_LogChannel("8086: Clock speed = %d Hz", LogChannel::Debug, clock_hz);
 
@@ -152,9 +153,13 @@ namespace Volt
 
         // Keep the prefetch queue filled up
         uint8_t opcode = Prefetch_Pop8();
+        
+        if (emu_8086_disasm->value)
+            Disasm(opcode);
 
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)(opcode);
+
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;

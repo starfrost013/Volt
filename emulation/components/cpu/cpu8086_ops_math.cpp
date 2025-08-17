@@ -12,9 +12,7 @@ namespace Volt
 {
     void CPU8086::Op_Inc(uint8_t opcode)
     {
-        (*register_table16[opcode & 0x07])++;
-
-        uint16_t result = *register_table16[opcode & 0x07];
+        uint16_t result = ++(*register_table16[opcode & 0x07]); 
 
         SetPZSFlags16(result);
         // Investigate functions to set these. A lot of them, however, are kind of one liner
@@ -27,10 +25,8 @@ namespace Volt
 
     void CPU8086::Op_Dec(uint8_t opcode)
     {
-        (*register_table16[opcode & 0x07])--;
-
-        uint16_t result = *register_table16[opcode & 0x07];
-
+        uint16_t result = --(*register_table16[opcode & 0x07]); 
+        
         SetPZSFlags16(result);
 
         if (result & 0x0F == 0x0F) 

@@ -13,6 +13,7 @@ namespace Volt
 {
     #define CPU8086_ADDR_SPACE_SIZE     0x100000 //1048576
     #define CPU8086_NUM_OPCODES         256
+    #define CPU8086_NUM_OPCODES_PER_GRP 8
     #define CPU8086_NUM_REGISTERS       8
     #define CPU8086_PREFETCH_QUEUE_SIZE 6
     #define CPU8088_PREFETCH_QUEUE_SIZE 4
@@ -150,11 +151,15 @@ namespace Volt
 
             uint16_t flags; 
 
-
+           
         protected:
+        // Stuff the disassembler doesn't need
         private: 
 
-            // Intel 8086 instruction encoding 
+            void Disasm(uint8_t opcode);
+            void Disasm_Parse(uint8_t opcode);
+
+             // Intel 8086 instruction encoding 
             struct CPU8086Instruction
             {
                 union 
@@ -198,25 +203,6 @@ namespace Volt
             };
 
             //
-            // Prefetch Queue (basic impl.)
-            //
-
-            uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
-            // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
-            int8_t prefetch_ptr; 
-            
-            uint8_t Prefetch_Pop8();
-            uint16_t Prefetch_Pop16();
-            void Prefetch_Advance(uint32_t size);
-            void Prefetch_Flush();
-
-            // 
-            // Decode
-            //
-
-            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint8_t modrm);
-
-            //
             // Operations
             //
             void Op_Nop(uint8_t opcode);
@@ -235,13 +221,6 @@ namespace Volt
             void Op_Lahf(uint8_t opcode);
             void Op_Sahf(uint8_t opcode);
 
-            void inline SetPZSFlags8(uint8_t result);
-            void inline SetPZSFlags16(uint16_t result);
-            void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand);
-
             // Prefix
             void Op_DSOverridePrefix(uint8_t opcode);
             void Op_CSOverridePrefix(uint8_t opcode);
@@ -252,8 +231,8 @@ namespace Volt
             void Op_Inc(uint8_t opcode);
             void Op_Dec(uint8_t opcode);
 
-
             // Defined size used so that we can look up the opcode as a table
+            // Disassembler needs to access this!
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
             {
                 { 0x00, Op_Nop, 1, 1 }, { 0x01, Op_Nop, 1, 1 }, { 0x02, Op_Nop, 1, 1 },  { 0x03, Op_Nop, 1, 1 },  { 0x04, Op_Nop, 1, 1 }, { 0x05, Op_Nop, 1, 1 }, { 0x06, Op_Nop, 1, 1 },  { 0x07, Op_Nop, 1, 1 }, 
@@ -289,6 +268,86 @@ namespace Volt
                 { 0xF0, Op_Nop, 1, 1 }, { 0xF1, Op_Nop, 1, 1 }, { 0xF2, Op_Nop, 1, 1 },  { 0xF3, Op_Nop, 1, 1 },  { 0xF4, Op_Nop, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Nop, 1, 1 },  { 0xF7, Op_Nop, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Nop, 1, 1 },  { 0xFF, Op_Nop, 1, 1 }, 
             };
+
+            // Disassembler table.
+            // Note: "GRP1,2,3,4,5" stuff is not listed here (as well as prefixes), it is built dynamically during parsing
+            // We don't use the reg tables to simplify stuff for the disassembler
+            static constexpr const char* opcode_table_disasm[CPU8086_NUM_OPCODES] =
+            {
+                "ADD", "ADD", "ADD", "ADD", "ADD AL, ", "ADD AX, ", "PUSH ES", "POP ES",
+                "OR", "OR", "OR", "OR", "OR", "OR", "PUSH CS", "POP CS [INVALID]",
+                "ADC", "ADC", "ADC", "ADC", "ADC AL, ", "ADC AX, ", "PUSH SS", "POP SS",
+                "SBB", "SBB", "SBB", "SBB", "SBB AL, ", "SBB AX, ", "PUSH DS", "POP DS",
+                "AND", "AND", "AND", "AND", "AND AL, ","AND AX, ", "", "DAA",
+                "SUB", "SUB", "SUB", "SUB", "SUB AL, ","SUB AX, ", "", "DAS",
+                //TODO: REST OF TABLE
+                "XOR", "XOR", "XOR", "XOR", "XOR AL, ", "XOR AX, ", "" , "AAA",
+                "CMP", "CMP", "CMP", "CMP", "CMP AL, ", "CMP AX, ", "" , "AAS",
+                "INC AX", "INC CX", "INC DX", "INC BX", "INC SP", "INC BP", "INC SI", "INC DI", 
+                "DEC AX", "DEC CX", "DEC DX", "DEC BX", "DEC SP", "DEC BP", "DEC SI", "DEC DI", 
+                "PUSH AX", "PUSH CX", "PUSH DX", "PUSH BX", "PUSH SP", "PUSH BP", "PUSH SI", "PUSH DI",
+                "POP AX", "POP CX", "POP DX", "POP BX", "POP SP", "POP BP", "POP SI", "POP DI", 
+                // 6x = 7x
+                "JO", "JNO", "JB", "JNB", "JZ/JE", "JNZ/JNE", "JBE", "JA",
+                "JS", "JNS", "JPE", "JPO", "JL", "JGE", "JLE", "JG",
+                "JO", "JNO", "JB", "JNB", "JZ/JE", "JNZ/JNE", "JBE", "JA",
+                "JS", "JNS", "JPE", "JPO", "JL", "JGE", "JLE", "JG",
+                "", "", "", "", "TEST", "TEST", "XCHG", "XCHG", //GRP1 - Use reg to print
+                "MOV", "MOV", "MOV", "MOV", "MOV", "LEA", "MOV", "POP",
+                "NOP", "XCHG", "XCHG", "XCHG", "XCHG", "XCHG", "XCHG", "XCHG", // use register_table16, AX
+                "CBW", "CMD", "CALL", "WAIT", "PUSHF", "POPF", "SAHF", "LAHF",
+                "MOV AL, ", "MOV AX, ", "MOV", "MOV", "MOVSB", "MOVSW", "CMPSB", "CMPSW", // use offset
+                "TEST AL, ", "TEST AX, ", "STOSB", "STOSW", "LODSB", "LODSW", "SCASB", "SCASW",
+                "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", // use register_table8
+                "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", "MOV", // use register_table16
+                "RET [!]", "RET", "RET", "RET", "LES", "LDS", "MOV", "MOV",
+                "RETF [!]", "RETF [!]", "RETF", "RETF", "INT3", "INT", "INTO", "IRET", //GRP2 - Use reg to print
+                "", "", "", "", "AAM", "AAD", "SALC", "XLAT",
+                "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", 
+                "LOOPNZ", "LOOPZ", "LOOP", "JCXZ", "IN", "IN", "OUT", "OUT", 
+                "CALL", "JMP", "JMP", "JMP", "IN", "IN", "OUT", "OUT", 
+                "LOCK", "LOCK [!]", "REPNZ", "REPZ", "HLT", "CMC", "", "", //GRP3 - Use reg to print
+                "CLC", "STC", "CLI", "STI", "CLD", "STD", "", ""  //GRP4/5 - Use reg to print
+            };
+
+            // tables used for disasm grp1-grp5
+            static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ADD", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
+            static constexpr const char* grp2_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ROL", "ROR", "RCL", "RCR", "SHL", "SHR", "SETMO", "SAR"};
+            static constexpr const char* grp3_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"TEST", "TEST [!]", "NOT", "NEG", "MUL", "IMUL", "DIV", "IDIV"};
+            static constexpr const char* grp4_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"INC", "DEC", "CALLB [!]", "CALLB [!]", "JMPB [!]", "JMPB [!]", "PUSHB [!]", "PUSHB [!]"};
+            static constexpr const char* grp5_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"INC", "DEC", "CALL", "CALL", "JMP", "JMP", "PUSH", "PUSH"};
+
+            static constexpr const char* register_table8_disasm[CPU8086_NUM_REGISTERS] = { "AL", "CL", "DL", "BL", "AH", "CH", "DH", "BH" };
+            static constexpr const char* register_table16_disasm[CPU8086_NUM_REGISTERS] = { "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" };
+            static constexpr const char* rm_table_disasm[CPU8086_NUM_REGISTERS] = {"[BX + SI", "[BX + DI", "[BP + SI", "[BP + DI", "[SI", "[DI", "[BP", "[BX"};
+        
+            //
+            // Prefetch Queue (basic impl.)
+            //
+
+            uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
+            // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
+            int8_t prefetch_ptr; 
+            
+            uint8_t Prefetch_Pop8();
+            uint16_t Prefetch_Pop16();
+            void Prefetch_Advance(uint32_t size);
+            void Prefetch_Flush();
+
+            // 
+            // Decode
+            //
+
+            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint8_t modrm);
+
+            void inline SetPZSFlags8(uint8_t result);
+            void inline SetPZSFlags16(uint16_t result);
+            void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand);
+
+
 
             // register table for ordering various operations
             // mod=11 and reg use the same order table!

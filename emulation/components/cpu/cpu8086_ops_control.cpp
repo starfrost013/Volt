@@ -18,7 +18,7 @@ namespace Volt
         cs = new_cs;
         ip = new_ip;
 
-        Logging_LogChannel("JMPF %04x:%04x", LogChannel::Debug, new_cs, new_ip);
+        //Logging_LogChannel("JMPF %04x:%04x", LogChannel::Debug, new_cs, new_ip);
 
         // flush the prefetch queue
         Prefetch_Flush(); 

@@ -47,11 +47,14 @@ add_executable (Volt
 # CPU
 
 # 8086
-"emulation/components/cpu/cpu8086_core.cpp" "emulation/components/cpu/cpu8086_disasm.cpp"
- "emulation/components/cpu/cpu8086_modrm.cpp"
+"emulation/components/cpu/cpu8086_core.cpp" 
+"emulation/components/cpu/cpu8086_modrm.cpp"
 "emulation/components/cpu/cpu8086_ops_control.cpp" 
 "emulation/components/cpu/cpu8086_ops_flag.cpp"
 "emulation/components/cpu/cpu8086_ops_prefix.cpp"
+
+# Disassembly system
+"emulation/disasm/disasm.cpp"
 
 # RENDER
 "render/render_core.cpp"
