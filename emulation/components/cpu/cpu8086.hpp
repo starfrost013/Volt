@@ -170,7 +170,7 @@ namespace Volt
                 
                 };
                 
-                void (CPU8086::*run_function)();
+                void (CPU8086::*run_function)(uint8_t opcode); //opcode used for group functions and so on
 
                 uint8_t size;
                 uint8_t cycles;
@@ -219,21 +219,39 @@ namespace Volt
             //
             // Operations
             //
-            void Op_Nop();
+            void Op_Nop(uint8_t opcode);
 
             // Control
-            void Op_JmpFar();
+            void Op_JmpFar(uint8_t opcode);
             
             // Flag set/clear
-            void Op_Sti();
-            void Op_Cli();
-            void Op_Clc();
-            void Op_Stc();
-            void Op_Cmc();
-            void Op_Cld();
-            void Op_Std();
-            void Op_Lahf();
-            void Op_Sahf();
+            void Op_Sti(uint8_t opcode);
+            void Op_Cli(uint8_t opcode);
+            void Op_Clc(uint8_t opcode);
+            void Op_Stc(uint8_t opcode);
+            void Op_Cmc(uint8_t opcode);
+            void Op_Cld(uint8_t opcode);
+            void Op_Std(uint8_t opcode);
+            void Op_Lahf(uint8_t opcode);
+            void Op_Sahf(uint8_t opcode);
+
+            void inline SetPZSFlags8(uint8_t result);
+            void inline SetPZSFlags16(uint16_t result);
+            void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void inline SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand);
+
+            // Prefix
+            void Op_DSOverridePrefix(uint8_t opcode);
+            void Op_CSOverridePrefix(uint8_t opcode);
+            void Op_SSOverridePrefix(uint8_t opcode);
+            void Op_ESOverridePrefix(uint8_t opcode);
+
+            // Math
+            void Op_Inc(uint8_t opcode);
+            void Op_Dec(uint8_t opcode);
+
 
             // Defined size used so that we can look up the opcode as a table
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
@@ -242,10 +260,10 @@ namespace Volt
                 { 0x08, Op_Nop, 1, 1 }, { 0x09, Op_Nop, 1, 1 }, { 0x0A, Op_Nop, 1, 1 },  { 0x0B, Op_Nop, 1, 1 },  { 0x0C, Op_Nop, 1, 1 }, { 0x0D, Op_Nop, 1, 1 }, { 0x0E, Op_Nop, 1, 1 },  { 0x0F, Op_Nop, 1, 1 }, 
                 { 0x10, Op_Nop, 1, 1 }, { 0x11, Op_Nop, 1, 1 }, { 0x12, Op_Nop, 1, 1 },  { 0x13, Op_Nop, 1, 1 },  { 0x14, Op_Nop, 1, 1 }, { 0x15, Op_Nop, 1, 1 }, { 0x16, Op_Nop, 1, 1 },  { 0x17, Op_Nop, 1, 1 }, 
                 { 0x18, Op_Nop, 1, 1 }, { 0x19, Op_Nop, 1, 1 }, { 0x1A, Op_Nop, 1, 1 },  { 0x1B, Op_Nop, 1, 1 },  { 0x1C, Op_Nop, 1, 1 }, { 0x1D, Op_Nop, 1, 1 }, { 0x1E, Op_Nop, 1, 1 },  { 0x1F, Op_Nop, 1, 1 }, 
-                { 0x20, Op_Nop, 1, 1 }, { 0x21, Op_Nop, 1, 1 }, { 0x22, Op_Nop, 1, 1 },  { 0x23, Op_Nop, 1, 1 },  { 0x24, Op_Nop, 1, 1 }, { 0x25, Op_Nop, 1, 1 }, { 0x26, Op_Nop, 1, 1 },  { 0x27, Op_Nop, 1, 1 }, 
-                { 0x28, Op_Nop, 1, 1 }, { 0x29, Op_Nop, 1, 1 }, { 0x2A, Op_Nop, 1, 1 },  { 0x2B, Op_Nop, 1, 1 },  { 0x2C, Op_Nop, 1, 1 }, { 0x2D, Op_Nop, 1, 1 }, { 0x2E, Op_Nop, 1, 1 },  { 0x2F, Op_Nop, 1, 1 }, 
-                { 0x30, Op_Nop, 1, 1 }, { 0x31, Op_Nop, 1, 1 }, { 0x32, Op_Nop, 1, 1 },  { 0x33, Op_Nop, 1, 1 },  { 0x34, Op_Nop, 1, 1 }, { 0x35, Op_Nop, 1, 1 }, { 0x36, Op_Nop, 1, 1 },  { 0x37, Op_Nop, 1, 1 }, 
-                { 0x38, Op_Nop, 1, 1 }, { 0x39, Op_Nop, 1, 1 }, { 0x3A, Op_Nop, 1, 1 },  { 0x3B, Op_Nop, 1, 1 },  { 0x3C, Op_Nop, 1, 1 }, { 0x3D, Op_Nop, 1, 1 }, { 0x3E, Op_Nop, 1, 1 },  { 0x3F, Op_Nop, 1, 1 }, 
+                { 0x20, Op_Nop, 1, 1 }, { 0x21, Op_Nop, 1, 1 }, { 0x22, Op_Nop, 1, 1 },  { 0x23, Op_Nop, 1, 1 },  { 0x24, Op_Nop, 1, 1 }, { 0x25, Op_Nop, 1, 1 }, { 0x26, Op_ESOverridePrefix, 1, 4 },  { 0x27, Op_Nop, 1, 1 }, 
+                { 0x28, Op_Nop, 1, 1 }, { 0x29, Op_Nop, 1, 1 }, { 0x2A, Op_Nop, 1, 1 },  { 0x2B, Op_Nop, 1, 1 },  { 0x2C, Op_Nop, 1, 1 }, { 0x2D, Op_Nop, 1, 1 }, { 0x2E, Op_CSOverridePrefix, 1, 4 },  { 0x2F, Op_Nop, 1, 1 }, 
+                { 0x30, Op_Nop, 1, 1 }, { 0x31, Op_Nop, 1, 1 }, { 0x32, Op_Nop, 1, 1 },  { 0x33, Op_Nop, 1, 1 },  { 0x34, Op_Nop, 1, 1 }, { 0x35, Op_Nop, 1, 1 }, { 0x36, Op_SSOverridePrefix, 1, 4 },  { 0x37, Op_Nop, 1, 1 }, 
+                { 0x38, Op_Nop, 1, 1 }, { 0x39, Op_Nop, 1, 1 }, { 0x3A, Op_Nop, 1, 1 },  { 0x3B, Op_Nop, 1, 1 },  { 0x3C, Op_Nop, 1, 1 }, { 0x3D, Op_Nop, 1, 1 }, { 0x3E, Op_DSOverridePrefix, 1, 4 },  { 0x3F, Op_Nop, 1, 1 }, 
                 { 0x40, Op_Nop, 1, 1 }, { 0x41, Op_Nop, 1, 1 }, { 0x42, Op_Nop, 1, 1 },  { 0x43, Op_Nop, 1, 1 },  { 0x44, Op_Nop, 1, 1 }, { 0x45, Op_Nop, 1, 1 }, { 0x46, Op_Nop, 1, 1 },  { 0x47, Op_Nop, 1, 1 }, 
                 { 0x48, Op_Nop, 1, 1 }, { 0x49, Op_Nop, 1, 1 }, { 0x4A, Op_Nop, 1, 1 },  { 0x4B, Op_Nop, 1, 1 },  { 0x4C, Op_Nop, 1, 1 }, { 0x4D, Op_Nop, 1, 1 }, { 0x4E, Op_Nop, 1, 1 },  { 0x4F, Op_Nop, 1, 1 }, 
                 { 0x50, Op_Nop, 1, 1 }, { 0x51, Op_Nop, 1, 1 }, { 0x52, Op_Nop, 1, 1 },  { 0x53, Op_Nop, 1, 1 },  { 0x54, Op_Nop, 1, 1 }, { 0x55, Op_Nop, 1, 1 }, { 0x56, Op_Nop, 1, 1 },  { 0x57, Op_Nop, 1, 1 }, 

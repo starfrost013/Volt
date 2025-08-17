@@ -154,7 +154,7 @@ namespace Volt
         uint8_t opcode = Prefetch_Pop8();
 
         if (instruction_table[opcode].run_function)
-            (this->*instruction_table[opcode].run_function)();
+            (this->*instruction_table[opcode].run_function)(opcode);
 
         ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
@@ -182,8 +182,10 @@ namespace Volt
     // OPcodes (move to own file)
     //
 
-    void CPU8086::Op_Nop()
+    void CPU8086::Op_Nop(uint8_t opcode)
     {
-
+        //Deliberately empty
     }
+
+
 }

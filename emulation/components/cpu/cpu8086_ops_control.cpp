@@ -10,7 +10,7 @@
 
 namespace Volt
 {
-    void CPU8086::Op_JmpFar()
+    void CPU8086::Op_JmpFar(uint8_t opcode)
     {
         uint16_t new_ip = Prefetch_Pop16();
         uint16_t new_cs = Prefetch_Pop16();

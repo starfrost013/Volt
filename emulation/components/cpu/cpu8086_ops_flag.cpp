@@ -5,40 +5,41 @@
 // cpu8086_ops_flag.cpp: 8086 flag ops
 //
 
+#include "cpu8086.hpp"
 #include <emulation/emulation.hpp>
 #include <emulation/components/cpu/cpu8086.hpp>
 
 namespace Volt
 {
-    void CPU8086::Op_Cli()
+    void CPU8086::Op_Cli(uint8_t opcode)
     {
         Logging_LogChannel("CLI", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::IntrEnable;
     }
     
-    void CPU8086::Op_Sti()
+    void CPU8086::Op_Sti(uint8_t opcode)
     {
         Logging_LogChannel("STI", LogChannel::Debug);
 
         flags |= CPU8086Flags::IntrEnable;
     }
 
-    void CPU8086::Op_Clc()
+    void CPU8086::Op_Clc(uint8_t opcode)
     {
         Logging_LogChannel("CLC", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::Carry;
     }
     
-    void CPU8086::Op_Stc()
+    void CPU8086::Op_Stc(uint8_t opcode)
     {
         Logging_LogChannel("STC", LogChannel::Debug);
 
         flags |= CPU8086Flags::Carry;
     }
 
-    void CPU8086::Op_Cmc()
+    void CPU8086::Op_Cmc(uint8_t opcode)
     {
         Logging_LogChannel("CMC", LogChannel::Debug);
 
@@ -48,21 +49,21 @@ namespace Volt
             flags |= CPU8086Flags::Carry;
     }
 
-    void CPU8086::Op_Cld()
+    void CPU8086::Op_Cld(uint8_t opcode)
     {
         Logging_LogChannel("CLD", LogChannel::Debug);
         
         flags &= ~CPU8086Flags::Direction;
     }
     
-    void CPU8086::Op_Std()
+    void CPU8086::Op_Std(uint8_t opcode)
     {
         Logging_LogChannel("STD", LogChannel::Debug);
 
         flags |= CPU8086Flags::Direction;
     }
 
-    void CPU8086::Op_Lahf()
+    void CPU8086::Op_Lahf(uint8_t opcode)
     {
         Logging_LogChannel("LAHF", LogChannel::Debug);
 
@@ -75,11 +76,59 @@ namespace Volt
         ah |= CPU8086Flags::Reserved1;
     }
 
-    void CPU8086::Op_Sahf()
+    void CPU8086::Op_Sahf(uint8_t opcode)
     {
         Logging_LogChannel("SAHF", LogChannel::Debug);
 
         // preserve bits 15-8 of flags
         flags |= (ah & 0xFF);
+    }
+
+    void inline CPU8086::SetPZSFlags8(uint8_t result)
+    {
+        (!result) ? flags &= ~CPU8086Flags::Zero : flags |= CPU8086Flags::Zero;
+        (byte_parity_table[result & 0xFF]) ? flags |= CPU8086Flags::Parity : flags &= ~CPU8086Flags::Parity; 
+        (result & 0x80) ? flags |= CPU8086Flags::Sign : flags &= ~CPU8086Flags::Sign;
+    }
+
+    void inline CPU8086::SetPZSFlags16(uint16_t result)
+    {
+        (!result) ? flags &= ~CPU8086Flags::Zero : flags |= CPU8086Flags::Zero;
+        (byte_parity_table[result & 0xFF]) ? flags |= CPU8086Flags::Parity : flags &= ~CPU8086Flags::Parity; 
+        (result & 0x8000) ? flags |= CPU8086Flags::Sign : flags &= ~CPU8086Flags::Sign;
+    }
+
+    // Set overflow flag for 8 bit add operations.
+    void inline CPU8086::SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand)
+    {
+        if (((result ^ old_result) & (result ^ operand)) & 0x80)
+            flags |= CPU8086Flags::Overflow;
+        else
+            flags &= ~CPU8086Flags::Overflow;
+    }
+    
+    // Set overflow flag for 8 bit sub ops.
+    void inline CPU8086::SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand)
+    {
+        if (((operand ^ old_result) & (operand ^ result)) & 0x80)
+            flags |= CPU8086Flags::Overflow;
+        else
+            flags &= ~CPU8086Flags::Overflow;
+    }
+    
+    void inline CPU8086::SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand)
+    {
+        if (((result ^ old_result) & (result ^ operand)) & 0x8000)
+            flags |= CPU8086Flags::Overflow;
+        else
+            flags &= ~CPU8086Flags::Overflow;
+    }
+
+    void inline CPU8086::SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand)
+    {
+        if (((operand ^ old_result) & (operand ^ result)) & 0x8000)
+            flags |= CPU8086Flags::Overflow;
+        else
+            flags &= ~CPU8086Flags::Overflow;
     }
 }

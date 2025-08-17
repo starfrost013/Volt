@@ -10,7 +10,6 @@ namespace Volt
 {
     CPU8086::CPU8086InstructionModRM CPU8086::Decode_ModRM(bool w, uint8_t modrm)
     {
-                
         CPU8086InstructionModRM modrm_decode = {0}; 
 
         modrm_decode.modrm = Prefetch_Pop8();
