@@ -101,14 +101,15 @@ namespace Volt
         else
             prefetch_ptr %= CPU8088_PREFETCH_QUEUE_SIZE;
 
-            
         Prefetch_Advance(sizeof(uint16_t)); 
-        
+
         return ret; 
     }
 
     void CPU8086::Prefetch_Advance(uint32_t size)
     {
+        ip += size;
+        
         uint8_t prefetch_size = (variant == CPU8086Variant::cpu808x_8088) ? CPU8088_PREFETCH_QUEUE_SIZE : CPU8086_PREFETCH_QUEUE_SIZE;
 
         // ensure a valid size
@@ -131,7 +132,7 @@ namespace Volt
             prefetch[i] = address_space->access_byte[linear_pc() + i];
 
         prefetch_ptr -= size; 
-        
+
         //t his is terrible but make the queue CIRCULAR
         if (prefetch_ptr < 0)
             prefetch_ptr = (prefetch_size - abs(prefetch_ptr));
@@ -144,6 +145,7 @@ namespace Volt
         for (int32_t i = 0; i < prefetch_size; i++)
             prefetch[i] = address_space->access_byte[linear_pc() + i];
 
+        // do NOT move IP
         prefetch_ptr = 0;
     }
 
@@ -160,12 +162,9 @@ namespace Volt
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)(opcode);
 
-        ip += instruction_table[opcode].size;
         clock_skip = instruction_table[opcode].cycles;
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
-
-        ip &= 0xFFFF; // wrap around
 
         //if we reached here there are no more segment prefixes
         // so reset
