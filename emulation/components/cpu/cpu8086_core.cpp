@@ -153,6 +153,8 @@ namespace Volt
     {
         //TODO: PREFETCH QUEUE IMPLEMENTATION
 
+        clock_skip = 0;
+
         if (halted)
         {
             //TODO: UNPAUSE ON NMI/INTR
@@ -161,14 +163,14 @@ namespace Volt
 
         // Keep the prefetch queue filled up
         uint8_t opcode = Prefetch_Pop8();
+        clock_skip = instruction_table[opcode].cycles;
 
         if (emu_8086_disasm->value)
             Disasm(opcode);
 
+        //let run_function change clock_skip
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)(opcode);
-
-        clock_skip = instruction_table[opcode].cycles;
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 

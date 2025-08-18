@@ -241,6 +241,10 @@ namespace Volt
             // Moves
             void Op_MovImmedToReg(uint8_t opcode);
 
+            // Group
+            void Op_Grp2(uint8_t opcode);
+
+
             // Defined size used so that we can look up the opcode as a table
             // Disassembler needs to access this!
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
@@ -271,7 +275,7 @@ namespace Volt
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
                 { 0xC0, Op_Unimpl, 1, 1 }, { 0xC1, Op_Unimpl, 1, 1 }, { 0xC2, Op_Unimpl, 1, 1 },  { 0xC3, Op_Unimpl, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_Unimpl, 1, 1 },  { 0xC7, Op_Unimpl, 1, 1 }, 
                 { 0xC8, Op_Unimpl, 1, 1 }, { 0xC9, Op_Unimpl, 1, 1 }, { 0xCA, Op_Unimpl, 1, 1 },  { 0xCB, Op_Unimpl, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
-                { 0xD0, Op_Unimpl, 1, 1 }, { 0xD1, Op_Unimpl, 1, 1 }, { 0xD2, Op_Unimpl, 1, 1 },  { 0xD3, Op_Unimpl, 1, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
+                { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
                 { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_Unimpl, 1, 1 }, { 0xE5, Op_Unimpl, 1, 1 }, { 0xE6, Op_Unimpl, 1, 1 },  { 0xE7, Op_Unimpl, 1, 1 }, 
                 { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_Unimpl, 1, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_Unimpl, 1, 1 },  { 0xEC, Op_Unimpl, 1, 1 }, { 0xED, Op_Unimpl, 1, 1 }, { 0xEE, Op_Unimpl, 1, 1 },  { 0xEF, Op_Unimpl, 1, 1 }, 
@@ -348,10 +352,10 @@ namespace Volt
             // Decode
             //
 
-            CPU8086::CPU8086InstructionModRM Decode_ModRM(bool w, uint8_t modrm);
+            CPU8086::CPU8086InstructionModRM Decode_ModRM(uint8_t opcode);
 
-            void inline SetPZSFlags8(uint8_t result);
-            void inline SetPZSFlags16(uint16_t result);
+            void SetPZSFlags8(uint8_t result);
+            void SetPZSFlags16(uint16_t result);
             void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
             void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
             void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);

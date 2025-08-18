@@ -20,14 +20,14 @@ namespace Volt
     // This function will never be called from outside of the main thread so it is ok to use a global
     // & has more efficient allocation than stackalloc & doesn't require putting a buffer in the cpu
     char disasm_buf_8086[MAX_DISASM_BUF_SIZE] = {0};
-    char disasm_buf_scratch[MAX_DISASM_BUF_SIZE] = {0};
+    char disasm_buf_scratch[MAX_DISASM_BUF_SIZE] = {0};     // scratch buffer used to build current operand before strncat'ing into disasm_buf_8086
 
 
     #define CPU8086_DISASM_SHORT_RELATIVE_START 0x60
     #define CPU8086_DISASM_SHORT_RELATIVE_END   0x7F
     #define CPU8086_DISASM_GRP1_START           0x80
     #define CPU8086_DISASM_GRP1_END             0x83
-     #define CPU8086_DISASM_MOV_RELATIVE_START   0xB0
+    #define CPU8086_DISASM_MOV_RELATIVE_START   0xB0
     #define CPU8086_DISASM_MOV_RELATIVE_END     0xBF
     #define CPU8086_DISASM_GRP2_START           0xD0
     #define CPU8086_DISASM_GRP2_END             0xD3
@@ -44,7 +44,7 @@ namespace Volt
     {
         // clear buf
         memset(disasm_buf_8086, 0x00, MAX_DISASM_BUF_SIZE); // faster than strlen?
-        memset(disasm_buf_scratch, 0x00, MAX_DISASM_BUF_SIZE); // faster than strlen?
+        memset(disasm_buf_scratch, 0x00, MAX_DISASM_BUF_SIZE); //faster than strlen?
 
         // set up the buffer
 
@@ -122,7 +122,21 @@ namespace Volt
             strncat(disasm_buf_8086, grp1_table_disasm[modrm_decode.reg], MAX_DISASM_BUF_SIZE - 1);
 
         if (opcode >= CPU8086_DISASM_GRP2_START && opcode <= CPU8086_DISASM_GRP2_END)
-            strncat(disasm_buf_8086, grp2_table_disasm[modrm_decode.reg], MAX_DISASM_BUF_SIZE - 1);
+        {
+            if (opcode & 0x02)
+            {
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%s %s, CL", 
+                    grp2_table_disasm[modrm_decode.reg], (opcode & 0x01) ? register_table16_disasm[modrm_decode.rm] : register_table8_disasm[modrm_decode.rm]);
+            }
+            else
+            {
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%s %s, 1", 
+                    grp2_table_disasm[modrm_decode.reg], (opcode & 0x01) ? register_table16_disasm[modrm_decode.rm] : register_table8_disasm[modrm_decode.rm]);
+            }
+
+            strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+            return;
+        }
         
         if (opcode == CPU8086_DISASM_GRP3_8 || opcode == CPU8086_DISASM_GRP3_16)
             strncat(disasm_buf_8086, grp3_table_disasm[modrm_decode.reg], MAX_DISASM_BUF_SIZE - 1);

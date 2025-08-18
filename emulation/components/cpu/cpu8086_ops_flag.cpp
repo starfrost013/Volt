@@ -84,14 +84,16 @@ namespace Volt
         flags |= (ah & 0xFF);
     }
 
-    void inline CPU8086::SetPZSFlags8(uint8_t result)
+    // These don't compile marked as inline wtf
+    void CPU8086::SetPZSFlags8(uint8_t result)
     {
         (!result) ? flags &= ~CPU8086Flags::Zero : flags |= CPU8086Flags::Zero;
         (byte_parity_table[result & 0xFF]) ? flags |= CPU8086Flags::Parity : flags &= ~CPU8086Flags::Parity; 
         (result & 0x80) ? flags |= CPU8086Flags::Sign : flags &= ~CPU8086Flags::Sign;
     }
 
-    void inline CPU8086::SetPZSFlags16(uint16_t result)
+    // These don't compile marked as inline wtf
+    void CPU8086::SetPZSFlags16(uint16_t result)
     {
         (!result) ? flags &= ~CPU8086Flags::Zero : flags |= CPU8086Flags::Zero;
         (byte_parity_table[result & 0xFF]) ? flags |= CPU8086Flags::Parity : flags &= ~CPU8086Flags::Parity; 
