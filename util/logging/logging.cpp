@@ -4,7 +4,7 @@
 namespace Volt
 {
 	// Logging.cpp
-	// Handles logging for the Step7 project
+	// Handles logging for the Volt project
 
 	// Defines 
 	#define	LOGGING_MAX_LENGTH_TEXT		1024												// Maximum length of text being logged via the logger.

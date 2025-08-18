@@ -1,10 +1,9 @@
-﻿// S7_Engine
+﻿// Volt Research Emulator
 //
 // Copyright © 2024-2025 starfrost / Connor Hyde
 // Portions  © 2023-2025 starfrost / Connor Hyde
-// All rights reserved. CONFIDENTIAL
 //
-// Step7.cpp: The main engine entry point
+// Volt.cpp: The main engine entry point
 
 #include <Volt.hpp>
 
