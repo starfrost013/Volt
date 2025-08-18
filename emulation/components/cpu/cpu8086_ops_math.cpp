@@ -32,7 +32,7 @@ namespace Volt
         if (result & 0x0F == 0x0F) 
             flags |= CPU8086Flags::AuxCarry;
 
-        SetOF16_Dec(result, result - 1, 1);
+        SetOF16_Sub(result, result - 1, 1);
     }
     
 }

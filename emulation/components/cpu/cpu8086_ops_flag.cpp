@@ -124,7 +124,7 @@ namespace Volt
             flags &= ~CPU8086Flags::Overflow;
     }
 
-    void inline CPU8086::SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand)
+    void inline CPU8086::SetOF16_Sub(uint8_t result, uint8_t old_result, uint8_t operand)
     {
         if (((operand ^ old_result) & (operand ^ result)) & 0x8000)
             flags |= CPU8086Flags::Overflow;

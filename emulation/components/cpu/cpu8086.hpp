@@ -238,6 +238,9 @@ namespace Volt
             void Op_Inc(uint8_t opcode);
             void Op_Dec(uint8_t opcode);
 
+            // Moves
+            void Op_MovImmedToReg(uint8_t opcode);
+
             // Defined size used so that we can look up the opcode as a table
             // Disassembler needs to access this!
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
@@ -264,8 +267,8 @@ namespace Volt
                 { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_Unimpl, 1, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
                 { 0xA0, Op_Unimpl, 1, 1 }, { 0xA1, Op_Unimpl, 1, 1 }, { 0xA2, Op_Unimpl, 1, 1 },  { 0xA3, Op_Unimpl, 1, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
                 { 0xA8, Op_Unimpl, 1, 1 }, { 0xA9, Op_Unimpl, 1, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
-                { 0xB0, Op_Unimpl, 1, 1 }, { 0xB1, Op_Unimpl, 1, 1 }, { 0xB2, Op_Unimpl, 1, 1 },  { 0xB3, Op_Unimpl, 1, 1 },  { 0xB4, Op_Unimpl, 1, 1 }, { 0xB5, Op_Unimpl, 1, 1 }, { 0xB6, Op_Unimpl, 1, 1 },  { 0xB7, Op_Unimpl, 1, 1 }, 
-                { 0xB8, Op_Unimpl, 1, 1 }, { 0xB9, Op_Unimpl, 1, 1 }, { 0xBA, Op_Unimpl, 1, 1 },  { 0xBB, Op_Unimpl, 1, 1 },  { 0xBC, Op_Unimpl, 1, 1 }, { 0xBD, Op_Unimpl, 1, 1 }, { 0xBE, Op_Unimpl, 1, 1 },  { 0xBF, Op_Unimpl, 1, 1 }, 
+                { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
+                { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
                 { 0xC0, Op_Unimpl, 1, 1 }, { 0xC1, Op_Unimpl, 1, 1 }, { 0xC2, Op_Unimpl, 1, 1 },  { 0xC3, Op_Unimpl, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_Unimpl, 1, 1 },  { 0xC7, Op_Unimpl, 1, 1 }, 
                 { 0xC8, Op_Unimpl, 1, 1 }, { 0xC9, Op_Unimpl, 1, 1 }, { 0xCA, Op_Unimpl, 1, 1 },  { 0xCB, Op_Unimpl, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
                 { 0xD0, Op_Unimpl, 1, 1 }, { 0xD1, Op_Unimpl, 1, 1 }, { 0xD2, Op_Unimpl, 1, 1 },  { 0xD3, Op_Unimpl, 1, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
@@ -352,9 +355,7 @@ namespace Volt
             void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
             void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
             void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF16_Dec(uint8_t result, uint8_t old_result, uint8_t operand);
-
-
+            void inline SetOF16_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
 
             // register table for ordering various operations
             // mod=11 and reg use the same order table!

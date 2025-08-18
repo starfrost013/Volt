@@ -22,10 +22,13 @@ namespace Volt
     char disasm_buf_8086[MAX_DISASM_BUF_SIZE] = {0};
     char disasm_buf_scratch[MAX_DISASM_BUF_SIZE] = {0};
 
+
     #define CPU8086_DISASM_SHORT_RELATIVE_START 0x60
     #define CPU8086_DISASM_SHORT_RELATIVE_END   0x7F
     #define CPU8086_DISASM_GRP1_START           0x80
     #define CPU8086_DISASM_GRP1_END             0x83
+     #define CPU8086_DISASM_MOV_RELATIVE_START   0xB0
+    #define CPU8086_DISASM_MOV_RELATIVE_END     0xBF
     #define CPU8086_DISASM_GRP2_START           0xD0
     #define CPU8086_DISASM_GRP2_END             0xD3
     #define CPU8086_DISASM_GRP3_8               0xF7
@@ -56,8 +59,27 @@ namespace Volt
         if (opcode == CPU8086_DISASM_FAR_JUMP
         || opcode == CPU8086_DISASM_FAR_CALL)
         {
-            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04x:%04x", address_space->access_word(linear_pc() + 2), address_space->access_word(linear_pc()));
+            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04X:%04X", address_space->access_word(linear_pc() + 2), address_space->access_word(linear_pc()));
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+            return;
+        }
+
+        // mov r8,immed8 / mov r16,immed16
+        if (opcode >= CPU8086_DISASM_MOV_RELATIVE_START
+        && opcode <= CPU8086_DISASM_MOV_RELATIVE_END)
+        {
+            // This works because we only care about 40-4f
+            if (opcode & 0x08)
+            {
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %04X", register_table16_disasm[opcode % 0x08], address_space->access_word(linear_pc()));
+                strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+            }
+            else
+            {
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %02X", register_table8_disasm[opcode % 0x08], address_space->access_byte[linear_pc()]);
+                strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+            }
+
             return;
         }
 
@@ -68,9 +90,9 @@ namespace Volt
             uint8_t offset = address_space->access_word(linear_pc());
             //put a + in. - will come from the number
             if (offset & 0x80)
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " -%02x", (int8_t)offset);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " -%02X", (int8_t)offset);
             else
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " +%02x", (int8_t)offset);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " +%02X", (int8_t)offset);
 
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             return;
@@ -126,7 +148,7 @@ namespace Volt
                 if (modrm_decode.mod == 0x00 
                     && modrm_decode.rm == 6)
                 {
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%04x", address_space->access_word(linear_pc() + 1));
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%04X", address_space->access_word(linear_pc() + 1));
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                     return;
                 }
@@ -158,13 +180,13 @@ namespace Volt
 
                 if (modrm_decode.mod == 0x01) // +disp8
                 {
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %02x", address_space->access_byte[(linear_pc() + 1)]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %02X", address_space->access_byte[(linear_pc() + 1)]);
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                 }
                 else if (modrm_decode.mod == 0x02) // +disp16
                 {
                     //>>1 due to values referring to 16 bit
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %04x", address_space->access_word(linear_pc() + 1));
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %04X", address_space->access_word(linear_pc() + 1));
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                 }
 

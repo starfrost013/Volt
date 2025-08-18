@@ -84,9 +84,11 @@ namespace Volt
                 break;
         }
 
+        int8_t amount = (int8_t)Prefetch_Pop8();
+
         if (take_branch)
         {
-            ip += (int8_t)Prefetch_Pop8(); //+128->-127
+            ip += amount; //+128->-127
             Prefetch_Flush();
         }
     }
