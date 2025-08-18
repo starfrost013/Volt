@@ -37,13 +37,15 @@ namespace Volt
         uint16_t value16 = *modrm.ea_ptr;
         uint8_t value8 = *(uint8_t*)modrm.ea_ptr;
 
+        bool is_16bit = (is_16bit);
+
         // IMPORTANT INFORMATION: This code FUCKING SUCKS. FIX IT!!!
         switch (modrm.reg)
         {
             // ROL / RCL (Rotate Left) - DO NOT SHIFT
             case CPU8086_GRP2_OP_ROL:
             case CPU8086_GRP2_OP_RCL:
-                if (opcode & CPU8086_GRP2_IS_16BIT)  //16bit
+                if (is_16bit)  //16bit
                 {
                     for (uint32_t i = 0; i < num_bits; i++)
                     {
@@ -93,7 +95,7 @@ namespace Volt
             // ROR / RCR (Rotate Right) - DO NOT SHIFT
             case CPU8086_GRP2_OP_ROR:
             case CPU8086_GRP2_OP_RCR:
-                if (opcode & CPU8086_GRP2_IS_16BIT)  //16bit
+                if (is_16bit)  //16bit
                 {
                     for (uint32_t i = 0; i < num_bits; i++)
                     {
@@ -143,7 +145,7 @@ namespace Volt
                 break;
             // SHL/SAL (Shift Left) 
             case CPU8086_GRP2_OP_SHL:
-                if (opcode & CPU8086_GRP2_IS_16BIT)  //16bit
+                if (is_16bit)  //16bit
                 {
                     for (uint32_t i = 0; i < num_bits; i++)
                     {
@@ -199,14 +201,14 @@ namespace Volt
             case CPU8086_GRP2_OP_SETMO:
                 if (opcode & CPU8086_GRP2_USE_CL) // Use CL
                 {
-                    if (opcode & CPU8086_GRP2_IS_16BIT) //16bit
+                    if (is_16bit) //16bit
                         *modrm.ea_ptr = (cl != 0) ? 0xFFFF : 0x00;
                     else
                         *(uint8_t*)modrm.ea_ptr = (cl != 0) ? 0xFF : 0x00;
                 }
                 else
                 {
-                    if (opcode & CPU8086_GRP2_IS_16BIT) //16bit
+                    if (is_16bit) //16bit
                         *modrm.ea_ptr = 0xFFFF;
                     else
                         *(uint8_t*)modrm.ea_ptr = 0xFF;
@@ -215,7 +217,7 @@ namespace Volt
             // SHR / SAR
             case CPU8086_GRP2_OP_SHR:
             case CPU8086_GRP2_OP_SAR: 
-                if (opcode & CPU8086_GRP2_IS_16BIT)  //16bit
+                if (is_16bit)  //16bit
                 {
                     for (uint32_t i = 0; i < num_bits; i++)
                     {
