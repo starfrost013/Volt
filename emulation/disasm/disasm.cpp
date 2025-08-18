@@ -22,18 +22,20 @@ namespace Volt
     char disasm_buf_8086[MAX_DISASM_BUF_SIZE] = {0};
     char disasm_buf_scratch[MAX_DISASM_BUF_SIZE] = {0};
 
-    #define CPU8086_DISASM_GRP1_START       0x80
-    #define CPU8086_DISASM_GRP1_END         0x83
-    #define CPU8086_DISASM_GRP2_START       0xD0
-    #define CPU8086_DISASM_GRP2_END         0xD3
-    #define CPU8086_DISASM_GRP3_8           0xF7
-    #define CPU8086_DISASM_GRP3_16          0xF8
-    #define CPU8086_DISASM_GRP4             0xFE
-    #define CPU8086_DISASM_GRP5             0xFF
+    #define CPU8086_DISASM_SHORT_RELATIVE_START 0x60
+    #define CPU8086_DISASM_SHORT_RELATIVE_END   0x7F
+    #define CPU8086_DISASM_GRP1_START           0x80
+    #define CPU8086_DISASM_GRP1_END             0x83
+    #define CPU8086_DISASM_GRP2_START           0xD0
+    #define CPU8086_DISASM_GRP2_END             0xD3
+    #define CPU8086_DISASM_GRP3_8               0xF7
+    #define CPU8086_DISASM_GRP3_16              0xF8
+    #define CPU8086_DISASM_GRP4                 0xFE
+    #define CPU8086_DISASM_GRP5                 0xFF
 
     // Should we encode the "type" in the instruction?
-    #define CPU8086_DISASM_FAR_CALL         0xEA
-    #define CPU8086_DISASM_FAR_JUMP         0x9A
+    #define CPU8086_DISASM_FAR_CALL             0xEA
+    #define CPU8086_DISASM_FAR_JUMP             0x9A
 
     void CPU8086::Disasm_Parse(uint8_t opcode)
     {
@@ -55,10 +57,24 @@ namespace Volt
         || opcode == CPU8086_DISASM_FAR_CALL)
         {
             snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04x:%04x", address_space->access_word(linear_pc() + 2), address_space->access_word(linear_pc()));
-
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             return;
         }
+
+        // short relative jumps
+        if (opcode >= CPU8086_DISASM_SHORT_RELATIVE_START
+        && opcode <= CPU8086_DISASM_SHORT_RELATIVE_END)
+        {   
+            uint8_t offset = address_space->access_word(linear_pc());
+            //put a + in. - will come from the number
+            if (offset & 0x80)
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " -%02x", (int8_t)offset);
+            else
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " +%02x", (int8_t)offset);
+
+            strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+            return;
+        }  
 
         // tell modified modrm parser to ignore reg and instead print op
         bool ignore_reg = false;

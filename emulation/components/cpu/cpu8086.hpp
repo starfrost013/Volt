@@ -209,7 +209,8 @@ namespace Volt
 
             // Control
             void Op_JmpFar(uint8_t opcode);
-            
+            void Op_ShortConditionalJmp(uint8_t opcode);
+
             // Flag set/clear
             void Op_Sti(uint8_t opcode);
             void Op_Cli(uint8_t opcode);
@@ -247,10 +248,10 @@ namespace Volt
                 { 0x48, Op_Nop, 1, 1 }, { 0x49, Op_Nop, 1, 1 }, { 0x4A, Op_Nop, 1, 1 },  { 0x4B, Op_Nop, 1, 1 },  { 0x4C, Op_Nop, 1, 1 }, { 0x4D, Op_Nop, 1, 1 }, { 0x4E, Op_Nop, 1, 1 },  { 0x4F, Op_Nop, 1, 1 }, 
                 { 0x50, Op_Nop, 1, 1 }, { 0x51, Op_Nop, 1, 1 }, { 0x52, Op_Nop, 1, 1 },  { 0x53, Op_Nop, 1, 1 },  { 0x54, Op_Nop, 1, 1 }, { 0x55, Op_Nop, 1, 1 }, { 0x56, Op_Nop, 1, 1 },  { 0x57, Op_Nop, 1, 1 }, 
                 { 0x58, Op_Nop, 1, 1 }, { 0x59, Op_Nop, 1, 1 }, { 0x5A, Op_Nop, 1, 1 },  { 0x5B, Op_Nop, 1, 1 },  { 0x5C, Op_Nop, 1, 1 }, { 0x5D, Op_Nop, 1, 1 }, { 0x5E, Op_Nop, 1, 1 },  { 0x5F, Op_Nop, 1, 1 }, 
-                { 0x60, Op_Nop, 1, 1 }, { 0x61, Op_Nop, 1, 1 }, { 0x62, Op_Nop, 1, 1 },  { 0x63, Op_Nop, 1, 1 },  { 0x64, Op_Nop, 1, 1 }, { 0x65, Op_Nop, 1, 1 }, { 0x66, Op_Nop, 1, 1 },  { 0x67, Op_Nop, 1, 1 }, 
-                { 0x68, Op_Nop, 1, 1 }, { 0x69, Op_Nop, 1, 1 }, { 0x6A, Op_Nop, 1, 1 },  { 0x6B, Op_Nop, 1, 1 },  { 0x6C, Op_Nop, 1, 1 }, { 0x6D, Op_Nop, 1, 1 }, { 0x6E, Op_Nop, 1, 1 },  { 0x6F, Op_Nop, 1, 1 }, 
-                { 0x70, Op_Nop, 1, 1 }, { 0x71, Op_Nop, 1, 1 }, { 0x72, Op_Nop, 1, 1 },  { 0x73, Op_Nop, 1, 1 },  { 0x74, Op_Nop, 1, 1 }, { 0x75, Op_Nop, 1, 1 }, { 0x76, Op_Nop, 1, 1 },  { 0x77, Op_Nop, 1, 1 }, 
-                { 0x78, Op_Nop, 1, 1 }, { 0x79, Op_Nop, 1, 1 }, { 0x7A, Op_Nop, 1, 1 },  { 0x7B, Op_Nop, 1, 1 },  { 0x7C, Op_Nop, 1, 1 }, { 0x7D, Op_Nop, 1, 1 }, { 0x7E, Op_Nop, 1, 1 },  { 0x7F, Op_Nop, 1, 1 }, 
+                { 0x60, Op_ShortConditionalJmp, 2, 1 }, { 0x61, Op_ShortConditionalJmp, 2, 1 }, { 0x62, Op_ShortConditionalJmp, 2, 1 },  { 0x63, Op_ShortConditionalJmp, 2, 1 },  { 0x64, Op_ShortConditionalJmp, 2, 1 }, { 0x65, Op_ShortConditionalJmp, 2, 1 }, { 0x66, Op_ShortConditionalJmp, 2, 1 },  { 0x67, Op_ShortConditionalJmp, 2, 1 }, 
+                { 0x68, Op_ShortConditionalJmp, 2, 1 }, { 0x69, Op_ShortConditionalJmp, 2, 1 }, { 0x6A, Op_ShortConditionalJmp, 2, 1 },  { 0x6B, Op_ShortConditionalJmp, 2, 1 },  { 0x6C, Op_ShortConditionalJmp, 2, 1 }, { 0x6D, Op_ShortConditionalJmp, 2, 1 }, { 0x6E, Op_ShortConditionalJmp, 2, 1 },  { 0x6F, Op_ShortConditionalJmp, 2, 1 }, 
+                { 0x70, Op_ShortConditionalJmp, 2, 1 }, { 0x71, Op_ShortConditionalJmp, 2, 1 }, { 0x72, Op_ShortConditionalJmp, 2, 1 },  { 0x73, Op_ShortConditionalJmp, 2, 1 },  { 0x74, Op_ShortConditionalJmp, 2, 1 }, { 0x75, Op_ShortConditionalJmp, 2, 1 }, { 0x76, Op_ShortConditionalJmp, 2, 1 },  { 0x77, Op_ShortConditionalJmp, 2, 1 }, 
+                { 0x78, Op_ShortConditionalJmp, 2, 1 }, { 0x79, Op_ShortConditionalJmp, 2, 1 }, { 0x7A, Op_ShortConditionalJmp, 2, 1 },  { 0x7B, Op_ShortConditionalJmp, 2, 1 },  { 0x7C, Op_ShortConditionalJmp, 2, 1 }, { 0x7D, Op_ShortConditionalJmp, 2, 1 }, { 0x7E, Op_ShortConditionalJmp, 2, 1 },  { 0x7F, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x80, Op_Nop, 1, 1 }, { 0x81, Op_Nop, 1, 1 }, { 0x82, Op_Nop, 1, 1 },  { 0x83, Op_Nop, 1, 1 },  { 0x84, Op_Nop, 1, 1 }, { 0x85, Op_Nop, 1, 1 }, { 0x86, Op_Nop, 1, 1 },  { 0x87, Op_Nop, 1, 1 }, 
                 { 0x88, Op_Nop, 1, 1 }, { 0x89, Op_Nop, 1, 1 }, { 0x8A, Op_Nop, 1, 1 },  { 0x8B, Op_Nop, 1, 1 },  { 0x8C, Op_Nop, 1, 1 }, { 0x8D, Op_Nop, 1, 1 }, { 0x8E, Op_Nop, 1, 1 },  { 0x8F, Op_Nop, 1, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_Nop, 1, 1 }, { 0x92, Op_Nop, 1, 1 },  { 0x93, Op_Nop, 1, 1 },  { 0x94, Op_Nop, 1, 1 }, { 0x95, Op_Nop, 1, 1 }, { 0x96, Op_Nop, 1, 1 },  { 0x97, Op_Nop, 1, 1 }, 
