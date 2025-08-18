@@ -90,4 +90,12 @@ namespace Volt
             Prefetch_Flush();
         }
     }
+
+    void CPU8086::Op_Hlt(uint8_t opcode)
+    {
+        // Halt the CPU.
+        halted = true;
+
+        Logging_LogChannel("The CPU is HALTED. Send NMI or, if IF=1, an interrupt to wake it up.", LogChannel::Message);
+    }
 }

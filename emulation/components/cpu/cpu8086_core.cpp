@@ -153,6 +153,12 @@ namespace Volt
     {
         //TODO: PREFETCH QUEUE IMPLEMENTATION
 
+        if (halted)
+        {
+            //TODO: UNPAUSE ON NMI/INTR
+            return;
+        }
+
         // Keep the prefetch queue filled up
         uint8_t opcode = Prefetch_Pop8();
 
@@ -190,5 +196,9 @@ namespace Volt
         //Deliberately empty
     }
 
+    void CPU8086::Op_Unimpl(uint8_t opcode)
+    {
+        Logging_LogChannel("OPCODE %s UNIMPLEMENTED!!! Bad stuff will happen now", LogChannel::Warning, opcode_table_disasm[opcode]);
+    }
 
 }
