@@ -152,10 +152,8 @@ namespace Volt
             uint16_t flags; 
 
             bool halted;
-
             bool nmi;
 
-           
         protected:
         // Stuff the disassembler doesn't need
         private: 
@@ -238,10 +236,53 @@ namespace Volt
             void Op_Inc(uint8_t opcode);
             void Op_Dec(uint8_t opcode);
 
+            void Op_AddModRm(uint8_t opcode);
+            void Op_AddImmed(uint8_t opcode);
+            void Op_OrModRm(uint8_t opcode);
+            void Op_OrImmed(uint8_t opcode);
+            void Op_AdcModRm(uint8_t opcode);
+            void Op_AdcImmed(uint8_t opcode);
+            void Op_SbbModRm(uint8_t opcode);
+            void Op_SbbImmed(uint8_t opcode);
+            void Op_AndModRm(uint8_t opcode);
+            void Op_AndImmed(uint8_t opcode);
+            void Op_SubModRm(uint8_t opcode);
+            void Op_SubImmed(uint8_t opcode);
+            void Op_XorModRm(uint8_t opcode);
+            void Op_XorImmed(uint8_t opcode);
+            void Op_CmpModRm(uint8_t opcode);
+            void Op_CmpImmed(uint8_t opcode);
+
+            void Op_AddInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AddInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AddInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_OrInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_OrInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_OrInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_AdcInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AdcInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AdcInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_SbbInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_SbbInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_SbbInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_AndInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AndInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_AndInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_SubInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_SubInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_SubInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_XorInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_XorInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_XorInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+            void Op_CmpInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr);
+            void Op_CmpInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
+            void Op_CmpInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
+
             // Moves
             void Op_MovImmedToReg(uint8_t opcode);
 
-            // Group
+            // Group2
+            void Op_Grp1(uint8_t opcode);
             void Op_Grp2(uint8_t opcode);
 
 
@@ -249,14 +290,14 @@ namespace Volt
             // Disassembler needs to access this!
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
             {
-                { 0x00, Op_Unimpl, 1, 1 }, { 0x01, Op_Unimpl, 1, 1 }, { 0x02, Op_Unimpl, 1, 1 },  { 0x03, Op_Unimpl, 1, 1 },  { 0x04, Op_Unimpl, 1, 1 }, { 0x05, Op_Unimpl, 1, 1 }, { 0x06, Op_Unimpl, 1, 1 },  { 0x07, Op_Unimpl, 1, 1 }, 
-                { 0x08, Op_Unimpl, 1, 1 }, { 0x09, Op_Unimpl, 1, 1 }, { 0x0A, Op_Unimpl, 1, 1 },  { 0x0B, Op_Unimpl, 1, 1 },  { 0x0C, Op_Unimpl, 1, 1 }, { 0x0D, Op_Unimpl, 1, 1 }, { 0x0E, Op_Unimpl, 1, 1 },  { 0x0F, Op_Unimpl, 1, 1 }, 
-                { 0x10, Op_Unimpl, 1, 1 }, { 0x11, Op_Unimpl, 1, 1 }, { 0x12, Op_Unimpl, 1, 1 },  { 0x13, Op_Unimpl, 1, 1 },  { 0x14, Op_Unimpl, 1, 1 }, { 0x15, Op_Unimpl, 1, 1 }, { 0x16, Op_Unimpl, 1, 1 },  { 0x17, Op_Unimpl, 1, 1 }, 
-                { 0x18, Op_Unimpl, 1, 1 }, { 0x19, Op_Unimpl, 1, 1 }, { 0x1A, Op_Unimpl, 1, 1 },  { 0x1B, Op_Unimpl, 1, 1 },  { 0x1C, Op_Unimpl, 1, 1 }, { 0x1D, Op_Unimpl, 1, 1 }, { 0x1E, Op_Unimpl, 1, 1 },  { 0x1F, Op_Unimpl, 1, 1 }, 
-                { 0x20, Op_Unimpl, 1, 1 }, { 0x21, Op_Unimpl, 1, 1 }, { 0x22, Op_Unimpl, 1, 1 },  { 0x23, Op_Unimpl, 1, 1 },  { 0x24, Op_Unimpl, 1, 1 }, { 0x25, Op_Unimpl, 1, 1 }, { 0x26, Op_ESOverridePrefix, 1, 4 },  { 0x27, Op_Unimpl, 1, 1 }, 
-                { 0x28, Op_Unimpl, 1, 1 }, { 0x29, Op_Unimpl, 1, 1 }, { 0x2A, Op_Unimpl, 1, 1 },  { 0x2B, Op_Unimpl, 1, 1 },  { 0x2C, Op_Unimpl, 1, 1 }, { 0x2D, Op_Unimpl, 1, 1 }, { 0x2E, Op_CSOverridePrefix, 1, 4 },  { 0x2F, Op_Unimpl, 1, 1 }, 
-                { 0x30, Op_Unimpl, 1, 1 }, { 0x31, Op_Unimpl, 1, 1 }, { 0x32, Op_Unimpl, 1, 1 },  { 0x33, Op_Unimpl, 1, 1 },  { 0x34, Op_Unimpl, 1, 1 }, { 0x35, Op_Unimpl, 1, 1 }, { 0x36, Op_SSOverridePrefix, 1, 4 },  { 0x37, Op_Unimpl, 1, 1 }, 
-                { 0x38, Op_Unimpl, 1, 1 }, { 0x39, Op_Unimpl, 1, 1 }, { 0x3A, Op_Unimpl, 1, 1 },  { 0x3B, Op_Unimpl, 1, 1 },  { 0x3C, Op_Unimpl, 1, 1 }, { 0x3D, Op_Unimpl, 1, 1 }, { 0x3E, Op_DSOverridePrefix, 1, 4 },  { 0x3F, Op_Unimpl, 1, 1 }, 
+                { 0x00, Op_AddModRm, 2, 1 }, { 0x01, Op_AddModRm, 2, 1 }, { 0x02, Op_AddModRm, 2, 1 },  { 0x03, Op_AddModRm, 2, 1 },  { 0x04, Op_AddImmed, 1, 1 }, { 0x05, Op_AddImmed, 1, 1 }, { 0x06, Op_Unimpl, 1, 1 },  { 0x07, Op_Unimpl, 1, 1 }, 
+                { 0x08, Op_OrModRm, 2, 1 }, { 0x09, Op_OrModRm, 2, 1 }, { 0x0A, Op_OrModRm, 2, 1 },  { 0x0B, Op_OrModRm, 2, 1 },  { 0x0C, Op_OrImmed, 2, 1 }, { 0x0D, Op_OrImmed, 2, 1 }, { 0x0E, Op_Unimpl, 1, 1 },  { 0x0F, Op_Unimpl, 1, 1 }, 
+                { 0x10, Op_AdcModRm, 2, 1 }, { 0x11, Op_AdcModRm, 2, 1 }, { 0x12, Op_AdcModRm, 2, 1 },  { 0x13, Op_AdcModRm, 1, 1 },  { 0x14, Op_AdcImmed, 2, 1 }, { 0x15, Op_AdcImmed, 2, 1 }, { 0x16, Op_Unimpl, 1, 1 },  { 0x17, Op_Unimpl, 1, 1 }, 
+                { 0x18, Op_SbbModRm, 2, 1 }, { 0x19, Op_SbbModRm, 2, 1 }, { 0x1A, Op_SbbModRm, 2, 1 },  { 0x1B, Op_SbbModRm, 2, 1 },  { 0x1C, Op_SbbImmed, 2, 1 }, { 0x1D, Op_SbbImmed, 2, 1 }, { 0x1E, Op_Unimpl, 1, 1 },  { 0x1F, Op_Unimpl, 1, 1 }, 
+                { 0x20, Op_AndModRm, 2, 1 }, { 0x21, Op_AndModRm, 2, 1 }, { 0x22, Op_AndModRm, 2, 1 },  { 0x23, Op_AndModRm, 2, 1 },  { 0x24, Op_AndImmed, 2, 1 }, { 0x25, Op_AndImmed, 2, 1 }, { 0x26, Op_ESOverridePrefix, 1, 4 },  { 0x27, Op_Unimpl, 1, 1 }, 
+                { 0x28, Op_SubModRm, 2, 1 }, { 0x29, Op_SubModRm, 2, 1 }, { 0x2A, Op_SubModRm, 2, 1 },  { 0x2B, Op_SubModRm, 2, 1 },  { 0x2C, Op_SubImmed, 2, 1 }, { 0x2D, Op_SubImmed, 2, 1 }, { 0x2E, Op_CSOverridePrefix, 1, 4 },  { 0x2F, Op_Unimpl, 1, 1 }, 
+                { 0x30, Op_XorModRm, 2, 1 }, { 0x31, Op_XorModRm, 2, 1 }, { 0x32, Op_XorModRm, 2, 1 },  { 0x33, Op_XorModRm, 2, 1 },  { 0x34, Op_XorImmed, 2, 1 }, { 0x35, Op_XorImmed, 2, 1 }, { 0x36, Op_SSOverridePrefix, 1, 4 },  { 0x37, Op_Unimpl, 1, 1 }, 
+                { 0x38, Op_CmpModRm, 2, 1 }, { 0x39, Op_CmpModRm, 2, 1 }, { 0x3A, Op_CmpModRm, 2, 1 },  { 0x3B, Op_CmpModRm, 2, 1 },  { 0x3C, Op_CmpImmed, 2, 1 }, { 0x3D, Op_CmpImmed, 2, 1 }, { 0x3E, Op_DSOverridePrefix, 1, 4 },  { 0x3F, Op_Unimpl, 1, 1 }, 
                 { 0x40, Op_Unimpl, 1, 1 }, { 0x41, Op_Unimpl, 1, 1 }, { 0x42, Op_Unimpl, 1, 1 },  { 0x43, Op_Unimpl, 1, 1 },  { 0x44, Op_Unimpl, 1, 1 }, { 0x45, Op_Unimpl, 1, 1 }, { 0x46, Op_Unimpl, 1, 1 },  { 0x47, Op_Unimpl, 1, 1 }, 
                 { 0x48, Op_Unimpl, 1, 1 }, { 0x49, Op_Unimpl, 1, 1 }, { 0x4A, Op_Unimpl, 1, 1 },  { 0x4B, Op_Unimpl, 1, 1 },  { 0x4C, Op_Unimpl, 1, 1 }, { 0x4D, Op_Unimpl, 1, 1 }, { 0x4E, Op_Unimpl, 1, 1 },  { 0x4F, Op_Unimpl, 1, 1 }, 
                 { 0x50, Op_Unimpl, 1, 1 }, { 0x51, Op_Unimpl, 1, 1 }, { 0x52, Op_Unimpl, 1, 1 },  { 0x53, Op_Unimpl, 1, 1 },  { 0x54, Op_Unimpl, 1, 1 }, { 0x55, Op_Unimpl, 1, 1 }, { 0x56, Op_Unimpl, 1, 1 },  { 0x57, Op_Unimpl, 1, 1 }, 
@@ -265,7 +306,7 @@ namespace Volt
                 { 0x68, Op_ShortConditionalJmp, 2, 1 }, { 0x69, Op_ShortConditionalJmp, 2, 1 }, { 0x6A, Op_ShortConditionalJmp, 2, 1 },  { 0x6B, Op_ShortConditionalJmp, 2, 1 },  { 0x6C, Op_ShortConditionalJmp, 2, 1 }, { 0x6D, Op_ShortConditionalJmp, 2, 1 }, { 0x6E, Op_ShortConditionalJmp, 2, 1 },  { 0x6F, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x70, Op_ShortConditionalJmp, 2, 1 }, { 0x71, Op_ShortConditionalJmp, 2, 1 }, { 0x72, Op_ShortConditionalJmp, 2, 1 },  { 0x73, Op_ShortConditionalJmp, 2, 1 },  { 0x74, Op_ShortConditionalJmp, 2, 1 }, { 0x75, Op_ShortConditionalJmp, 2, 1 }, { 0x76, Op_ShortConditionalJmp, 2, 1 },  { 0x77, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x78, Op_ShortConditionalJmp, 2, 1 }, { 0x79, Op_ShortConditionalJmp, 2, 1 }, { 0x7A, Op_ShortConditionalJmp, 2, 1 },  { 0x7B, Op_ShortConditionalJmp, 2, 1 },  { 0x7C, Op_ShortConditionalJmp, 2, 1 }, { 0x7D, Op_ShortConditionalJmp, 2, 1 }, { 0x7E, Op_ShortConditionalJmp, 2, 1 },  { 0x7F, Op_ShortConditionalJmp, 2, 1 }, 
-                { 0x80, Op_Unimpl, 1, 1 }, { 0x81, Op_Unimpl, 1, 1 }, { 0x82, Op_Unimpl, 1, 1 },  { 0x83, Op_Unimpl, 1, 1 },  { 0x84, Op_Unimpl, 1, 1 }, { 0x85, Op_Unimpl, 1, 1 }, { 0x86, Op_Unimpl, 1, 1 },  { 0x87, Op_Unimpl, 1, 1 }, 
+                { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_Unimpl, 1, 1 }, { 0x85, Op_Unimpl, 1, 1 }, { 0x86, Op_Unimpl, 1, 1 },  { 0x87, Op_Unimpl, 1, 1 }, 
                 { 0x88, Op_Unimpl, 1, 1 }, { 0x89, Op_Unimpl, 1, 1 }, { 0x8A, Op_Unimpl, 1, 1 },  { 0x8B, Op_Unimpl, 1, 1 },  { 0x8C, Op_Unimpl, 1, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_Unimpl, 1, 1 },  { 0x8F, Op_Unimpl, 1, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_Unimpl, 1, 1 }, { 0x92, Op_Unimpl, 1, 1 },  { 0x93, Op_Unimpl, 1, 1 },  { 0x94, Op_Unimpl, 1, 1 }, { 0x95, Op_Unimpl, 1, 1 }, { 0x96, Op_Unimpl, 1, 1 },  { 0x97, Op_Unimpl, 1, 1 }, 
                 { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_Unimpl, 1, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
@@ -294,7 +335,6 @@ namespace Volt
                 "SBB", "SBB", "SBB", "SBB", "SBB AL, ", "SBB AX, ", "PUSH DS", "POP DS",
                 "AND", "AND", "AND", "AND", "AND AL, ","AND AX, ", "", "DAA",
                 "SUB", "SUB", "SUB", "SUB", "SUB AL, ","SUB AX, ", "", "DAS",
-                //TODO: REST OF TABLE
                 "XOR", "XOR", "XOR", "XOR", "XOR AL, ", "XOR AX, ", "" , "AAA",
                 "CMP", "CMP", "CMP", "CMP", "CMP AL, ", "CMP AX, ", "" , "AAS",
                 "INC AX", "INC CX", "INC DX", "INC BX", "INC SP", "INC BP", "INC SI", "INC DI", 
@@ -325,7 +365,7 @@ namespace Volt
             };
 
             // tables used for disasm grp1-grp5
-            static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ADD", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
+            static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"Cmp", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
             static constexpr const char* grp2_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ROL", "ROR", "RCL", "RCR", "SHL", "SHR", "SETMO", "SAR"};
             static constexpr const char* grp3_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"TEST", "TEST [!]", "NOT", "NEG", "MUL", "IMUL", "DIV", "IDIV"};
             static constexpr const char* grp4_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"INC", "DEC", "CALLB [!]", "CALLB [!]", "JMPB [!]", "JMPB [!]", "PUSHB [!]", "PUSHB [!]"};
@@ -356,10 +396,11 @@ namespace Volt
 
             void SetPZSFlags8(uint8_t result);
             void SetPZSFlags16(uint16_t result);
-            void inline SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void inline SetOF16_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
+
+            void SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
+            void SetOF16_Add(uint16_t result, uint16_t old_result, uint16_t operand);
+            void SetOF16_Sub(uint16_t result, uint16_t old_result, uint16_t operand);
 
             // register table for ordering various operations
             // mod=11 and reg use the same order table!

@@ -1,7 +1,38 @@
-S7_Engine
+Volt Research Emulator (Experimental IBM PC emulator)
+
+Pre-Alpha 0.9
+XX August 2025
+
+Changes:
+
+Pre-Alpha 0.8
+16 August 2025
+
+=== EMULATION ===
+
+=== CORE SYSTEMS ===
+Memory:
+	* Can now allocate arrays of objects
+	* Print tags as strings
+Command:
+	* Add Command_GetTextAfterCommand to get text of command
+	* Add cvarlist command to list cvars
+	* Add meminfo command to list memory areas
+	* Fix exec function commands being read twice
+Filesystem:
+	* Fix ReadString
+Render:
+	* Split renderer state into global and renderer-specific
+	* Don't use a temporary variable for the render title convar
+Logging:
+	* Use cout for some messages
+	
+
+	
+===== OLD S7 NOTES =====
 
 Pre-Alpha 0.7
-XX June 2025 (Was busy)
+29 June 2025 (Was busy)
 
 Changes:
 * Moved from MSVC to GCC (mingw64-msys2 on windows)

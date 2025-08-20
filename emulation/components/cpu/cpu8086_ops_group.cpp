@@ -10,6 +10,14 @@
 
 namespace Volt
 {
+    #define CPU8086_GRP1_OP_ADD     0x00
+    #define CPU8086_GRP1_OP_OR      0x01
+    #define CPU8086_GRP1_OP_ADC     0x02
+    #define CPU8086_GRP1_OP_SBB     0x03
+    #define CPU8086_GRP1_OP_AND     0x04
+    #define CPU8086_GRP1_OP_SUB     0x05
+    #define CPU8086_GRP1_OP_XOR     0x06
+    #define CPU8086_GRP1_OP_CMP     0x07
 
     #define CPU8086_GRP2_OP_ROL     0x00
     #define CPU8086_GRP2_OP_ROR     0x01
@@ -22,6 +30,93 @@ namespace Volt
 
     #define CPU8086_GRP2_IS_16BIT   0x01
     #define CPU8086_GRP2_USE_CL     0x02
+
+
+    void CPU8086::Op_Grp1(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        uint8_t immed8 = 0x00;
+        uint16_t immed16 = 0x00;
+
+        bool is_8on8 = ((opcode & 0x03) == 0x00 || (opcode & 0x03) == 0x02);
+        bool is_8on16 = ((opcode & 0x03) == 0x03);
+        bool is_16on16 = ((opcode & 0x03) == 0x01);
+
+        if (is_8on8 || is_16on16)
+            immed8 = Prefetch_Pop8();
+        else
+            immed16 = Prefetch_Pop16();
+
+        // switch function based on opcode + modrm.reg 
+        switch (modrm.reg)
+        {
+            case CPU8086_GRP1_OP_ADD:
+                if (is_8on8)
+                    Op_AddInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_AddInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_AddInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_OR:
+                if (is_8on8)
+                    Op_OrInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_OrInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_OrInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_ADC:
+                if (is_8on8)
+                    Op_AdcInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_AdcInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_AdcInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_SBB:
+                if (is_8on8)
+                    Op_SbbInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_SbbInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_SbbInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_AND:
+                if (is_8on8)
+                    Op_AndInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_AndInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_AndInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_SUB:
+                if (is_8on8)
+                    Op_SubInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_SubInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_SubInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_XOR:
+                if (is_8on8)
+                    Op_XorInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_XorInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_XorInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+            case CPU8086_GRP1_OP_CMP:
+                if (is_8on8)
+                    Op_CmpInternal8to8((uint8_t*)modrm.ea_ptr, &immed8);
+                else if (is_8on16)
+                    Op_CmpInternal8to16(modrm.ea_ptr, &immed8);
+                else if (is_16on16)
+                    Op_CmpInternal16to16(modrm.ea_ptr, &immed16);
+                break;
+        }
+    }
 
     // ROL, ROR, RCL, RCR, SHL, SHR, SETMO/SETMOC, SAR
     //TODO: REALISTIC TIMINGS
@@ -39,7 +134,7 @@ namespace Volt
 
         bool is_16bit = (is_16bit);
 
-        // IMPORTANT INFORMATION: This code FUCKING SUCKS. FIX IT!!!
+        // TODO: IMPORTANT INFORMATION: This code FUCKING SUCKS. FIX IT!!!
         switch (modrm.reg)
         {
             // ROL / RCL (Rotate Left) - DO NOT SHIFT
@@ -57,12 +152,11 @@ namespace Volt
                             *modrm.ea_ptr |= (flags & CPU8086Flags::Carry) >> 15;
 
                         //use old  value to determine carry
-                        if (value16 & 0x8000)
-                            flags |= CPU8086Flags::Carry;
+                        (value16 & 0x8000) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         // use old value to determine overflow for left rotate (convert to bool?)
-                        if (value16 & 0x8000 != value16 & 0x4000)
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value16 & 0x8000) != (value16 & 0x4000)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
+
 
                         //update value
                         value16 = *modrm.ea_ptr;
@@ -80,12 +174,10 @@ namespace Volt
                             *(uint8_t*)modrm.ea_ptr |= (flags & CPU8086Flags::Carry) >> 7;
 
                         //use old value to determine carry
-                        if (value8 & 0x80)
-                            flags |= CPU8086Flags::Carry;
+                        (value8 & 0x80) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         //use old value to determine overflow for left rotate (convert to bool?)
-                        if (value8 & 0x80 != value8 & 0x40)
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value8 & 0x80) != (value8 & 0x40)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         //update value
                         value8 = *(uint8_t*)modrm.ea_ptr;
@@ -107,15 +199,14 @@ namespace Volt
                             *modrm.ea_ptr |= (flags & CPU8086Flags::Carry) << 15;
 
                         //use old value to determine carry
-                        if (value16 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+                        (value16 & 0x01) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         //update value
                         value16 = *modrm.ea_ptr;
 
                         //use new value to determine overflow for right rotate  (convert to bool?)
-                        if ((value16 & 0x8000) != (value16 & 0x4000))
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value16 & 0x8000) != (value16 & 0x4000)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
+
                     }
                 }
                 else
@@ -132,14 +223,12 @@ namespace Volt
                         //update value
 
                         //use old value to determine carry
-                        if (value8 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+                        (value8 & 0x01) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         value8 = *(uint8_t*)modrm.ea_ptr;
 
                         //use new value to determine overflow for right rotate (convert to bool?)
-                        if ((value8 & 0x80) != (value8 & 0x40))
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value8 & 0x80) != (value8 & 0x40)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
                     }
                 }
                 break;
@@ -152,12 +241,10 @@ namespace Volt
                         *modrm.ea_ptr <<= 1;
 
                         //use old value to determine carry
-                        if (value16 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+                        (value16 & 0x80) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         //use old value to determine overflow for left shift (convert to bool?)
-                        if ((value16 & 0x8000) != (value16 & 0x4000))
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value16 & 0x8000) != (value16 & 0x4000)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         //update value
                         value16 = *modrm.ea_ptr;
@@ -180,12 +267,10 @@ namespace Volt
                             *(uint8_t*)modrm.ea_ptr |= (flags & CPU8086Flags::Carry) << 7;
 
                         //use old value to determine carry
-                        if (value8 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+                        (value8 & 0x01) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         //use old value to determine overflow for left shift (convert to bool?)
-                        if ((value8 & 0x80) != (value8 & 0x40))
-                            flags |= (flags & CPU8086Flags::Overflow);
+                        ((value8 & 0x80) != (value8 & 0x40)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         value8 = *(uint8_t*)modrm.ea_ptr;
 
@@ -227,20 +312,15 @@ namespace Volt
                             *modrm.ea_ptr >>= 1 | (value16 & 0x8000); 
 
                         //use old value to determine carry
-                        if (value16 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+                        (value16 & 0x01) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         //update value
                         value16 = *modrm.ea_ptr;
 
                         //use new value to determine overflow for right shift (convert to bool?)
-                        if ((value16 & 0x8000) != (value16 & 0x4000))
-                            flags |= CPU8086Flags::Overflow;
+                        ((value16 & 0x8000) != (value16 & 0x4000)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         SetPZSFlags16(value16);
-                        
-                        if (value16 & 0x10)   
-                            flags |= CPU8086Flags::AuxCarry;
                     }
                 }
                 else
@@ -251,22 +331,23 @@ namespace Volt
                             *(uint8_t*)modrm.ea_ptr >>= 1;
                         else 
                             *(uint8_t*)modrm.ea_ptr >>= 1 | (value8 & 0x80); 
-
                         //use old value to determine carry
-                        if (value8 & 0x01)
-                            flags |= CPU8086Flags::Carry;
+
+                        // TODO: can this be done *after* op?
+                        (value8 & 0x01) ? flags |= CPU8086Flags::Carry : flags &= ~CPU8086Flags::Carry;
 
                         value8 = *(uint8_t*)modrm.ea_ptr;
 
                         //use new value to determine overflow for right rotate (convert to bool?)
-                        if ((value8 & 0x80) != (value8 & 0x40))
-                            flags |= CPU8086Flags::Overflow;
+                        // TODO: can this be done *after* op?
+                        ((value8 & 0x80) != (value8 & 0x40)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         SetPZSFlags8(value8);
                         
-                        flags &= ~CPU8086Flags::AuxCarry;
                     }
                 }
+                
+                flags &= ~CPU8086Flags::AuxCarry;
                 break;
         }
     }

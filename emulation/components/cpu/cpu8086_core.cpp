@@ -13,11 +13,19 @@ namespace Volt
     // TEMP convar
     Cvar* emu_8086_clk;
     Cvar* emu_8086_disasm;
+    Cvar* emu_8086_use_8088;
 
     void CPU8086::Init()
-    {
+    {        
+        // Load convars
+        emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
+        emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);
+        emu_8086_use_8088 = Cvar_Get("emu_8086_use_8088", "0", false); //TODO: FLIP THIS AROUND!
+
         // cannot use constructor here due to MemAlloc limitations
-        if (!variant)
+        if (emu_8086_use_8088->value)
+            variant = CPU8086Variant::cpu808x_8088;
+        else
             variant = CPU8086Variant::cpu808x_8086;
 
         switch (variant)
@@ -38,8 +46,6 @@ namespace Volt
         //add primary address space
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>();
         
-        emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
-        emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);
 
         clock_hz = uint64_t(emu_8086_clk->value);
         
@@ -57,14 +63,13 @@ namespace Volt
         VoltFile* bios_low = Filesystem_OpenFile("BIOS_5160_09MAY86_U19_62X0819_68X4370_27256_F000.BIN", VoltFileMode::Binary);
         VoltFile* bios_high = Filesystem_OpenFile("BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", VoltFileMode::Binary);
 
-        // this is very bad and slow make a bulk read function
         bios_low->file.read((char*)&address_space->access_byte[0xF0000], 32768);
         bios_high->file.read((char*)&address_space->access_byte[0xF8000], 32768);
     
         cs = CPU8086_START_LOCATION_CS;
         ip = CPU8086_START_LOCATION_IP;
 
-        //read in 6 bytes of prefetch so we can start executing 
+        // flush the prefetch so we can start executing 
         Prefetch_Flush();
     }
 

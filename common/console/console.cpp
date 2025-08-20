@@ -14,7 +14,7 @@ namespace Volt
 
     const char* funny_console_messages[] =
     {
-        "Unity? More like Division!",
+        "Finally, 87Box",
         "With framerates as unreal as Unreal's!",
         "nVIDIA RIVA 128 powered(tm)",
         "This chicanery!",

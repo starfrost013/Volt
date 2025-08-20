@@ -81,7 +81,9 @@ namespace Volt
         //Logging_LogChannel("SAHF", LogChannel::Debug);
 
         // preserve bits 15-8 of flags
-        flags |= (ah & 0xFF);
+        uint16_t old_high_flags = (flags >> 8) << 8; 
+
+        flags = (old_high_flags) | ah;
     }
 
     // These don't compile marked as inline wtf
@@ -101,7 +103,7 @@ namespace Volt
     }
 
     // Set overflow flag for 8 bit add operations.
-    void inline CPU8086::SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand)
+    void CPU8086::SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand)
     {
         if (((result ^ old_result) & (result ^ operand)) & 0x80)
             flags |= CPU8086Flags::Overflow;
@@ -110,7 +112,7 @@ namespace Volt
     }
     
     // Set overflow flag for 8 bit sub ops.
-    void inline CPU8086::SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand)
+    void CPU8086::SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand)
     {
         if (((operand ^ old_result) & (operand ^ result)) & 0x80)
             flags |= CPU8086Flags::Overflow;
@@ -118,7 +120,7 @@ namespace Volt
             flags &= ~CPU8086Flags::Overflow;
     }
     
-    void inline CPU8086::SetOF16_Add(uint8_t result, uint8_t old_result, uint8_t operand)
+    void CPU8086::SetOF16_Add(uint16_t result, uint16_t old_result, uint16_t operand)
     {
         if (((result ^ old_result) & (result ^ operand)) & 0x8000)
             flags |= CPU8086Flags::Overflow;
@@ -126,7 +128,7 @@ namespace Volt
             flags &= ~CPU8086Flags::Overflow;
     }
 
-    void inline CPU8086::SetOF16_Sub(uint8_t result, uint8_t old_result, uint8_t operand)
+    void CPU8086::SetOF16_Sub(uint16_t result, uint16_t old_result, uint16_t operand)
     {
         if (((operand ^ old_result) & (operand ^ result)) & 0x8000)
             flags |= CPU8086Flags::Overflow;
