@@ -236,8 +236,8 @@ namespace Volt
             void Op_ESOverridePrefix(uint8_t opcode);
 
             // Math
-            void Op_Inc(uint8_t opcode);
-            void Op_Dec(uint8_t opcode);
+            void Op_IncReg(uint8_t opcode);
+            void Op_DecReg(uint8_t opcode);
 
             void Op_AddModRm(uint8_t opcode);
             void Op_AddImmed(uint8_t opcode);
@@ -290,6 +290,10 @@ namespace Volt
             // Group2
             void Op_Grp1(uint8_t opcode);
             void Op_Grp2(uint8_t opcode);
+
+            // IO
+            void Op_In(uint8_t opcode);
+            void Op_Out(uint8_t opcode);
 
             //
             // Prefetch Queue (basic impl.)
@@ -348,8 +352,8 @@ namespace Volt
                 { 0x28, Op_SubModRm, 2, 1 }, { 0x29, Op_SubModRm, 2, 1 }, { 0x2A, Op_SubModRm, 2, 1 },  { 0x2B, Op_SubModRm, 2, 1 },  { 0x2C, Op_SubImmed, 2, 1 }, { 0x2D, Op_SubImmed, 2, 1 }, { 0x2E, Op_CSOverridePrefix, 1, 4 },  { 0x2F, Op_Unimpl, 1, 1 }, 
                 { 0x30, Op_XorModRm, 2, 1 }, { 0x31, Op_XorModRm, 2, 1 }, { 0x32, Op_XorModRm, 2, 1 },  { 0x33, Op_XorModRm, 2, 1 },  { 0x34, Op_XorImmed, 2, 1 }, { 0x35, Op_XorImmed, 2, 1 }, { 0x36, Op_SSOverridePrefix, 1, 4 },  { 0x37, Op_Unimpl, 1, 1 }, 
                 { 0x38, Op_CmpModRm, 2, 1 }, { 0x39, Op_CmpModRm, 2, 1 }, { 0x3A, Op_CmpModRm, 2, 1 },  { 0x3B, Op_CmpModRm, 2, 1 },  { 0x3C, Op_CmpImmed, 2, 1 }, { 0x3D, Op_CmpImmed, 2, 1 }, { 0x3E, Op_DSOverridePrefix, 1, 4 },  { 0x3F, Op_Unimpl, 1, 1 }, 
-                { 0x40, Op_Unimpl, 1, 1 }, { 0x41, Op_Unimpl, 1, 1 }, { 0x42, Op_Unimpl, 1, 1 },  { 0x43, Op_Unimpl, 1, 1 },  { 0x44, Op_Unimpl, 1, 1 }, { 0x45, Op_Unimpl, 1, 1 }, { 0x46, Op_Unimpl, 1, 1 },  { 0x47, Op_Unimpl, 1, 1 }, 
-                { 0x48, Op_Unimpl, 1, 1 }, { 0x49, Op_Unimpl, 1, 1 }, { 0x4A, Op_Unimpl, 1, 1 },  { 0x4B, Op_Unimpl, 1, 1 },  { 0x4C, Op_Unimpl, 1, 1 }, { 0x4D, Op_Unimpl, 1, 1 }, { 0x4E, Op_Unimpl, 1, 1 },  { 0x4F, Op_Unimpl, 1, 1 }, 
+                { 0x40, Op_IncReg, 1, 1 }, { 0x41, Op_IncReg, 1, 1 }, { 0x42, Op_IncReg, 1, 1 },  { 0x43, Op_IncReg, 1, 1 },  { 0x44, Op_IncReg, 1, 1 }, { 0x45, Op_IncReg, 1, 1 }, { 0x46, Op_IncReg, 1, 1 },  { 0x47, Op_IncReg, 1, 1 }, 
+                { 0x48, Op_DecReg, 1, 1 }, { 0x49, Op_DecReg, 1, 1 }, { 0x4A, Op_DecReg, 1, 1 },  { 0x4B, Op_DecReg, 1, 1 },  { 0x4C, Op_DecReg, 1, 1 }, { 0x4D, Op_DecReg, 1, 1 }, { 0x4E, Op_DecReg, 1, 1 },  { 0x4F, Op_DecReg, 1, 1 }, 
                 { 0x50, Op_Unimpl, 1, 1 }, { 0x51, Op_Unimpl, 1, 1 }, { 0x52, Op_Unimpl, 1, 1 },  { 0x53, Op_Unimpl, 1, 1 },  { 0x54, Op_Unimpl, 1, 1 }, { 0x55, Op_Unimpl, 1, 1 }, { 0x56, Op_Unimpl, 1, 1 },  { 0x57, Op_Unimpl, 1, 1 }, 
                 { 0x58, Op_Unimpl, 1, 1 }, { 0x59, Op_Unimpl, 1, 1 }, { 0x5A, Op_Unimpl, 1, 1 },  { 0x5B, Op_Unimpl, 1, 1 },  { 0x5C, Op_Unimpl, 1, 1 }, { 0x5D, Op_Unimpl, 1, 1 }, { 0x5E, Op_Unimpl, 1, 1 },  { 0x5F, Op_Unimpl, 1, 1 }, 
                 { 0x60, Op_ShortConditionalJmp, 2, 1 }, { 0x61, Op_ShortConditionalJmp, 2, 1 }, { 0x62, Op_ShortConditionalJmp, 2, 1 },  { 0x63, Op_ShortConditionalJmp, 2, 1 },  { 0x64, Op_ShortConditionalJmp, 2, 1 }, { 0x65, Op_ShortConditionalJmp, 2, 1 }, { 0x66, Op_ShortConditionalJmp, 2, 1 },  { 0x67, Op_ShortConditionalJmp, 2, 1 }, 
@@ -368,8 +372,8 @@ namespace Volt
                 { 0xC8, Op_Unimpl, 1, 1 }, { 0xC9, Op_Unimpl, 1, 1 }, { 0xCA, Op_Unimpl, 1, 1 },  { 0xCB, Op_Unimpl, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
-                { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_Unimpl, 1, 1 }, { 0xE5, Op_Unimpl, 1, 1 }, { 0xE6, Op_Unimpl, 1, 1 },  { 0xE7, Op_Unimpl, 1, 1 }, 
-                { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_Unimpl, 1, 1 }, { 0xED, Op_Unimpl, 1, 1 }, { 0xEE, Op_Unimpl, 1, 1 },  { 0xEF, Op_Unimpl, 1, 1 }, 
+                { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
+                { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Unimpl, 1, 1 },  { 0xFF, Op_Unimpl, 1, 1 }, 
             };
@@ -429,6 +433,7 @@ namespace Volt
             static constexpr const char* register_table16_disasm[CPU8086_NUM_REGISTERS] = { "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" };
             static constexpr const char* rm_table_disasm[CPU8086_NUM_REGISTERS] = {"[BX + SI", "[BX + DI", "[BP + SI", "[BP + DI", "[SI", "[DI", "[BP", "[BX"};
             static constexpr const char* segreg_table_disasm[CPU8086_NUM_REGISTERS] = {"ES", "CS", "SS", "DS", "INVALID segment register 5", "INVALID segment register 6", "INVALID segment register 7"};
+
 
 
     };

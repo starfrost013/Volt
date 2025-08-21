@@ -27,6 +27,8 @@ namespace Volt
     #define CPU8086_DISASM_SHORT_RELATIVE_END   0x7F
     #define CPU8086_DISASM_GRP1_START           0x80
     #define CPU8086_DISASM_GRP1_END             0x83
+    #define CPU8086_DISASM_MOV_REG2SEG          0x8C
+    #define CPU8086_DISASM_MOV_SEG2REG          0x8E
     #define CPU8086_DISASM_MOV_RELATIVE_START   0xB0
     #define CPU8086_DISASM_MOV_RELATIVE_END     0xBF
     #define CPU8086_DISASM_GRP2_START           0xD0
@@ -147,6 +149,17 @@ namespace Volt
         if (opcode == CPU8086_DISASM_GRP5)
             strncat(disasm_buf_8086, grp5_table_disasm[modrm_decode.reg], MAX_DISASM_BUF_SIZE - 1);
             
+        // check for segment moves
+        if (opcode == CPU8086_DISASM_MOV_REG2SEG)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "MOV %s, %s", segreg_table_disasm[modrm_decode.reg], register_table16_disasm[modrm_decode.rm]);
+            return;
+        }
+        else if (opcode == CPU8086_DISASM_MOV_SEG2REG)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "MOV %s, %s", register_table16_disasm[modrm_decode.rm], segreg_table_disasm[modrm_decode.reg]);
+            return;
+        }
 
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway
@@ -208,30 +221,14 @@ namespace Volt
             case 0x03:  // 11
                 // This is a bit stupid. We cast it to 8 bit for 8 bit opcodes.
                 if (w)
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, ", register_table16_disasm[modrm_decode.reg]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %s", register_table16_disasm[modrm_decode.reg], register_table16_disasm[modrm_decode.rm]);
                 else
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, ", register_table8_disasm[modrm_decode.reg]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %s", register_table8_disasm[modrm_decode.reg], register_table8_disasm[modrm_decode.rm]);
 
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
 
                 break;      
         }
-
-        if (!ignore_reg)
-        {
-            if (w)
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", register_table16_disasm[modrm_decode.reg]);
-            else
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", register_table8_disasm[modrm_decode.reg]);
-
-            strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
-        }
-        else
-        {
-            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", rm_table_disasm[modrm_decode.rm]);
-            strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
-        }
-
 
     }
 

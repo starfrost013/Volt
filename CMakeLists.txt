@@ -52,6 +52,7 @@ add_executable (Volt
 "emulation/components/cpu/cpu8086_ops_control.cpp" 
 "emulation/components/cpu/cpu8086_ops_flag.cpp"
 "emulation/components/cpu/cpu8086_ops_group.cpp"
+"emulation/components/cpu/cpu8086_ops_io.cpp"
 "emulation/components/cpu/cpu8086_ops_math.cpp"
 "emulation/components/cpu/cpu8086_ops_move.cpp"
 "emulation/components/cpu/cpu8086_ops_prefix.cpp"

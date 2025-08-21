@@ -10,7 +10,7 @@
 
 namespace Volt
 {
-    void CPU8086::Op_Inc(uint8_t opcode)
+    void CPU8086::Op_IncReg(uint8_t opcode)
     {
         uint16_t result = ++(*register_table16[opcode & 0x07]); 
 
@@ -23,7 +23,7 @@ namespace Volt
         SetOF16_Add(result, result - 1, 1);
     }
 
-    void CPU8086::Op_Dec(uint8_t opcode)
+    void CPU8086::Op_DecReg(uint8_t opcode)
     {
         uint16_t result = --(*register_table16[opcode & 0x07]); 
         
@@ -346,7 +346,7 @@ namespace Volt
     void CPU8086::Op_OrInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr)
     {
         uint8_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr | old_dst;
+        *dst_ptr = old_dst | *src_ptr;
 
         SetPZSFlags8(*dst_ptr);
         // What does OR/XOR/AND do with auxcarry?
@@ -356,8 +356,8 @@ namespace Volt
 
     void CPU8086::Op_OrInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr)
     {
-        uint8_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr | old_dst;
+        uint16_t old_dst = *dst_ptr;
+        *dst_ptr = old_dst | *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -366,8 +366,8 @@ namespace Volt
 
     void CPU8086::Op_OrInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr)
     {
-        uint8_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr | old_dst;
+        uint16_t old_dst = *dst_ptr;
+        *dst_ptr = old_dst | *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -482,7 +482,7 @@ namespace Volt
     void CPU8086::Op_AndInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr)
     {
         uint8_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr & old_dst;
+        *dst_ptr = old_dst & *src_ptr;
 
         SetPZSFlags8(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -492,7 +492,7 @@ namespace Volt
     void CPU8086::Op_AndInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr)
     {
         uint16_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr & old_dst;
+        *dst_ptr = old_dst & *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -502,7 +502,7 @@ namespace Volt
     void CPU8086::Op_AndInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr)
     {
         uint16_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr & old_dst;
+        *dst_ptr = old_dst & *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -566,7 +566,7 @@ namespace Volt
     void CPU8086::Op_XorInternal8to8(uint8_t* dst_ptr, uint8_t* src_ptr)
     {
         uint8_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr ^ old_dst;
+        *dst_ptr = old_dst ^ *src_ptr;
 
         SetPZSFlags8(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -576,7 +576,7 @@ namespace Volt
     void CPU8086::Op_XorInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr)
     {
         uint16_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr ^ old_dst;
+        *dst_ptr = old_dst ^ *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);
@@ -586,7 +586,7 @@ namespace Volt
     void CPU8086::Op_XorInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr)
     {
         uint16_t old_dst = *dst_ptr;
-        *dst_ptr = *src_ptr ^ old_dst;
+        *dst_ptr = old_dst ^ *src_ptr;
 
         SetPZSFlags16(*dst_ptr);
         flags &= ~(CPU8086Flags::Carry);

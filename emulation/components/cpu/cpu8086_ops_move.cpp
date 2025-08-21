@@ -48,7 +48,7 @@ namespace Volt
         bool w = (opcode & 0x01);
         bool reverse = (opcode & 0x02);
 
-        if (!reverse)
+        if (reverse)
             (w) ? *modrm.reg_ptr16 = *modrm.ea_ptr : *modrm.reg_ptr8 = *(uint8_t*)modrm.ea_ptr;
         else
             (w) ? *modrm.ea_ptr = *modrm.reg_ptr16 : *(uint8_t*)modrm.ea_ptr = *modrm.reg_ptr8;
@@ -69,7 +69,7 @@ namespace Volt
             return;
         }
 
-        if (!reverse)
+        if (reverse)
             *modrm.ea_ptr = *segreg_ptr;
         else
             *segreg_ptr = *modrm.ea_ptr;
