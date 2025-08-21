@@ -98,9 +98,6 @@ namespace Volt
 
             frame_end = Util_GetMicroseconds();
 
-            // C++, WTF?
-            // todo: replace this with SDL timers, QPC/getticks_ns or something 
-
             bool run_tick = real_milliseconds > target_milliseconds;
             
             Render_Frame();
