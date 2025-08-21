@@ -75,7 +75,7 @@ namespace Volt
     /* Tick function for the common component */
     void Common_Tick()
     {
-        Emulation_Tick();
+
     }
 
     void Common_Main()
