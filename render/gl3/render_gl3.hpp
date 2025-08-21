@@ -10,6 +10,15 @@
 
 namespace Volt
 {
+
+    // Sets up the tasks the renderer can do
+    enum RendererStateGL3Task
+    {
+        Spin = 0,
+
+        Blit = 1,
+    };
+
     // Holds the OpenGL 3.x renderer state.
     struct RendererStateGL3
     {
@@ -21,6 +30,9 @@ namespace Volt
         // used to remember the last window position when we go into fullscreen
         int32_t last_window_pos_x;
         int32_t last_window_pos_y;
+
+        std::thread video_thread; 
+        RendererStateGL3Task task;
     };
 
     extern RendererStateGL3 render_state_gl3;

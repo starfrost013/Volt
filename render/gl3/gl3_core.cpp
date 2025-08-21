@@ -64,6 +64,7 @@ namespace Volt
         glfwSwapInterval(0);
 
         Logging_LogChannel("******** R_GL3_Init was successful! ********", LogChannel::Message);
+
     }
 
     #define BUF_SIZE    10 // max int32 size is 10
@@ -129,25 +130,30 @@ namespace Volt
     // Called on each frame to update the state of the wporld.
     void R_GL3_Frame()
     {
+        switch (render_state_gl3.task)
+        {
+            case RendererStateGL3Task::Spin:
+                /* THE START - GET INPUT FROM THE INPUT SUBSYSTEM */
+                
+                // test code
+                float frame_number = float(clear_frame_number) / 1048576.0f;
 
-        /* THE START - GET INPUT FROM THE INPUT SUBSYSTEM */
+                clear_r = cos(frame_number * (180/M_PI));
+                clear_g = sin(frame_number * (180/M_PI));
+                clear_b = clear_r + clear_g;
 
-        // test code
-        float frame_number = float(clear_frame_number) / 1048576.0f;
+                glClearColor(clear_r, clear_g, clear_b, clear_a);
 
-        clear_r = cos(frame_number * (180/M_PI));
-        clear_g = sin(frame_number * (180/M_PI));
-        clear_b = clear_r + clear_g;
+                glClear(GL_COLOR_BUFFER_BIT);
 
-        glClearColor(clear_r, clear_g, clear_b, clear_a);
+                /* THE END OF THE RENDERER LOOP */
+                glfwPollEvents(); 
+                glfwSwapBuffers(render_state_gl3.window);
 
-        glClear(GL_COLOR_BUFFER_BIT);
+                clear_frame_number++; 
+        }
 
-        /* THE END OF THE RENDERER LOOP */
-        glfwPollEvents(); 
-        glfwSwapBuffers(render_state_gl3.window);
 
-        clear_frame_number++; 
     }
 
     void R_GL3_Close(GLFWwindow* window)

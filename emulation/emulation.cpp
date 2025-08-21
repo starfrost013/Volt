@@ -5,6 +5,9 @@
 namespace Volt
 {
     Machine test_machine;
+
+    bool emulation_running; 
+
     //TEMP
     void Emulation_Init()
     {
@@ -14,6 +17,9 @@ namespace Volt
 
         CPU8086* cpu_808x = Memory_Alloc<CPU8086>(TAG_EMU_COMPONENT_CPU);
         test_machine.AddComponent(cpu_808x);
+
+        emulation_running = true; 
+        
     }
     
     void Emulation_Start()
@@ -21,15 +27,11 @@ namespace Volt
         test_machine.Start();
     }
 
-    void Emulation_Frame()
-    {
-        Render_Frame();
-    }
-
+    // ENTRY POINT OF THE EMU_THREAD!
     void Emulation_Tick()
     {
-        // Todo: Clocking
-        test_machine.Tick();
+        while (emulation_running)
+            test_machine.Tick();
     }
 
     void Emulation_Shutdown()

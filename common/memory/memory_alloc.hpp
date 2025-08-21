@@ -14,6 +14,7 @@
 #define MEMALLOC_HEADER 				0x7C7C
 
 // Memory tag for filesystem allocations (little endian)
+#define TAG_EMU_CORE					0x44524854	// Emu core							'THRD'
 #define TAG_COMMAND     				0x30444D43  // Command system allocations 		'CMD0'
 #define TAG_CVAR 						0x52415643	// Convar system allocations		'CVAR'
 #define TAG_FILESYSTEM                  0x454C4946	// Filesystem allocations 			'FILE'  

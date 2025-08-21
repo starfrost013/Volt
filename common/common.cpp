@@ -19,6 +19,8 @@ namespace Volt
     double common_last_frametime;            // Time of the last frame.
     double common_last_updatetime;            // Time of the last update.
 
+    std::thread* emu_thread;
+
     // Initialise cvars
     void Common_InitCvar()
     {
@@ -61,6 +63,10 @@ namespace Volt
         // For now, clear all the backscroll
         //Util_ConsoleClearScreen();
 
+        // start up the emulation thread
+        emu_thread = Memory_Alloc<std::thread>(TAG_EMU_CORE);
+        emu_thread->join(); 
+
         Common_Main();
     }
 
@@ -68,14 +74,11 @@ namespace Volt
     void Common_Frame()
     {
         Console_Frame();
-
-        Emulation_Frame();
     }
     
     /* Tick function for the common component */
     void Common_Tick()
     {
-
     }
 
     void Common_Main()
@@ -99,10 +102,8 @@ namespace Volt
             // todo: replace this with SDL timers, QPC/getticks_ns or something 
 
             bool run_tick = real_milliseconds > target_milliseconds;
-
             
-            // This runs every component on its own clockrate
-            Emulation_Tick();
+            Render_Frame();
 
             // Run non-emulation ticked stuff last
             if (run_tick)
@@ -134,6 +135,7 @@ namespace Volt
     
     void Common_Shutdown(uint32_t exit_code)
     {
+    
         Logging_LogChannel("******** Common_Shutdown starting ********", LogChannel::Debug);
         // shut down the client, server and renderer if they are running
 
