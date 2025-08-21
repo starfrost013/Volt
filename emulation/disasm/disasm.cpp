@@ -54,22 +54,13 @@ namespace Volt
 
     void CPU8086::Disasm_Parse(uint8_t opcode)
     {
-        // suppress up to 65,536 repeated loops
-        if (opcode >= CPU8086_DISASM_LOOP_START
-        && opcode <= CPU8086_DISASM_LOOP_END)
-        {
-            disasm_suppress_logging = (cx > 0);
-            return;
-        }
-
         if (disasm_suppress_logging)
             return;
             
         // clear buf
         memset(disasm_buf_8086, 0x00, MAX_DISASM_BUF_SIZE); // faster than strlen?
         memset(disasm_buf_scratch, 0x00, MAX_DISASM_BUF_SIZE); //faster than strlen?
-
-        
+  
         strncat(disasm_buf_8086, opcode_table_disasm[opcode], MAX_DISASM_BUF_SIZE - 1);
 
         // First check 1BL instructions and return immediately
@@ -208,8 +199,6 @@ namespace Volt
             snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "POP %s", register_table16_disasm[opcode & 0x07]);
             return;
         }
-
-
 
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway

@@ -16,6 +16,9 @@ Changes:
 * Fix many MOVs
 * Fix the zero flag 
 
+=== CORE SYSTEMS ===
+* Implement the
+
 Pre-Alpha 0.9
 21 August 2025
 

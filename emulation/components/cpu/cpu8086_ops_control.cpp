@@ -182,16 +182,18 @@ namespace Volt
     
         switch (op)
         {
-            case 0x00:          // LOOP
-                keep_going = (cx != 0);
+            case 0x00:          // LOOPNZ
+                keep_going = (cx != 0) && !(flags & CPU8086Flags::Zero);
                 break;
             case 0x01:          // LOOPE/LOOPZ
                 keep_going = (cx != 0) && (flags & CPU8086Flags::Zero);
                 break;
-            case 0x02:          // LOOPNZ
-                keep_going = (cx != 0) && !(flags & CPU8086Flags::Zero);
+            case 0x02:          // LOOP
+                keep_going = (cx != 0) 
                 break;
         }
+
+        disasm_suppress_logging = (keep_going);
 
         if (keep_going)
         {
