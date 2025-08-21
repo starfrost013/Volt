@@ -497,11 +497,23 @@ namespace Volt
                 Prefetch_Flush();
                 break;
             case CPU8086_GRP45_OP_PUSH:
-            case CPU8086_GRP45_OP_PUSHI:    
-                if (modrm.ea_ptr == &sp)
-                    stack_push_16(*(modrm.ea_ptr - 1));                                 // 1 due to uint16_t
+            case CPU8086_GRP45_OP_PUSHI:   
+                if (w)
+                {
+                    // we have to do this for SP
+                    if (modrm.ea_ptr == &sp)
+                        stack_push_16(*(modrm.ea_ptr - 1));                                 // 1 due to uint16_t
+                    else
+                        stack_push_16(*modrm.ea_ptr);
+                }
                 else
-                    stack_push_16(*modrm.ea_ptr);
+                {
+                    if (modrm.ea_ptr == &sp)
+                        stack_push_16(*((uint8_t*)modrm.ea_ptr - 2));                        // 1 due to uint16_t
+                    else
+                        stack_push_16(*(uint8_t*)modrm.ea_ptr);
+                }
+
                 break;
         }
     }

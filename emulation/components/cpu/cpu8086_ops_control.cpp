@@ -116,6 +116,29 @@ namespace Volt
         }
     }
 
+    void CPU8086::Op_RetNear(uint8_t opcode)
+    {
+        bool use_imm = !(opcode & 0x01);
+        ip = stack_pop_16();
+
+        if (use_imm)
+            sp += Prefetch_Pop8(); 
+
+        Prefetch_Flush();
+    }
+
+    void CPU8086::Op_RetFar(uint8_t opcode)
+    {
+        bool use_imm = !(opcode & 0x01);
+        ip = stack_pop_16();
+        cs = stack_pop_16();
+
+        if (use_imm)
+            sp += Prefetch_Pop8(); 
+
+        Prefetch_Flush();
+    }
+
     void CPU8086::Op_Hlt(uint8_t opcode)
     {
         // Halt the CPU.
