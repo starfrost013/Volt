@@ -43,10 +43,14 @@ namespace Volt
 
         Logging_LogChannel("8086: Initialising address space (variant: %s)", LogChannel::Debug, name);
 
-        //add primary address space
+        // add primary address space
+        // this gets cleaned up by machine shutdown code
         address_space = AddressSpace_Add<CPU8086_ADDR_SPACE_SIZE>();
-        
 
+        // Only initialise io_port_range if it isn't there. This allows e.g. IBM PGC
+        if (!io_port_range)
+            IOx86_Init();
+        
         clock_hz = uint64_t(emu_8086_clk->value);
         
         Logging_LogChannel("8086: Clock speed = %d Hz", LogChannel::Debug, clock_hz);

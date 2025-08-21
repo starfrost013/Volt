@@ -13,6 +13,7 @@ namespace Volt
     // Various mechanisms for access of the address space.
     struct AddressSpace
     {
+        uint32_t size; 
         uint8_t* access_byte;
 
         inline uint16_t access_word(uint32_t index) { return (access_byte[index + 1] << 8 | access_byte[index]); };
@@ -40,7 +41,8 @@ namespace Volt
         }
 
         addr->access_byte = Memory_Alloc<uint8_t, Size>(TAG_EMU_GUEST_MEM);;
-        
+        addr->size = Size;
+
         if (!address_space_primary)
             address_space_primary = addr; 
         else 

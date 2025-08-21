@@ -23,6 +23,7 @@
 #define TAG_EMU_COMPONENT_CPU			0x30555043	// CPU component					'CPU0'
 #define TAG_EMU_COMPONENT_GPU			0x30555047	// GPU component					'GPU0'
 #define TAG_EMU_COMPONENT_FPU			0x30555046	// FPU component					'FPU0'
+#define TAG_EMU_COMPONENT_IO			0x474C4F49	// I/O component					'IOLG'
 #define TAG_EMU_COMPONENT_SND			0x30444E53	// Sound component					'SND0'
 #define TAG_EMU_COMPONENT_DMA			0x43414D44	// DMA component					'DMAC'
 #define TAG_EMU_COMPONENT_TIMER			0x43524D54	// Timer component					'TMRC'
@@ -32,6 +33,7 @@
 #define TAG_EMU_COMPONENT_FLOPPY		0x504F4C46	// Floppy component					'FLOP'
 #define TAG_EMU_COMPONENT_HDD			0x30444448	// HDD component					'HDD0'
 #define TAG_EMU_COMPONENT_NET			0x3054454E	// Network component				'NET0'
+
 // More to come...
 
 namespace Volt

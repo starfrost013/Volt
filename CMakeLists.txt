@@ -59,6 +59,9 @@ add_executable (Volt
 # Disassembly system
 "emulation/disasm/disasm.cpp"
 
+# IO
+"emulation/components/io/io_port.cpp"
+
 # RENDER
 "render/render_core.cpp"
 

@@ -17,13 +17,8 @@ namespace Volt
 		/* Common Initialisation */
 		Common_Init(argc, argv);
 
-		Command_Execute("test param0 param1 param2 param3 param4", CommandType::GlobalCommand);
-		Command_Execute("test3 bigtest hello", CommandType::GlobalCommand);
-
-		// test a nonexistent command
-		Command_Execute("afhasdhasdhasdhsada", CommandType::GlobalCommand);
-
-		Common_Shutdown();		return 0;
+		Common_Shutdown();		
+		return 0;
 	}
 }
 

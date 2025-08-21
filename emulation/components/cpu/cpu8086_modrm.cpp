@@ -61,23 +61,14 @@ namespace Volt
                 modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
 
                 if (modrm_decode.mod == 0x01) // +disp8
-                {
-                    // make pointer arithmetic a bit easier here
-                    uint8_t* temp = (uint8_t*)modrm_decode.ea_ptr;
-                    temp += Prefetch_Pop8();
-                    modrm_decode.ea_ptr = (uint16_t*)temp;
-                    return modrm_decode;
-                }
+                    final_linear_address += Prefetch_Pop8();
                 else if (modrm_decode.mod == 0x02) // +disp16
-                {
-                    uint8_t* temp = (uint8_t*)modrm_decode.ea_ptr;
-                    temp += Prefetch_Pop16();
-                    modrm_decode.ea_ptr = (uint16_t*)temp;
- 
-                    return modrm_decode;
-                }
+                    final_linear_address += Prefetch_Pop16();
 
-                break;        
+                final_linear_address %= CPU8086_ADDR_SPACE_SIZE;
+                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
+                return modrm_decode;
+   
             case 0x03:  // 11
                 // This is a bit stupid. We cast it to 8 bit for 8 bit opcodes.
                 if (!w)

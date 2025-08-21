@@ -2,8 +2,9 @@
 // VOLT
 // Copyright © 2025 starfrost
 //
-// CPU8086.hpp: Generic 808x-class CPU (8086, 8088, V30)
+// cpu8086.hpp: Generic 808x-class CPU (8086, 8088, V30)
 //
+
 #pragma once
 #include <emulation/emulation.hpp>
 

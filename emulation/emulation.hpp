@@ -6,6 +6,7 @@
 #include <common/common.hpp>
 #include <emulation/component.hpp>
 #include <emulation/machine.hpp>
+#include <emulation/components/io/io_port.hpp>
 #include <emulation/components/storage/storage_address_space.hpp>
 
 namespace Volt
