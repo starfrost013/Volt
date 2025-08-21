@@ -330,6 +330,8 @@ namespace Volt
             // Stack
             void Op_PushReg(uint8_t opcode);
             void Op_PopReg(uint8_t opcode);
+            void Op_PushSegReg(uint8_t opcode);
+            void Op_PopSegReg(uint8_t opcode);
 
             //
             // Prefetch Queue (basic impl.)
@@ -380,10 +382,10 @@ namespace Volt
             // Disassembler needs to access this!
             static constexpr CPU8086Instruction instruction_table[CPU8086_NUM_OPCODES] =
             {
-                { 0x00, Op_AddModRm, 2, 1 }, { 0x01, Op_AddModRm, 2, 1 }, { 0x02, Op_AddModRm, 2, 1 },  { 0x03, Op_AddModRm, 2, 1 },  { 0x04, Op_AddImmed, 1, 1 }, { 0x05, Op_AddImmed, 1, 1 }, { 0x06, Op_Unimpl, 1, 1 },  { 0x07, Op_Unimpl, 1, 1 }, 
-                { 0x08, Op_OrModRm, 2, 1 }, { 0x09, Op_OrModRm, 2, 1 }, { 0x0A, Op_OrModRm, 2, 1 },  { 0x0B, Op_OrModRm, 2, 1 },  { 0x0C, Op_OrImmed, 2, 1 }, { 0x0D, Op_OrImmed, 2, 1 }, { 0x0E, Op_Unimpl, 1, 1 },  { 0x0F, Op_Unimpl, 1, 1 }, 
-                { 0x10, Op_AdcModRm, 2, 1 }, { 0x11, Op_AdcModRm, 2, 1 }, { 0x12, Op_AdcModRm, 2, 1 },  { 0x13, Op_AdcModRm, 1, 1 },  { 0x14, Op_AdcImmed, 2, 1 }, { 0x15, Op_AdcImmed, 2, 1 }, { 0x16, Op_Unimpl, 1, 1 },  { 0x17, Op_Unimpl, 1, 1 }, 
-                { 0x18, Op_SbbModRm, 2, 1 }, { 0x19, Op_SbbModRm, 2, 1 }, { 0x1A, Op_SbbModRm, 2, 1 },  { 0x1B, Op_SbbModRm, 2, 1 },  { 0x1C, Op_SbbImmed, 2, 1 }, { 0x1D, Op_SbbImmed, 2, 1 }, { 0x1E, Op_Unimpl, 1, 1 },  { 0x1F, Op_Unimpl, 1, 1 }, 
+                { 0x00, Op_AddModRm, 2, 1 }, { 0x01, Op_AddModRm, 2, 1 }, { 0x02, Op_AddModRm, 2, 1 },  { 0x03, Op_AddModRm, 2, 1 },  { 0x04, Op_AddImmed, 1, 1 }, { 0x05, Op_AddImmed, 1, 1 }, { 0x06, Op_PushSegReg, 1, 1 },  { 0x07, Op_PopSegReg, 1, 1 }, 
+                { 0x08, Op_OrModRm, 2, 1 }, { 0x09, Op_OrModRm, 2, 1 }, { 0x0A, Op_OrModRm, 2, 1 },  { 0x0B, Op_OrModRm, 2, 1 },  { 0x0C, Op_OrImmed, 2, 1 }, { 0x0D, Op_OrImmed, 2, 1 }, { 0x0E, Op_PushSegReg, 1, 1 },  { 0x0F, Op_PopSegReg, 1, 1 }, 
+                { 0x10, Op_AdcModRm, 2, 1 }, { 0x11, Op_AdcModRm, 2, 1 }, { 0x12, Op_AdcModRm, 2, 1 },  { 0x13, Op_AdcModRm, 1, 1 },  { 0x14, Op_AdcImmed, 2, 1 }, { 0x15, Op_AdcImmed, 2, 1 }, { 0x16, Op_PushSegReg, 1, 1 },  { 0x17, Op_PopSegReg, 1, 1 }, 
+                { 0x18, Op_SbbModRm, 2, 1 }, { 0x19, Op_SbbModRm, 2, 1 }, { 0x1A, Op_SbbModRm, 2, 1 },  { 0x1B, Op_SbbModRm, 2, 1 },  { 0x1C, Op_SbbImmed, 2, 1 }, { 0x1D, Op_SbbImmed, 2, 1 }, { 0x1E, Op_PushSegReg, 1, 1 },  { 0x1F, Op_PopSegReg, 1, 1 }, 
                 { 0x20, Op_AndModRm, 2, 1 }, { 0x21, Op_AndModRm, 2, 1 }, { 0x22, Op_AndModRm, 2, 1 },  { 0x23, Op_AndModRm, 2, 1 },  { 0x24, Op_AndImmed, 2, 1 }, { 0x25, Op_AndImmed, 2, 1 }, { 0x26, Op_ESOverridePrefix, 1, 4 },  { 0x27, Op_Unimpl, 1, 1 }, 
                 { 0x28, Op_SubModRm, 2, 1 }, { 0x29, Op_SubModRm, 2, 1 }, { 0x2A, Op_SubModRm, 2, 1 },  { 0x2B, Op_SubModRm, 2, 1 },  { 0x2C, Op_SubImmed, 2, 1 }, { 0x2D, Op_SubImmed, 2, 1 }, { 0x2E, Op_CSOverridePrefix, 1, 4 },  { 0x2F, Op_Unimpl, 1, 1 }, 
                 { 0x30, Op_XorModRm, 2, 1 }, { 0x31, Op_XorModRm, 2, 1 }, { 0x32, Op_XorModRm, 2, 1 },  { 0x33, Op_XorModRm, 2, 1 },  { 0x34, Op_XorImmed, 2, 1 }, { 0x35, Op_XorImmed, 2, 1 }, { 0x36, Op_SSOverridePrefix, 1, 4 },  { 0x37, Op_Unimpl, 1, 1 }, 
