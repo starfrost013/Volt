@@ -189,7 +189,7 @@ namespace Volt
                 keep_going = (cx != 0) && (flags & CPU8086Flags::Zero);
                 break;
             case 0x02:          // LOOP
-                keep_going = (cx != 0) 
+                keep_going = (cx != 0);
                 break;
         }
 
