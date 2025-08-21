@@ -19,6 +19,28 @@ namespace Volt
             *register_table8[opcode % 0x08] = Prefetch_Pop8();
     }
 
+    // C6 / C7
+    void CPU8086::Op_MovImmedToModRM(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        bool w = (opcode & 0x01);
+
+        uint16_t immed16 = 0x00;
+        uint8_t immed8 = 0;
+
+        if (w)
+        {
+            immed16 = Prefetch_Pop16();
+            *modrm.ea_ptr = immed16;
+        } 
+        else
+        {
+            immed8 = Prefetch_Pop8();
+            *(uint8_t*)modrm.ea_ptr = immed8;
+        }
+    }
+
     void CPU8086::Op_MovModRM(uint8_t opcode)
     {
         CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
@@ -29,7 +51,7 @@ namespace Volt
         if (!reverse)
             (w) ? *modrm.reg_ptr16 = *modrm.ea_ptr : *modrm.reg_ptr8 = *(uint8_t*)modrm.ea_ptr;
         else
-            (w) ? *modrm.ea_ptr = *modrm.reg_ptr16 : *modrm.ea_ptr = *modrm.reg_ptr8;
+            (w) ? *modrm.ea_ptr = *modrm.reg_ptr16 : *(uint8_t*)modrm.ea_ptr = *modrm.reg_ptr8;
     }
 
     void CPU8086::Op_MovRegToSeg(uint8_t opcode)

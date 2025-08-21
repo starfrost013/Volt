@@ -23,6 +23,7 @@ namespace Volt
 
         // default = DS for this part.
         uint16_t reg = ds;
+        uint32_t final_linear_address = 0;      //for mod=0/1/2
 
         switch (modrm_decode.mod)
         {
@@ -51,14 +52,19 @@ namespace Volt
                         break;
                 }
 
-                // >> 1 in order to fix the index
-                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[(reg << 4) + rm_table[modrm_decode.rm]];
+                final_linear_address = (reg << 4) + rm_table[modrm_decode.rm];
+
+                //TODO: PUT ADDRESS SPACE SIZE IN ADDRESS SPACE SYSTEM
+                // Prevent us going to invalid memory in the case of the CPU going wild
+                final_linear_address %= CPU8086_ADDR_SPACE_SIZE;
+
+                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
 
                 if (modrm_decode.mod == 0x01) // +disp8
                 {
                     // make pointer arithmetic a bit easier here
                     uint8_t* temp = (uint8_t*)modrm_decode.ea_ptr;
-                    temp += Prefetch_Pop16();
+                    temp += Prefetch_Pop8();
                     modrm_decode.ea_ptr = (uint16_t*)temp;
                     return modrm_decode;
                 }

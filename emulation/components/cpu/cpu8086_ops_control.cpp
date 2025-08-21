@@ -24,6 +24,29 @@ namespace Volt
         // flush the prefetch queue
         Prefetch_Flush(); 
     }
+    
+    void CPU8086::Op_ShortJmp(uint8_t opcode)
+    {
+        // this is inverted from the usual "is 16 bit" check
+        bool w = !(opcode & 0x02);
+
+        int16_t offset16 = 0;
+        int8_t offset8 = 0;
+
+        if (w)
+        {
+            offset16 = (int16_t)Prefetch_Pop16() + 3; 
+            ip += offset16;
+        }
+        else
+        {
+            offset8 = (int8_t)Prefetch_Pop8() + 2; 
+            ip += offset8;
+        }
+
+        //to be safe. i assume real cpu does this
+        Prefetch_Flush(); 
+    }
 
     void CPU8086::Op_ShortConditionalJmp(uint8_t opcode)
     {

@@ -212,8 +212,10 @@ namespace Volt
 
             // Control
             void Op_JmpFar(uint8_t opcode);
-            void Op_ShortConditionalJmp(uint8_t opcode);
-            void Op_Hlt(uint8_t opcode);
+            
+            void Op_ShortJmp(uint8_t opcode);               // Short jump
+            void Op_ShortConditionalJmp(uint8_t opcode);    // Short conditional jump
+            void Op_Hlt(uint8_t opcode);                    // HALT
 
             // Flag set/clear
             void Op_Sti(uint8_t opcode);
@@ -279,6 +281,7 @@ namespace Volt
             void Op_CmpInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
 
             // Moves
+            void Op_MovImmedToModRM(uint8_t opcode);
             void Op_MovImmedToReg(uint8_t opcode);
             void Op_MovModRM(uint8_t opcode);
             void Op_MovRegToSeg(uint8_t opcode);
@@ -360,12 +363,12 @@ namespace Volt
                 { 0xA8, Op_Unimpl, 1, 1 }, { 0xA9, Op_Unimpl, 1, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
-                { 0xC0, Op_Unimpl, 1, 1 }, { 0xC1, Op_Unimpl, 1, 1 }, { 0xC2, Op_Unimpl, 1, 1 },  { 0xC3, Op_Unimpl, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_Unimpl, 1, 1 },  { 0xC7, Op_Unimpl, 1, 1 }, 
+                { 0xC0, Op_Unimpl, 1, 1 }, { 0xC1, Op_Unimpl, 1, 1 }, { 0xC2, Op_Unimpl, 1, 1 },  { 0xC3, Op_Unimpl, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 
                 { 0xC8, Op_Unimpl, 1, 1 }, { 0xC9, Op_Unimpl, 1, 1 }, { 0xCA, Op_Unimpl, 1, 1 },  { 0xCB, Op_Unimpl, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
                 { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_Unimpl, 1, 1 }, { 0xE5, Op_Unimpl, 1, 1 }, { 0xE6, Op_Unimpl, 1, 1 },  { 0xE7, Op_Unimpl, 1, 1 }, 
-                { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_Unimpl, 1, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_Unimpl, 1, 1 },  { 0xEC, Op_Unimpl, 1, 1 }, { 0xED, Op_Unimpl, 1, 1 }, { 0xEE, Op_Unimpl, 1, 1 },  { 0xEF, Op_Unimpl, 1, 1 }, 
+                { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_Unimpl, 1, 1 }, { 0xED, Op_Unimpl, 1, 1 }, { 0xEE, Op_Unimpl, 1, 1 },  { 0xEF, Op_Unimpl, 1, 1 }, 
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Unimpl, 1, 1 },  { 0xFF, Op_Unimpl, 1, 1 }, 
             };

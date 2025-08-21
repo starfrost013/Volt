@@ -3,6 +3,9 @@ Volt Research Emulator (Experimental IBM PC emulator)
 Pre-Alpha 0.9
 XX August 2025
 
+
+=== OLD VOLT NOTES ===
+
 Changes:
 
 Pre-Alpha 0.8
