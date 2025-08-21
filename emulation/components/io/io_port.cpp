@@ -15,6 +15,7 @@ namespace Volt
     void IOx86_Init()
     {
         io_port_range = Memory_Alloc<IOx86>(TAG_EMU_COMPONENT_IO);
+        Logging_LogChannel("IOx86_Init", LogChannel::Debug);
     }
 
     // Add an I/O mapping
