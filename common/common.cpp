@@ -64,7 +64,8 @@ namespace Volt
         //Util_ConsoleClearScreen();
 
         // start up the emulation thread
-        emu_thread = Memory_Alloc<std::thread>(TAG_EMU_CORE);
+        // constructor can't be called by Memory_Alloc and this is a special case anyway
+        emu_thread = new std::thread(Emulation_Tick)
         emu_thread->join(); 
 
         Common_Main();
