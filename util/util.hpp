@@ -75,6 +75,6 @@ namespace Volt
 
 	void Util_ConsoleClearScreen();									// Clear the console buffer.
 
-	uint64_t Util_GetMicroseconds();									// Get uSec since init
+	double Util_GetMicroseconds();									// Get uSec since init
 	
 }

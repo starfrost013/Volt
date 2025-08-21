@@ -82,7 +82,7 @@ namespace Volt
     {
         // various measurements
         double real_milliseconds = 0, target_milliseconds = 0, render_milliseconds = 0, update_milliseconds = 0;
-        uint64_t start = 0, frame_end = 0, end = 0;
+        double start = 0, frame_end = 0, end = 0;
 
         while (common_is_running)
         {

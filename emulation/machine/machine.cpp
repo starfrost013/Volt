@@ -18,7 +18,7 @@ namespace Volt
 
                 // various measurements
                 double real_milliseconds = 0, target_milliseconds = 0, render_milliseconds = 0, update_milliseconds = 0;
-                uint64_t start = 0, end = 0;
+                double start = 0, end = 0;
 
                 start = Util_GetMicroseconds(); 
 
@@ -32,7 +32,7 @@ namespace Volt
 
                 end = Util_GetMicroseconds(); 
                 
-                if (component->microseconds_current > component->microseconds_target)
+                if (run_tick)
                     component->microseconds_current = double(end - start);
                 else
                     component->microseconds_current += double(end - start);

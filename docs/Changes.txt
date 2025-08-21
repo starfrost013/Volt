@@ -1,8 +1,30 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
-Pre-Alpha 0.9
+Pre-Alpha 1.0
 XX August 2025
 
+Changes:
+
+=== EMULATION ===
+* I/O system added
+
+8086:
+* Stack implemented
+* GRP4/GRP5 implemented 
+* RET, FAR CALL implemented
+* LOOP implemented 
+* Fix many MOVs
+* Fix the zero flag 
+
+Pre-Alpha 0.9
+21 August 2025
+
+Changes:
+	* IBM PC BIOS now runs up to the point of requiring I/O
+	* ADD, OR, ADC, SBB, AND, SUB, XOR, CMP implemented 
+	* GRP2 implemented
+	* HLT implemented 
+	
 
 === OLD VOLT NOTES ===
 

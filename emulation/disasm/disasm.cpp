@@ -22,7 +22,15 @@ namespace Volt
     char disasm_buf_8086[MAX_DISASM_BUF_SIZE] = {0};
     char disasm_buf_scratch[MAX_DISASM_BUF_SIZE] = {0};     // scratch buffer used to build current operand before strncat'ing into disasm_buf_8086
 
-
+    // 1BL 
+    #define CPU8086_DISASM_INC16_START          0x40
+    #define CPU8086_DISASM_INC16_END            0x47
+    #define CPU8086_DISASM_DEC16_START          0x48
+    #define CPU8086_DISASM_DEC16_END            0x4F
+    #define CPU8086_DISASM_PUSH16_START         0x50
+    #define CPU8086_DISASM_PUSH16_END           0x57
+    #define CPU8086_DISASM_POP16_START          0x58
+    #define CPU8086_DISASM_POP16_END            0x5F
     #define CPU8086_DISASM_SHORT_RELATIVE_START 0x60
     #define CPU8086_DISASM_SHORT_RELATIVE_END   0x7F
     #define CPU8086_DISASM_GRP1_START           0x80
@@ -33,6 +41,8 @@ namespace Volt
     #define CPU8086_DISASM_MOV_RELATIVE_END     0xBF
     #define CPU8086_DISASM_GRP2_START           0xD0
     #define CPU8086_DISASM_GRP2_END             0xD3
+    #define CPU8086_DISASM_LOOP_START           0xE0
+    #define CPU8086_DISASM_LOOP_END             0xE2 // JCXZ doesn't count
     #define CPU8086_DISASM_GRP3_8               0xF7
     #define CPU8086_DISASM_GRP3_16              0xF8
     #define CPU8086_DISASM_GRP4                 0xFE
@@ -44,12 +54,22 @@ namespace Volt
 
     void CPU8086::Disasm_Parse(uint8_t opcode)
     {
+        // suppress up to 65,536 repeated loops
+        if (opcode >= CPU8086_DISASM_LOOP_START
+        && opcode <= CPU8086_DISASM_LOOP_END)
+        {
+            disasm_suppress_logging = (cx > 0);
+            return;
+        }
+
+        if (disasm_suppress_logging)
+            return;
+            
         // clear buf
         memset(disasm_buf_8086, 0x00, MAX_DISASM_BUF_SIZE); // faster than strlen?
         memset(disasm_buf_scratch, 0x00, MAX_DISASM_BUF_SIZE); //faster than strlen?
 
-        // set up the buffer
-
+        
         strncat(disasm_buf_8086, opcode_table_disasm[opcode], MAX_DISASM_BUF_SIZE - 1);
 
         // First check 1BL instructions and return immediately
@@ -161,6 +181,36 @@ namespace Volt
             return;
         }
 
+        if (opcode >= CPU8086_DISASM_INC16_START
+        && opcode <= CPU8086_DISASM_INC16_END)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "INC %s", register_table16_disasm[opcode & 0x07]);
+            return;
+        }
+        
+        if (opcode >= CPU8086_DISASM_DEC16_START
+        && opcode <= CPU8086_DISASM_DEC16_END)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "DEC %s", register_table16_disasm[opcode & 0x07]);
+            return;
+        }
+
+        if (opcode >= CPU8086_DISASM_PUSH16_START
+        && opcode <= CPU8086_DISASM_PUSH16_END)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "PUSH %s", register_table16_disasm[opcode & 0x07]);
+            return;
+        }
+        
+        if (opcode >= CPU8086_DISASM_POP16_START
+        && opcode <= CPU8086_DISASM_POP16_END)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "POP %s", register_table16_disasm[opcode & 0x07]);
+            return;
+        }
+
+
+
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway
 
@@ -236,7 +286,9 @@ namespace Volt
     void CPU8086::Disasm(uint8_t opcode)
     {
         Disasm_Parse(opcode);
-        Logging_LogChannel(disasm_buf_8086, LogChannel::Debug);
+
+        if (!disasm_suppress_logging) // e.g loop
+            Logging_LogChannel(disasm_buf_8086, LogChannel::Debug);
     }
 
 }

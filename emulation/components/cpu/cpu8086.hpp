@@ -458,6 +458,8 @@ namespace Volt
                 "CLC", "STC", "CLI", "STI", "CLD", "STD", "", ""  //GRP4/5 - Use reg to print
             };
 
+            bool disasm_suppress_logging = false; 
+
             // tables used for disasm grp1-grp5
             static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"Cmp", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
             static constexpr const char* grp2_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ROL", "ROR", "RCL", "RCR", "SHL", "SHR", "SETMO", "SAR"};

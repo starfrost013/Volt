@@ -97,7 +97,7 @@ namespace Volt
 		return tok;
 	}
 
-	uint64_t Util_GetMicroseconds()
+	double Util_GetMicroseconds()
 	{
 		return glfwGetTime() * 1000000.0;
 	}
