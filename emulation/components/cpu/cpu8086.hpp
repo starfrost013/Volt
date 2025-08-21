@@ -20,6 +20,12 @@ namespace Volt
     #define CPU8088_PREFETCH_QUEUE_SIZE 4
     #define CPU8086_START_LOCATION_CS   0xFFFF
     #define CPU8086_START_LOCATION_IP   0x0000
+    
+    // This is stupid nonsense for CPU8086::Tick
+    #define CPU8086_PREFIX_ES           0x26
+    #define CPU8086_PREFIX_CS           0x2E
+    #define CPU8086_PREFIX_SS           0x36
+    #define CPU8086_PREFIX_DS           0x3E
 
     class CPU8086 : public Component
     {
@@ -230,6 +236,7 @@ namespace Volt
 
             // Control
             void Op_JmpFar(uint8_t opcode);
+            void Op_CallFar(uint8_t opcode);
             
             void Op_ShortJmp(uint8_t opcode);               // Short jump
             void Op_ShortConditionalJmp(uint8_t opcode);    // Short conditional jump
@@ -237,6 +244,9 @@ namespace Volt
 
             void Op_RetNear(uint8_t opcode);
             void Op_RetFar(uint8_t opcode);
+
+            void Op_Loop(uint8_t opcode);
+
 
             // Flag set/clear
             void Op_Sti(uint8_t opcode);
@@ -389,7 +399,7 @@ namespace Volt
                 { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_Unimpl, 1, 1 }, { 0x85, Op_Unimpl, 1, 1 }, { 0x86, Op_Unimpl, 1, 1 },  { 0x87, Op_Unimpl, 1, 1 }, 
                 { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_Unimpl, 1, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_Unimpl, 1, 1 }, { 0x92, Op_Unimpl, 1, 1 },  { 0x93, Op_Unimpl, 1, 1 },  { 0x94, Op_Unimpl, 1, 1 }, { 0x95, Op_Unimpl, 1, 1 }, { 0x96, Op_Unimpl, 1, 1 },  { 0x97, Op_Unimpl, 1, 1 }, 
-                { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_Unimpl, 1, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
+                { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
                 { 0xA0, Op_Unimpl, 1, 1 }, { 0xA1, Op_Unimpl, 1, 1 }, { 0xA2, Op_Unimpl, 1, 1 },  { 0xA3, Op_Unimpl, 1, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
                 { 0xA8, Op_Unimpl, 1, 1 }, { 0xA9, Op_Unimpl, 1, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
@@ -398,7 +408,7 @@ namespace Volt
                 { 0xC8, Op_RetFar, 2, 1 }, { 0xC9, Op_RetFar, 1, 1 }, { 0xCA, Op_RetFar, 1, 1 },  { 0xCB, Op_RetFar, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
-                { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
+                { 0xE0, Op_Loop, 2, 1 }, { 0xE1, Op_Loop, 2, 1 }, { 0xE2, Op_Loop, 2, 1 },  { 0xE3, Op_Loop, 2, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
                 { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Grp45, 2, 1 },  { 0xFF, Op_Grp45, 2, 1 }, 

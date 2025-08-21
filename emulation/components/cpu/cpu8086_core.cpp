@@ -183,9 +183,14 @@ namespace Volt
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
-        //if we reached here there are no more segment prefixes
-        // so reset
-        seg_override = seg_override_none;
+        // todo: is this slow? should we parse prefixes separately
+        if (opcode != CPU8086_PREFIX_ES
+        && opcode != CPU8086_PREFIX_CS
+        && opcode != CPU8086_PREFIX_SS
+        && opcode != CPU8086_PREFIX_DS)
+        {
+            seg_override = seg_override_none;
+        }
     }
 
     void CPU8086::Frame()

@@ -19,7 +19,20 @@ namespace Volt
         cs = new_cs;
         ip = new_ip;
 
-        //Logging_LogChannel("JMPF %04x:%04x", LogChannel::Debug, new_cs, new_ip);
+        // flush the prefetch queue
+        Prefetch_Flush(); 
+    }
+
+    void CPU8086::Op_CallFar(uint8_t opcode)
+    {
+        uint16_t new_ip = Prefetch_Pop16();
+        uint16_t new_cs = Prefetch_Pop16();
+
+        stack_push_16(cs); 
+        stack_push_16(ip); 
+
+        cs = new_cs;
+        ip = new_ip;
 
         // flush the prefetch queue
         Prefetch_Flush(); 
@@ -139,11 +152,51 @@ namespace Volt
         Prefetch_Flush();
     }
 
+    // Halt
     void CPU8086::Op_Hlt(uint8_t opcode)
     {
         // Halt the CPU.
         halted = true;
 
         Logging_LogChannel("The CPU is HALTED. Send NMI or, if IF=1, an interrupt to wake it up.", LogChannel::Message);
+    }
+
+    // LOOP assembly optimisation instruction
+    void CPU8086::Op_Loop(uint8_t opcode)
+    {
+        uint8_t op = opcode & 0x03;
+        int8_t offset = (int8_t)Prefetch_Pop8();
+
+        if (op == 0x03
+        && !cx) // JCXZ
+        {   
+            ip += offset;
+            Prefetch_Flush();
+            return;
+        }
+
+        // decrement
+        cx--; 
+        
+        bool keep_going = false;
+    
+        switch (op)
+        {
+            case 0x00:          // LOOP
+                keep_going = (cx != 0);
+                break;
+            case 0x01:          // LOOPE/LOOPZ
+                keep_going = (cx != 0) && (flags & CPU8086Flags::Zero);
+                break;
+            case 0x02:          // LOOPNZ
+                keep_going = (cx != 0) && !(flags & CPU8086Flags::Zero);
+                break;
+        }
+
+        if (keep_going)
+        {
+            ip += offset;
+            Prefetch_Flush();
+        }
     }
 }
