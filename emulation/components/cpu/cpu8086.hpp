@@ -179,7 +179,7 @@ namespace Volt
                 
                 void (CPU8086::*run_function)(uint8_t opcode); //opcode used for group functions and so on
 
-                uint8_t size;
+                uint8_t size;                                   //ONLY USED FOR DISASM!!!! NOT USED BY REAL CORE!!!!!
                 uint8_t cycles;
             }; 
 
@@ -280,11 +280,57 @@ namespace Volt
 
             // Moves
             void Op_MovImmedToReg(uint8_t opcode);
+            void Op_MovModRM(uint8_t opcode);
+            void Op_MovRegToSeg(uint8_t opcode);
 
             // Group2
             void Op_Grp1(uint8_t opcode);
             void Op_Grp2(uint8_t opcode);
 
+            //
+            // Prefetch Queue (basic impl.)
+            //
+
+            uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
+            // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
+            int8_t prefetch_ptr; 
+            
+            uint8_t Prefetch_Pop8();
+            uint16_t Prefetch_Pop16();
+            void Prefetch_Advance(uint32_t size);
+            void Prefetch_Flush();
+
+            // 
+            // Decode
+            //
+
+            CPU8086::CPU8086InstructionModRM Decode_ModRM(uint8_t opcode);
+
+            void SetPZSFlags8(uint8_t result);
+            void SetPZSFlags16(uint16_t result);
+
+            void SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
+            void SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
+            void SetOF16_Add(uint16_t result, uint16_t old_result, uint16_t operand);
+            void SetOF16_Sub(uint16_t result, uint16_t old_result, uint16_t operand);
+
+            // register table for ordering various operations
+            // mod=11 and reg use the same order table!
+            uint8_t* register_table8[CPU8086_NUM_REGISTERS] = { &al, &cl, &dl, &bl, &ah, &ch, &dh, &bh };
+            uint16_t* register_table16[CPU8086_NUM_REGISTERS] = { &ax, &cx, &dx, &bx, &sp, &bp, &si, &di };
+            uint16_t* segreg_table[CPU8086_NUM_REGISTERS] = { &es, &cs, &ss, &ds, nullptr, nullptr, nullptr, nullptr };
+            
+            uint16_t rm_table[CPU8086_NUM_REGISTERS] = 
+            {
+                (uint16_t)(bx + si),
+                (uint16_t)(bx + di),
+                (uint16_t)(bp + si),
+                (uint16_t)(bp + di),
+                si,
+                di,
+                bp,
+                bx,
+            };
 
             // Defined size used so that we can look up the opcode as a table
             // Disassembler needs to access this!
@@ -307,7 +353,7 @@ namespace Volt
                 { 0x70, Op_ShortConditionalJmp, 2, 1 }, { 0x71, Op_ShortConditionalJmp, 2, 1 }, { 0x72, Op_ShortConditionalJmp, 2, 1 },  { 0x73, Op_ShortConditionalJmp, 2, 1 },  { 0x74, Op_ShortConditionalJmp, 2, 1 }, { 0x75, Op_ShortConditionalJmp, 2, 1 }, { 0x76, Op_ShortConditionalJmp, 2, 1 },  { 0x77, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x78, Op_ShortConditionalJmp, 2, 1 }, { 0x79, Op_ShortConditionalJmp, 2, 1 }, { 0x7A, Op_ShortConditionalJmp, 2, 1 },  { 0x7B, Op_ShortConditionalJmp, 2, 1 },  { 0x7C, Op_ShortConditionalJmp, 2, 1 }, { 0x7D, Op_ShortConditionalJmp, 2, 1 }, { 0x7E, Op_ShortConditionalJmp, 2, 1 },  { 0x7F, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_Unimpl, 1, 1 }, { 0x85, Op_Unimpl, 1, 1 }, { 0x86, Op_Unimpl, 1, 1 },  { 0x87, Op_Unimpl, 1, 1 }, 
-                { 0x88, Op_Unimpl, 1, 1 }, { 0x89, Op_Unimpl, 1, 1 }, { 0x8A, Op_Unimpl, 1, 1 },  { 0x8B, Op_Unimpl, 1, 1 },  { 0x8C, Op_Unimpl, 1, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_Unimpl, 1, 1 },  { 0x8F, Op_Unimpl, 1, 1 }, 
+                { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_Unimpl, 1, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_Unimpl, 1, 1 }, { 0x92, Op_Unimpl, 1, 1 },  { 0x93, Op_Unimpl, 1, 1 },  { 0x94, Op_Unimpl, 1, 1 }, { 0x95, Op_Unimpl, 1, 1 }, { 0x96, Op_Unimpl, 1, 1 },  { 0x97, Op_Unimpl, 1, 1 }, 
                 { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_Unimpl, 1, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
                 { 0xA0, Op_Unimpl, 1, 1 }, { 0xA1, Op_Unimpl, 1, 1 }, { 0xA2, Op_Unimpl, 1, 1 },  { 0xA3, Op_Unimpl, 1, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
@@ -323,6 +369,10 @@ namespace Volt
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Unimpl, 1, 1 },  { 0xFF, Op_Unimpl, 1, 1 }, 
             };
+
+            //
+            // DISASSEMBLER
+            //
 
             // Disassembler table.
             // Note: "GRP1,2,3,4,5" stuff is not listed here (as well as prefixes), it is built dynamically during parsing
@@ -374,50 +424,8 @@ namespace Volt
             static constexpr const char* register_table8_disasm[CPU8086_NUM_REGISTERS] = { "AL", "CL", "DL", "BL", "AH", "CH", "DH", "BH" };
             static constexpr const char* register_table16_disasm[CPU8086_NUM_REGISTERS] = { "AX", "CX", "DX", "BX", "SP", "BP", "SI", "DI" };
             static constexpr const char* rm_table_disasm[CPU8086_NUM_REGISTERS] = {"[BX + SI", "[BX + DI", "[BP + SI", "[BP + DI", "[SI", "[DI", "[BP", "[BX"};
-        
-            //
-            // Prefetch Queue (basic impl.)
-            //
+            static constexpr const char* segreg_table_disasm[CPU8086_NUM_REGISTERS] = {"ES", "CS", "SS", "DS", "INVALID segment register 5", "INVALID segment register 6", "INVALID segment register 7"};
 
-            uint16_t prefetch[CPU8086_PREFETCH_QUEUE_SIZE];
-            // this only goes up to 6 anyway. int8_t for MATHEMATICAL REASONS. DO NOT CHANGE.
-            int8_t prefetch_ptr; 
-            
-            uint8_t Prefetch_Pop8();
-            uint16_t Prefetch_Pop16();
-            void Prefetch_Advance(uint32_t size);
-            void Prefetch_Flush();
-
-            // 
-            // Decode
-            //
-
-            CPU8086::CPU8086InstructionModRM Decode_ModRM(uint8_t opcode);
-
-            void SetPZSFlags8(uint8_t result);
-            void SetPZSFlags16(uint16_t result);
-
-            void SetOF8_Add(uint8_t result, uint8_t old_result, uint8_t operand);
-            void SetOF8_Sub(uint8_t result, uint8_t old_result, uint8_t operand);
-            void SetOF16_Add(uint16_t result, uint16_t old_result, uint16_t operand);
-            void SetOF16_Sub(uint16_t result, uint16_t old_result, uint16_t operand);
-
-            // register table for ordering various operations
-            // mod=11 and reg use the same order table!
-            uint8_t* register_table8[CPU8086_NUM_REGISTERS] = { &al, &cl, &dl, &bl, &ah, &ch, &dh, &bh };
-            uint16_t* register_table16[CPU8086_NUM_REGISTERS] = { &ax, &cx, &dx, &bx, &sp, &bp, &si, &di };
-            
-            uint16_t rm_table[CPU8086_NUM_REGISTERS] = 
-            {
-                (uint16_t)(bx + si),
-                (uint16_t)(bx + di),
-                (uint16_t)(bp + si),
-                (uint16_t)(bp + di),
-                si,
-                di,
-                bp,
-                bx,
-            };
 
     };
 }

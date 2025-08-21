@@ -18,4 +18,38 @@ namespace Volt
         else
             *register_table8[opcode % 0x08] = Prefetch_Pop8();
     }
+
+    void CPU8086::Op_MovModRM(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        bool w = (opcode & 0x01);
+        bool reverse = (opcode & 0x02);
+
+        if (!reverse)
+            (w) ? *modrm.reg_ptr16 = *modrm.ea_ptr : *modrm.reg_ptr8 = *(uint8_t*)modrm.ea_ptr;
+        else
+            (w) ? *modrm.ea_ptr = *modrm.reg_ptr16 : *modrm.ea_ptr = *modrm.reg_ptr8;
+    }
+
+    void CPU8086::Op_MovRegToSeg(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        // this one is only 16bit. 8d is LEA
+        bool reverse = (opcode & 0x02);
+
+        uint16_t* segreg_ptr = segreg_table[modrm.reg];
+
+        if (!segreg_ptr)
+        {
+            Logging_LogChannel("It's all gone very wrong. Invalid segreg %s in MOV!", LogChannel::Warning, segreg_table_disasm[modrm.reg]);
+            return;
+        }
+
+        if (!reverse)
+            *modrm.ea_ptr = *segreg_ptr;
+        else
+            *segreg_ptr = *modrm.ea_ptr;
+    }
 }

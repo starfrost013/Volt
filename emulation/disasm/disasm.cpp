@@ -208,24 +208,30 @@ namespace Volt
             case 0x03:  // 11
                 // This is a bit stupid. We cast it to 8 bit for 8 bit opcodes.
                 if (w)
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%s, ", disasm_buf_8086, register_table16_disasm[modrm_decode.reg]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, ", register_table16_disasm[modrm_decode.reg]);
                 else
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%s, ", disasm_buf_8086, register_table8_disasm[modrm_decode.reg]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, ", register_table8_disasm[modrm_decode.reg]);
 
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
 
                 break;      
         }
 
-        if (!ignore_reg && !((opcode >> 1) & 0x01))
+        if (!ignore_reg)
         {
             if (w)
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", disasm_buf_8086, register_table16_disasm[modrm_decode.reg]);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", register_table16_disasm[modrm_decode.reg]);
             else
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", disasm_buf_8086, register_table8_disasm[modrm_decode.reg]);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", register_table8_disasm[modrm_decode.reg]);
 
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
         }
+        else
+        {
+            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %s", rm_table_disasm[modrm_decode.rm]);
+            strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
+        }
+
 
     }
 
