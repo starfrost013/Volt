@@ -16,12 +16,27 @@ namespace Volt
         uint32_t size; 
         uint8_t* access_byte;
 
-        inline uint16_t access_word(uint32_t index) { return (access_byte[index + 1] << 8 | access_byte[index]); };
+        inline uint16_t read_word(uint32_t index) { return (access_byte[index + 1] << 8 | access_byte[index]); };
 
-        inline uint32_t access_dword(uint32_t index) 
+        // write a u16 to memory
+        inline void write_word(uint32_t index, uint16_t value) 
+        { 
+            access_byte[index + 1] = (value >> 8);  
+            access_byte[index] = (value);
+        };
+
+        inline uint32_t read_dword(uint32_t index) 
         { 
             return access_byte[index + 3] << 24 | access_byte[index + 2] << 16
             | access_byte[index + 1] << 8 | access_byte[index];
+        };
+
+        inline void write_dword(uint32_t index, uint32_t value)
+        {
+            access_byte[index + 3] = (value >> 24);
+            access_byte[index + 2] = (value >> 16) & 0xFF;
+            access_byte[index + 1] = (value >> 8) & 0xFF;
+            access_byte[index + 3] = value & 0xFF;
         };
 
         AddressSpace* next; 

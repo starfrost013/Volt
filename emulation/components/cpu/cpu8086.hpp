@@ -68,6 +68,23 @@ namespace Volt
 
             // TODO: Would a define be faster?
             uint32_t inline linear_pc() { return ((cs << 4) + ip) % CPU8086_ADDR_SPACE_SIZE; }
+            uint32_t inline linear_sp() { return ((ss << 4) + sp) % CPU8086_ADDR_SPACE_SIZE; }
+
+            // Stack stuff
+
+            // if we need other sizes we can add them later
+            void inline stack_push_16(uint16_t value) 
+            {
+                sp -= 2; 
+                address_space->write_word(linear_sp(), value);
+            };
+
+            uint16_t inline stack_pop_16(uint16_t value) 
+            {
+                uint16_t ret = address_space->read_word(linear_sp());
+                sp += 2;
+                return ret; 
+            };
 
             // Union registers
             enum CPU8086CurrentSegmentRegister
@@ -287,9 +304,11 @@ namespace Volt
             void Op_MovModRM(uint8_t opcode);
             void Op_MovRegToSeg(uint8_t opcode);
 
-            // Group2
+            // Group
             void Op_Grp1(uint8_t opcode);
             void Op_Grp2(uint8_t opcode);
+
+            void Op_Grp45(uint8_t opcode);
 
             // IO
             void Op_In(uint8_t opcode);
@@ -375,7 +394,7 @@ namespace Volt
                 { 0xE0, Op_Unimpl, 1, 1 }, { 0xE1, Op_Unimpl, 1, 1 }, { 0xE2, Op_Unimpl, 1, 1 },  { 0xE3, Op_Unimpl, 1, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
                 { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
-                { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Unimpl, 1, 1 },  { 0xFF, Op_Unimpl, 1, 1 }, 
+                { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Grp45, 2, 1 },  { 0xFF, Op_Grp45, 2, 1 }, 
             };
 
             //

@@ -5,6 +5,7 @@
 // cpu8086_ops_group.cpp: Admittedly this is kind of arbitrary
 //
 
+#include "cpu8086.hpp"
 #include <emulation/emulation.hpp>
 #include <emulation/components/cpu/cpu8086.hpp>
 
@@ -31,6 +32,15 @@ namespace Volt
     #define CPU8086_GRP2_IS_16BIT   0x01
     #define CPU8086_GRP2_USE_CL     0x02
 
+    #define CPU8086_GRP45_OP_INC    0x00
+    #define CPU8086_GRP45_OP_DEC    0x01
+    #define CPU8086_GRP4_MAX_VALID  0x01
+    #define CPU8086_GRP45_OP_CALL   0x02
+    #define CPU8086_GRP45_OP_CALLF  0x03            // Mem only
+    #define CPU8086_GRP45_OP_JMP    0x04
+    #define CPU8086_GRP45_OP_JMPF   0x05
+    #define CPU8086_GRP45_OP_PUSH   0x06
+    #define CPU8086_GRP45_OP_PUSHI  0x07            // Illegal PUSH
 
     void CPU8086::Op_Grp1(uint8_t opcode)
     {
@@ -331,6 +341,7 @@ namespace Volt
                             *(uint8_t*)modrm.ea_ptr >>= 1;
                         else 
                             *(uint8_t*)modrm.ea_ptr >>= 1 | (value8 & 0x80); 
+
                         //use old value to determine carry
 
                         // TODO: can this be done *after* op?
@@ -343,11 +354,154 @@ namespace Volt
                         ((value8 & 0x80) != (value8 & 0x40)) ? flags |= CPU8086Flags::Overflow : flags &= ~CPU8086Flags::Overflow;
 
                         SetPZSFlags8(value8);
-                        
                     }
                 }
                 
                 flags &= ~CPU8086Flags::AuxCarry;
+                break;
+        }
+    }
+
+
+    void CPU8086::Op_Grp45(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        // FE = grp4
+        // FF = grp5
+        bool w = (opcode & 0x01);
+
+        if (!w && modrm.reg > CPU8086_GRP4_MAX_VALID)
+            Logging_LogChannel("What you're about to execute isn't going to end very well", LogChannel::Warning);
+
+        switch (modrm.reg)
+        {
+            //INC DEC are pretty trivial so may as well duplicate them here
+            case CPU8086_GRP45_OP_INC:
+                if (w)
+                {
+                    uint16_t result = ++(*modrm.ea_ptr);
+                    SetPZSFlags16(result);
+                      
+                    if (result & 0x0F == 0x00) 
+                        flags |= CPU8086Flags::AuxCarry;
+
+                    SetOF16_Add(result, result - 1, 1);
+                }
+                else
+                {
+                    uint8_t result = ++(*(uint8_t*)modrm.ea_ptr);
+                    SetPZSFlags8(result);
+
+                    if (result & 0x0F == 0x00) 
+                        flags |= CPU8086Flags::AuxCarry;
+
+                    SetOF8_Add(result, result - 1, 1);
+                }
+
+                break;
+            case CPU8086_GRP45_OP_DEC:
+                if (w)
+                {
+                    uint16_t result = --(*modrm.ea_ptr);
+                    SetPZSFlags16(result);
+                      
+                    if (result & 0x0F == 0x0F) 
+                        flags |= CPU8086Flags::AuxCarry;
+
+                    SetOF16_Sub(result, result + 1, 1);
+                }
+                else
+                {
+                    uint8_t result = --(*(uint8_t*)modrm.ea_ptr);
+                    SetPZSFlags8(result);
+
+                    if (result & 0x0F == 0x0F) 
+                        flags |= CPU8086Flags::AuxCarry;
+
+                    SetOF8_Sub(result, result + 1, 1);
+                }
+                break;
+            case CPU8086_GRP45_OP_CALL:
+                if (w)
+                {
+                    uint16_t ip_new = *modrm.ea_ptr; 
+                    stack_push_16(ip);
+                    ip = ip_new; 
+                }
+                else
+                {
+                    uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
+                    stack_push_16(ip);
+                    ip = (ip >> 8) << 8 | ip_new_messed;
+                }
+
+                Prefetch_Flush();
+                break;
+            case CPU8086_GRP45_OP_CALLF:
+                if (w)
+                {
+                    uint16_t ip_new = *modrm.ea_ptr; 
+                    uint16_t cs_new = *(modrm.ea_ptr + 1) % address_space->size;       //1 due to uint16_t
+                    stack_push_16(cs);
+                    stack_push_16(ip);
+
+                    cs = cs_new; 
+                    ip = ip_new; 
+                }
+                else
+                {
+                    uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
+                    uint8_t cs_new_messed = *(uint8_t*)(modrm.ea_ptr + 2) % address_space->size;
+                    stack_push_16(cs); 
+                    stack_push_16(ip);
+
+                    ip = (ip >> 8) << 8 | ip_new_messed;
+                    cs = (cs >> 8) << 8 | cs_new_messed;
+                }
+
+                Prefetch_Flush();
+                break;
+            case CPU8086_GRP45_OP_JMP:
+                if (w)
+                {
+                    uint16_t ip_new = *modrm.ea_ptr; 
+                    ip = ip_new; 
+                }
+                else
+                {
+                    uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
+                    ip = (ip >> 8) << 8 | ip_new_messed;
+                }
+
+                Prefetch_Flush();
+                break;
+            case CPU8086_GRP45_OP_JMPF:
+                if (w)
+                {
+                    uint16_t ip_new = *modrm.ea_ptr; 
+                    uint16_t cs_new = *(modrm.ea_ptr + 1) % address_space->size;       //1 due to uint16_t
+
+                    cs = cs_new; 
+                    ip = ip_new; 
+                }
+                else
+                {
+                    uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
+                    uint8_t cs_new_messed = *(uint8_t*)(modrm.ea_ptr + 2) % address_space->size;
+
+                    ip = (ip >> 8) << 8 | ip_new_messed;
+                    cs = (cs >> 8) << 8 | cs_new_messed;
+                }
+
+                Prefetch_Flush();
+                break;
+            case CPU8086_GRP45_OP_PUSH:
+            case CPU8086_GRP45_OP_PUSHI:    
+                if (modrm.ea_ptr == &sp)
+                    stack_push_16(*(modrm.ea_ptr - 1));                                 // 1 due to uint16_t
+                else
+                    stack_push_16(*modrm.ea_ptr);
                 break;
         }
     }

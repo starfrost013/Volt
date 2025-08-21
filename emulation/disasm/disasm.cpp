@@ -61,7 +61,7 @@ namespace Volt
         if (opcode == CPU8086_DISASM_FAR_JUMP
         || opcode == CPU8086_DISASM_FAR_CALL)
         {
-            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04X:%04X", address_space->access_word(linear_pc() + 2), address_space->access_word(linear_pc()));
+            snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %04X:%04X", address_space->read_word(linear_pc() + 2), address_space->read_word(linear_pc()));
             strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             return;
         }
@@ -73,7 +73,7 @@ namespace Volt
             // This works because we only care about 40-4f
             if (opcode & 0x08)
             {
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %04X", register_table16_disasm[opcode % 0x08], address_space->access_word(linear_pc()));
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %04X", register_table16_disasm[opcode % 0x08], address_space->read_word(linear_pc()));
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             }
             else
@@ -89,7 +89,7 @@ namespace Volt
         if (opcode >= CPU8086_DISASM_SHORT_RELATIVE_START
         && opcode <= CPU8086_DISASM_SHORT_RELATIVE_END)
         {   
-            uint8_t offset = address_space->access_word(linear_pc());
+            uint8_t offset = address_space->read_word(linear_pc());
             //put a + in. - will come from the number
             if (offset & 0x80)
                 snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " -%02X", (int8_t)offset);
@@ -175,7 +175,7 @@ namespace Volt
                 if (modrm_decode.mod == 0x00 
                     && modrm_decode.rm == 6)
                 {
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%04X", address_space->access_word(linear_pc() + 1));
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, "%04X", address_space->read_word(linear_pc() + 1));
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                     return;
                 }
@@ -213,7 +213,7 @@ namespace Volt
                 else if (modrm_decode.mod == 0x02) // +disp16
                 {
                     //>>1 due to values referring to 16 bit
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %04X", address_space->access_word(linear_pc() + 1));
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %04X", address_space->read_word(linear_pc() + 1));
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                 }
 
