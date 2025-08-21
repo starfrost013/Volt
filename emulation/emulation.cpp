@@ -10,6 +10,8 @@ namespace Volt
     {
         Render_Init();
 
+        Logging_LogAll("******** Emulation_Init ********", LogChannel::Debug);
+
         CPU8086* cpu_808x = Memory_Alloc<CPU8086>(TAG_EMU_COMPONENT_CPU);
         test_machine.AddComponent(cpu_808x);
     }

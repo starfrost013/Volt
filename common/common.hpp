@@ -11,7 +11,6 @@
 #include <common/console/console.hpp>       // Console
 #include <common/cvar/cvar.hpp>             // CVar system
 #include <common/filesystem/filesystem.hpp> // Filesystem
-
 #include <util/util.hpp>
 
 namespace Volt

@@ -39,4 +39,10 @@ namespace Volt
             }
         }
     }
+
+    // Get around stupid include crap
+    void Machine::LogComponent(const char* name)
+    {
+        Logging_LogChannel("Successfully added machine component %s", Volt::LogChannel::Debug);
+    }
 }

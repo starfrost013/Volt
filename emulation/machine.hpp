@@ -6,8 +6,6 @@
 //
 #pragma once
 #include <emulation/emulation.hpp>
-
-
 #define RESERVED_COMPONENTS     16
 
 namespace Volt
@@ -16,6 +14,7 @@ namespace Volt
     {
         public: 
             void Tick();
+            static void LogComponent(const char* name); 
 
             // Should these components be dynamically allocated?
             template <typename T>
@@ -27,7 +26,10 @@ namespace Volt
                 components.push_back(component);     
                 
                 component->Init();
-                
+
+                // gets around include nonsense
+                Machine::LogComponent(component->name);
+
                 return; 
             }
 
