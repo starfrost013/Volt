@@ -62,12 +62,12 @@ namespace Volt
     uint8_t IOx86_Read(uint16_t port)
     {
         if (!io_port_range)
-            return 0x00;
+            return 0xFF;
 
         if (!io_port_range->entries[port].read)
         {
             Logging_LogChannel("I/O port %04x read: Nothing here...", LogChannel::Debug, port);
-            return 0x00;
+            return 0xFF;
         }
 
         return io_port_range->entries[port].read();
