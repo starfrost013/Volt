@@ -69,7 +69,7 @@ namespace Volt
             return;
         }
 
-        if (reverse)
+        if (!reverse)
             *modrm.ea_ptr = *segreg_ptr;
         else
             *segreg_ptr = *modrm.ea_ptr;

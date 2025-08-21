@@ -35,12 +35,12 @@ namespace Volt
 
         if (w)
         {
-            offset16 = (int16_t)Prefetch_Pop16() + 3; 
+            offset16 = (int16_t)Prefetch_Pop16(); 
             ip += offset16;
         }
         else
         {
-            offset8 = (int8_t)Prefetch_Pop8() + 2; 
+            offset8 = (int8_t)Prefetch_Pop8(); 
             ip += offset8;
         }
 

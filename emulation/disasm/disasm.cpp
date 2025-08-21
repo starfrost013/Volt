@@ -150,12 +150,12 @@ namespace Volt
             strncat(disasm_buf_8086, grp5_table_disasm[modrm_decode.reg], MAX_DISASM_BUF_SIZE - 1);
             
         // check for segment moves
-        if (opcode == CPU8086_DISASM_MOV_REG2SEG)
+        if (opcode == CPU8086_DISASM_MOV_SEG2REG)
         {
             snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "MOV %s, %s", segreg_table_disasm[modrm_decode.reg], register_table16_disasm[modrm_decode.rm]);
             return;
         }
-        else if (opcode == CPU8086_DISASM_MOV_SEG2REG)
+        else if (opcode == CPU8086_DISASM_MOV_REG2SEG)
         {
             snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "MOV %s, %s", register_table16_disasm[modrm_decode.rm], segreg_table_disasm[modrm_decode.reg]);
             return;
@@ -185,20 +185,20 @@ namespace Volt
                 {
                     case CPU8086::seg_override_es:
                         reg = es;
-                        strncat(disasm_buf_8086, "ES:", MAX_DISASM_BUF_SIZE - 1);
+                        strncat(disasm_buf_8086, " ES:", MAX_DISASM_BUF_SIZE - 1);
                         break;
                     case CPU8086::seg_override_ss:
                         reg = ss;
-                        strncat(disasm_buf_8086, "SS:", MAX_DISASM_BUF_SIZE - 1);
+                        strncat(disasm_buf_8086, " SS:", MAX_DISASM_BUF_SIZE - 1);
                         break; 
                     case CPU8086::seg_override_cs:
                         reg = cs;
-                        strncat(disasm_buf_8086, "CS:", MAX_DISASM_BUF_SIZE - 1);
+                        strncat(disasm_buf_8086, " CS:", MAX_DISASM_BUF_SIZE - 1);
                         break;
                 }
                 
                 if (reg == ds)
-                    strncat(disasm_buf_8086, "DS:", MAX_DISASM_BUF_SIZE - 1);
+                    strncat(disasm_buf_8086, " DS:", MAX_DISASM_BUF_SIZE - 1);
 
                 // >> 1 in order to fix the index
                 strncat(disasm_buf_8086, rm_table_disasm[modrm_decode.rm], MAX_DISASM_BUF_SIZE - 1);
