@@ -160,10 +160,6 @@ namespace Volt
 
     void CPU8086::Tick()
     {
-        //TODO: PREFETCH QUEUE IMPLEMENTATION
-
-        clock_skip = 0;
-
         if (halted)
         {
             //TODO: UNPAUSE ON NMI/INTR
@@ -172,7 +168,7 @@ namespace Volt
 
         // Keep the prefetch queue filled up
         uint8_t opcode = Prefetch_Pop8();
-        clock_skip = instruction_table[opcode].cycles;
+        clock_skip = instruction_table[opcode].cycles; //allow this to be increased by the run_function
 
         if (emu_8086_disasm->value)
             Disasm(opcode);

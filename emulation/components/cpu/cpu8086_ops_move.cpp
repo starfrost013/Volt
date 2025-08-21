@@ -74,4 +74,32 @@ namespace Volt
         else
             *segreg_ptr = *modrm.ea_ptr;
     }
+
+    // 9x XCHG
+    void CPU8086::Op_XchgReg(uint8_t opcode)
+    {
+        uint16_t old_ax = ax;
+        uint16_t reg = (*register_table16[opcode & 0x07]);
+        ax = reg;
+        reg = old_ax;
+    }
+
+    void CPU8086::Op_XchgModRM(uint8_t opcode)
+    {
+        bool w = (opcode & 0x01);
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        if (w)
+        {
+            uint16_t old_reg16 = *modrm.reg_ptr16;
+            *modrm.reg_ptr16 = *modrm.ea_ptr;
+            *modrm.ea_ptr = old_reg16;
+        }
+        else
+        {
+            uint8_t old_reg8 = *modrm.reg_ptr8;
+            *modrm.reg_ptr8 = *(uint8_t*)modrm.ea_ptr;
+            *(uint8_t*)modrm.ea_ptr = old_reg8;
+        }
+    }
 }

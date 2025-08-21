@@ -56,7 +56,7 @@ namespace Volt
 
                 //TODO: PUT ADDRESS SPACE SIZE IN ADDRESS SPACE SYSTEM
                 // Prevent us going to invalid memory in the case of the CPU going wild
-                final_linear_address %= CPU8086_ADDR_SPACE_SIZE;
+                final_linear_address %= address_space->size;
 
                 modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
 
@@ -65,7 +65,7 @@ namespace Volt
                 else if (modrm_decode.mod == 0x02) // +disp16
                     final_linear_address += Prefetch_Pop16();
 
-                final_linear_address %= CPU8086_ADDR_SPACE_SIZE;
+                final_linear_address %= address_space->size;
                 modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
                 return modrm_decode;
    

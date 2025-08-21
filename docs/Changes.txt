@@ -17,7 +17,7 @@ Changes:
 * Fix the zero flag 
 
 === CORE SYSTEMS ===
-* Implement the
+* Emulation runs on its own thread separate to everything else
 
 Pre-Alpha 0.9
 21 August 2025
