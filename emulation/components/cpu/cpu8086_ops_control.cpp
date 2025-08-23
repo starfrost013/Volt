@@ -28,8 +28,8 @@ namespace Volt
         uint16_t new_ip = Prefetch_Pop16();
         uint16_t new_cs = Prefetch_Pop16();
 
-        stack_push_16(cs); 
-        stack_push_16(ip); 
+        Stack_Push16(cs); 
+        Stack_Push16(ip); 
 
         cs = new_cs;
         ip = new_ip;
@@ -132,7 +132,7 @@ namespace Volt
     void CPU8086::Op_RetNear(uint8_t opcode)
     {
         bool use_imm = !(opcode & 0x01);
-        ip = stack_pop_16();
+        ip = Stack_Pop16();
 
         if (use_imm)
             sp += Prefetch_Pop8(); 
@@ -143,8 +143,8 @@ namespace Volt
     void CPU8086::Op_RetFar(uint8_t opcode)
     {
         bool use_imm = !(opcode & 0x01);
-        ip = stack_pop_16();
-        cs = stack_pop_16();
+        ip = Stack_Pop16();
+        cs = Stack_Pop16();
 
         if (use_imm)
             sp += Prefetch_Pop8(); 
@@ -200,5 +200,50 @@ namespace Volt
             ip += offset;
             Prefetch_Flush();
         }
+    }
+
+    // Some non-INT sources can generate interrupts so this is its own funciton
+    void CPU8086::Op_GenerateInterrupt(uint8_t int_number)
+    {
+        Stack_Push16(flags);
+        Stack_Push16(cs);
+        Stack_Push16(ip);
+
+        uint32_t intr_pos = (int_number << 2);
+
+        ip = address_space->read_word(intr_pos);
+        cs = address_space->read_word(intr_pos + 2);
+
+        Prefetch_Flush();
+    }
+
+    // Run an interrupt
+    void CPU8086::Op_Int(uint8_t opcode)
+    {
+        uint32_t int_number = 0; 
+
+        if ((opcode & 0x01)) // INT3
+            int_number = 3;
+        else if (opcode & 0x02) // INTO
+        {
+            if (!(flags & CPU8086Flags::Overflow))
+                return;
+            
+            int_number = 4; 
+        }
+        else
+            int_number = Prefetch_Pop8(); 
+
+        Op_GenerateInterrupt(int_number);
+
+    }
+
+    void CPU8086::Op_Iret(uint8_t opcode)
+    {
+        ip = Stack_Pop16();
+        cs = Stack_Pop16();
+        flags = Stack_Pop16();
+
+        Prefetch_Flush();
     }
 }

@@ -13,17 +13,17 @@ namespace Volt
 {
     void CPU8086::Op_PushReg(uint8_t opcode)
     {
-        stack_push_16(*(register_table16[opcode & 0x07]));
+        Stack_Push16(*(register_table16[opcode & 0x07]));
     }
 
     void CPU8086::Op_PopReg(uint8_t opcode)
     {
-        *(register_table16[opcode & 0x07]) = stack_pop_16();
+        *(register_table16[opcode & 0x07]) = Stack_Pop16();
     }
 
     void CPU8086::Op_PushSegReg(uint8_t opcode)
     {
-        stack_push_16(*segreg_table[opcode >> 3]);
+        Stack_Push16(*segreg_table[opcode >> 3]);
     }
 
     void CPU8086::Op_PopSegReg(uint8_t opcode)
@@ -35,6 +35,6 @@ namespace Volt
         if (segreg == 0x01)
             Logging_LogChannel("POP CS aka: it's over", LogChannel::Warning);
 
-        segreg = stack_pop_16();
+        segreg = Stack_Pop16();
     }
 }

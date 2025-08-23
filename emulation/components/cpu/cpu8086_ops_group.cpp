@@ -42,6 +42,7 @@ namespace Volt
     #define CPU8086_GRP45_OP_PUSH   0x06
     #define CPU8086_GRP45_OP_PUSHI  0x07            // Illegal PUSH
 
+    // TODO: sign extension on 0x83
     void CPU8086::Op_Grp1(uint8_t opcode)
     {
         CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
@@ -426,13 +427,13 @@ namespace Volt
                 if (w)
                 {
                     uint16_t ip_new = *modrm.ea_ptr; 
-                    stack_push_16(ip);
+                    Stack_Push16(ip);
                     ip = ip_new; 
                 }
                 else
                 {
                     uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
-                    stack_push_16(ip);
+                    Stack_Push16(ip);
                     ip = (ip >> 8) << 8 | ip_new_messed;
                 }
 
@@ -443,8 +444,8 @@ namespace Volt
                 {
                     uint16_t ip_new = *modrm.ea_ptr; 
                     uint16_t cs_new = *(modrm.ea_ptr + 1) % address_space->size;       //1 due to uint16_t
-                    stack_push_16(cs);
-                    stack_push_16(ip);
+                    Stack_Push16(cs);
+                    Stack_Push16(ip);
 
                     cs = cs_new; 
                     ip = ip_new; 
@@ -453,8 +454,8 @@ namespace Volt
                 {
                     uint8_t ip_new_messed = *(uint8_t*)modrm.ea_ptr;
                     uint8_t cs_new_messed = *(uint8_t*)(modrm.ea_ptr + 2) % address_space->size;
-                    stack_push_16(cs); 
-                    stack_push_16(ip);
+                    Stack_Push16(cs); 
+                    Stack_Push16(ip);
 
                     ip = (ip >> 8) << 8 | ip_new_messed;
                     cs = (cs >> 8) << 8 | cs_new_messed;
@@ -502,16 +503,16 @@ namespace Volt
                 {
                     // we have to do this for SP
                     if (modrm.ea_ptr == &sp)
-                        stack_push_16(*(modrm.ea_ptr - 1));                                 // 1 due to uint16_t
+                        Stack_Push16(*(modrm.ea_ptr - 1));                                 // 1 due to uint16_t
                     else
-                        stack_push_16(*modrm.ea_ptr);
+                        Stack_Push16(*modrm.ea_ptr);
                 }
                 else
                 {
                     if (modrm.ea_ptr == &sp)
-                        stack_push_16(*((uint8_t*)modrm.ea_ptr - 2));                        // 1 due to uint16_t
+                        Stack_Push16(*((uint8_t*)modrm.ea_ptr - 2));                        // 1 due to uint16_t
                     else
-                        stack_push_16(*(uint8_t*)modrm.ea_ptr);
+                        Stack_Push16(*(uint8_t*)modrm.ea_ptr);
                 }
 
                 break;

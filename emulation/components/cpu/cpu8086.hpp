@@ -80,13 +80,13 @@ namespace Volt
             // Stack stuff
 
             // if we need other sizes we can add them later
-            void inline stack_push_16(uint16_t value) 
+            void inline Stack_Push16(uint16_t value) 
             {
                 sp -= 2; 
                 address_space->write_word(linear_sp(), value);
             };
 
-            uint16_t inline stack_pop_16() 
+            uint16_t inline Stack_Pop16() 
             {
                 uint16_t ret = address_space->read_word(linear_sp());
                 sp += 2;
@@ -337,6 +337,10 @@ namespace Volt
             void Op_PushSegReg(uint8_t opcode);
             void Op_PopSegReg(uint8_t opcode);
 
+            void Op_GenerateInterrupt(uint8_t int_number);
+            void Op_Int(uint8_t opcode);
+            void Op_Iret(uint8_t opcode);
+
             //
             // Prefetch Queue (basic impl.)
             //
@@ -411,7 +415,7 @@ namespace Volt
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
                 { 0xC0, Op_RetNear, 2, 1 }, { 0xC1, Op_RetNear, 1, 1 }, { 0xC2, Op_RetNear, 2, 1 },  { 0xC3, Op_RetNear, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 
-                { 0xC8, Op_RetFar, 2, 1 }, { 0xC9, Op_RetFar, 1, 1 }, { 0xCA, Op_RetFar, 1, 1 },  { 0xCB, Op_RetFar, 1, 1 },  { 0xCC, Op_Unimpl, 1, 1 }, { 0xCD, Op_Unimpl, 1, 1 }, { 0xCE, Op_Unimpl, 1, 1 },  { 0xCF, Op_Unimpl, 1, 1 }, 
+                { 0xC8, Op_RetFar, 2, 1 }, { 0xC9, Op_RetFar, 1, 1 }, { 0xCA, Op_RetFar, 1, 1 },  { 0xCB, Op_RetFar, 1, 1 },  { 0xCC, Op_Int, 1, 1 }, { 0xCD, Op_Int, 2, 1 }, { 0xCE, Op_Int, 1, 1 },  { 0xCF, Op_Iret, 1, 1 }, 
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
                 { 0xE0, Op_Loop, 2, 1 }, { 0xE1, Op_Loop, 2, 1 }, { 0xE2, Op_Loop, 2, 1 },  { 0xE3, Op_Loop, 2, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 

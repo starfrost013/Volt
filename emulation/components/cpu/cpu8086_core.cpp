@@ -187,6 +187,10 @@ namespace Volt
         {
             seg_override = seg_override_none;
         }
+
+        // if trap flag is set fire INT1
+        if (flags & CPU8086Flags::Trap)
+            Op_GenerateInterrupt(1);
     }
 
     void CPU8086::Frame()
