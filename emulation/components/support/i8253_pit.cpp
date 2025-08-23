@@ -29,6 +29,7 @@ namespace Volt
 
         emu_clk_8253 = Cvar_Get("emu_clk_8253", "1193181", false);
         clock_hz = emu_clk_8253->value;
+        update = true; 
 
         IOx86_AddMapping(0x40, 0x43, this);
 

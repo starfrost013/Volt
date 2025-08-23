@@ -14,7 +14,7 @@ namespace Volt
             {
                 // make it optional to initialise microseconds_target
                 if (!component->microseconds_target)
-                    component->microseconds_target = (1 / double(component->clock_hz));
+                    component->microseconds_target = (1 / double(component->clock_hz) * 1000000.0f);
 
                 // various measurements
                 double real_milliseconds = 0, target_milliseconds = 0, render_milliseconds = 0, update_milliseconds = 0;
