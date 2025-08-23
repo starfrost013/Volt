@@ -63,6 +63,9 @@ add_executable (Volt
 # IO
 "emulation/components/io/io_port.cpp"
 
+# Support components
+"emulation/components/support/i8253_pit.cpp"
+
 # RENDER
 "render/render_core.cpp"
 

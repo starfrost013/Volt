@@ -18,8 +18,7 @@ namespace Volt
     // Devices that need 16 or 32 bit reads/writes can use contiguous ports and convert values as needed.
     struct IOx86Entry
     {
-        uint8_t (*read)();
-        void (*write)(uint8_t value);
+        Component* component;
     };
 
     struct IOx86
@@ -30,7 +29,7 @@ namespace Volt
     extern IOx86* io_port_range;
 
     void IOx86_Init();
-    void IOx86_AddMapping(uint16_t start, uint16_t end, uint8_t (*read)(), void (*write)(uint8_t value), const char* debug_name);
+    void IOx86_AddMapping(uint16_t start, uint16_t end, Component* component);
     void IOx86_DeleteMapping(uint16_t start, uint16_t end);
     uint8_t IOx86_Read(uint16_t port);
     void IOx86_Write(uint16_t port, uint16_t value);

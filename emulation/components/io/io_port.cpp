@@ -19,24 +19,30 @@ namespace Volt
     }
 
     // Add an I/O mapping
-    void IOx86_AddMapping(uint16_t start, uint16_t end, uint8_t (*read)(), void (*write)(uint8_t value), const char* debug_name)
+    void IOx86_AddMapping(uint16_t start, uint16_t end, Component* component)
     {
         if (!io_port_range)
             return;
 
-        if (end > start)
+        if (start > end)
         {
-            Logging_LogChannel("IOx86_AddMapping: end > start for debug_name %s", LogChannel::Debug, debug_name);
+            Logging_LogChannel("IOx86_AddMapping: end > start for %s", LogChannel::Debug, component->name);
             return;
         }
 
-        for (uint16_t io_port = start; io_port < end; io_port++)
+        if (end > X86_NUM_IO_PORTS
+        || start < 0)
         {
-            io_port_range->entries[io_port].read = read;
-            io_port_range->entries[io_port].write = write; 
+            Logging_LogChannel("IOx86_AddMapping: Port range was out of the 0-%x range for %s!", LogChannel::Debug, end, component->name);
+            return;
         }
 
-        Logging_LogChannel("I/O port range: %04x-%04x registered for device: %s", LogChannel::Debug, start, end, debug_name);
+        for (uint16_t io_port = start; io_port <= end; io_port++)
+        {
+            io_port_range->entries[io_port].component = component;
+        }
+
+        Logging_LogChannel("I/O port range: %04x-%04x registered for device: %s", LogChannel::Debug, start, end, component->name);
     }
 
     void IOx86_DeleteMapping(uint16_t start, uint16_t end)
@@ -44,16 +50,22 @@ namespace Volt
         if (!io_port_range)
             return;
 
-        if (end > start)
+        if (start > end)
         {
-            Logging_LogChannel("IOx86_DeleteMapping: end > start", LogChannel::Debug);
+            Logging_LogChannel("IOx86_DeleteMapping: start > end", LogChannel::Debug);
+            return;
+        }
+
+        if (end > X86_NUM_IO_PORTS
+        || start < 0)
+        {
+            Logging_LogChannel("IOx86_DeleteMapping: Port range was out of the 0-%x range for %s!", LogChannel::Debug, end);
             return;
         }
 
         for (uint16_t io_port = start; io_port < end; io_port++)
         {
-            io_port_range->entries[io_port].read = nullptr;
-            io_port_range->entries[io_port].write = nullptr;  
+            io_port_range->entries[io_port].component = nullptr;  
         }
 
         Logging_LogChannel("I/O port range: %04x-%04x deleted", LogChannel::Debug, start, end);
@@ -64,13 +76,13 @@ namespace Volt
         if (!io_port_range)
             return 0xFF;
 
-        if (!io_port_range->entries[port].read)
+        if (!io_port_range->entries[port].component)
         {
             Logging_LogChannel("I/O port %04x read: Nothing here...", LogChannel::Debug, port);
             return 0xFF;
         }
 
-        return io_port_range->entries[port].read();
+        return io_port_range->entries[port].component->RegisterRead(port);
     }
     
     void IOx86_Write(uint16_t port, uint16_t value)
@@ -78,13 +90,13 @@ namespace Volt
         if (!io_port_range)
             return;
 
-        if (!io_port_range->entries[port].write)
+        if (!io_port_range->entries[port].component)
         {
             Logging_LogChannel("I/O port %04x write value: %04x: Nothing here...", LogChannel::Debug, port, value);
             return;
         }
 
-        io_port_range->entries[port].write(value);
+        io_port_range->entries[port].component->RegisterWrite(port, value);
     }
 
     void IOx86_Shutdown()

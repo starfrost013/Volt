@@ -1,5 +1,6 @@
 #include <common/common.hpp>
 #include <common/memory/memory_alloc.hpp>
+
 namespace Volt
 {
 	void* memalloc_head = nullptr;	// The head of the allocation list
