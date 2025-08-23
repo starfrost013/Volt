@@ -232,7 +232,6 @@ namespace Volt
                 break;
             case PIT8253Port::ControlWord:
                 // determine which channel is being configured
-
                 // set control
                 counter_index = (value >> 6) & 0x03;
 
@@ -260,9 +259,10 @@ namespace Volt
                     operating_mode = (value >> 1) & 0x07;
 
                     if (operating_mode >= 6)
+                    {
                         operating_mode ^= 4; 
-
-                    //current_counter.control = (current_counter.control & ~0xE) | operating_mode;
+                        current_counter.control = (current_counter.control & ~0xE) | operating_mode;
+                    }
 
                     current_counter.write_2nd_byte = false; 
 
