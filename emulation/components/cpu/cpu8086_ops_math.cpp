@@ -617,5 +617,52 @@ namespace Volt
         Op_SubInternal16to16(dst_ptr, src_ptr);
         *dst_ptr = old;
     }
+
+    // Test is the same as and, but the result is discarded.
+    void CPU8086::Op_TestModRm(uint8_t opcode)
+    {
+        bool w = (opcode & 0x01);
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode); 
+
+        // Eb, Gb
+        if (!w)
+        {
+            uint8_t old_ea_ptr = *(uint8_t*)modrm.ea_ptr;
+
+            Op_AndInternal8to8((uint8_t*)modrm.ea_ptr, modrm.reg_ptr8);
+            *(uint8_t*)modrm.ea_ptr = old_ea_ptr;
+        }
+        // Ev, Gv
+        else
+        {
+            uint16_t old_ea_ptr = *modrm.ea_ptr;
+
+            Op_AndInternal16to16(modrm.ea_ptr, modrm.reg_ptr16);
+            *modrm.ea_ptr = old_ea_ptr;
+        }
+    }
+
+    // Test is the same as and, but the result is discarded.
+    void CPU8086::Op_TestImmed(uint8_t opcode)
+    {
+        bool w = (opcode & 0x01);
+
+        if (!w)
+        {
+            uint8_t old_al = al;
+            uint8_t immed8 = Prefetch_Pop8();
+
+            Op_AndInternal8to8(&al, &immed8);
+            al = old_al;
+        }
+        else
+        {
+            uint16_t old_ax = ax;
+            uint16_t immed16 = Prefetch_Pop16();
+
+            Op_AndInternal16to16(&ax, &immed16);
+            ax = old_ax;
+        }
+    }
     
 }

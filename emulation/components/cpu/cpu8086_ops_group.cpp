@@ -363,7 +363,6 @@ namespace Volt
         }
     }
 
-
     void CPU8086::Op_Grp45(uint8_t opcode)
     {
         CPU8086InstructionModRM modrm = Decode_ModRM(opcode);

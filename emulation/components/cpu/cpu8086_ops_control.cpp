@@ -205,6 +205,9 @@ namespace Volt
     // Some non-INT sources can generate interrupts so this is its own funciton
     void CPU8086::Op_GenerateInterrupt(uint8_t int_number)
     {
+        // prevent infinite recursion if trap flag set
+        flags &= ~(CPU8086Flags::Trap);
+
         Stack_Push16(flags);
         Stack_Push16(cs);
         Stack_Push16(ip);

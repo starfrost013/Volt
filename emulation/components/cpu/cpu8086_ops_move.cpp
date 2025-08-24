@@ -75,6 +75,28 @@ namespace Volt
             *segreg_ptr = *modrm.ea_ptr;
     }
 
+    // A0-A3 move
+    void CPU8086::Op_MovOffset(uint8_t opcode)
+    {
+        //use the segment override when necessary
+        uint16_t seg_base = (seg_override == seg_override_none) ? ds : *seg_override_reg_ptr;
+
+        uint32_t seg_offset = (((uint32_t)seg_base << 4) + Prefetch_Pop16()) % address_space->size;
+
+        bool w = (opcode & 0x01);
+        bool dir = (opcode & 0x02);
+
+        if (!dir)
+            (w) ? ax = address_space->read_word(seg_offset) : al = address_space->access_byte[seg_offset];
+        else // todo: make byte like (d)word
+        {
+            if (w) 
+                address_space->write_word(seg_offset, ax);
+            else
+                address_space->access_byte[seg_offset] = al;
+        }
+    }
+
     // 9x XCHG
     void CPU8086::Op_XchgReg(uint8_t opcode)
     {
@@ -102,4 +124,6 @@ namespace Volt
             *(uint8_t*)modrm.ea_ptr = old_reg8;
         }
     }
+
+
 }

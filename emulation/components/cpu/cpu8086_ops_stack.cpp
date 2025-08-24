@@ -37,4 +37,28 @@ namespace Volt
 
         segreg = Stack_Pop16();
     }
+
+    void CPU8086::Op_PopModRM(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        *modrm.ea_ptr = Stack_Pop16();
+    }
+
+    void CPU8086::Op_Pushf(uint8_t opcode)
+    {
+        Stack_Push16(flags);
+    }
+
+    void CPU8086::Op_Popf(uint8_t opcode)
+    {
+        //cleaned up from granite
+        uint16_t new_flags = Stack_Pop16();
+
+        //force off bits that exist (FD5 = 0000 1111 1101 0101)
+        uint16_t mask = 0xFD5; 
+
+        flags = (new_flags & ~mask) | (new_flags & mask) | 0xF002; 
+    }
 }
+    

@@ -13,20 +13,24 @@ namespace Volt
     void CPU8086::Op_DSOverridePrefix(uint8_t opcode)
     {
         seg_override = seg_override_ds;
+        seg_override_reg_ptr = &ds;
     }
 
     void CPU8086::Op_CSOverridePrefix(uint8_t opcode)
     {
         seg_override = seg_override_cs;
+        seg_override_reg_ptr = &cs;
     }
 
     void CPU8086::Op_SSOverridePrefix(uint8_t opcode)
     {
         seg_override = seg_override_ss;
+        seg_override_reg_ptr = &ss;
     }
 
     void CPU8086::Op_ESOverridePrefix(uint8_t opcode)
     {
         seg_override = seg_override_es;
+        seg_override_reg_ptr = &es;
     }
 }

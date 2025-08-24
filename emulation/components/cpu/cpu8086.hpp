@@ -104,6 +104,7 @@ namespace Volt
             };
 
             CPU8086CurrentSegmentRegister seg_override;         // Used to implement segment override prefixes
+            uint16_t* seg_override_reg_ptr;                     // pointer to the overridden segment 
 
             union 
             {
@@ -312,11 +313,15 @@ namespace Volt
             void Op_CmpInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr);
             void Op_CmpInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr);
 
+            void Op_TestModRm(uint8_t opcode);
+            void Op_TestImmed(uint8_t opcode);
+
             // Moves
             void Op_MovImmedToModRM(uint8_t opcode);
             void Op_MovImmedToReg(uint8_t opcode);
             void Op_MovModRM(uint8_t opcode);
             void Op_MovRegToSeg(uint8_t opcode);
+            void Op_MovOffset(uint8_t opcode);
 
             void Op_XchgReg(uint8_t opcode);
             void Op_XchgModRM(uint8_t opcode);
@@ -336,6 +341,12 @@ namespace Volt
             void Op_PopReg(uint8_t opcode);
             void Op_PushSegReg(uint8_t opcode);
             void Op_PopSegReg(uint8_t opcode);
+
+            // There's no pushmodrm lol
+            void Op_PopModRM(uint8_t opcode);
+
+            void Op_Pushf(uint8_t opcode);
+            void Op_Popf(uint8_t opcode);
 
             void Op_GenerateInterrupt(uint8_t int_number);
             void Op_Int(uint8_t opcode);
@@ -406,12 +417,12 @@ namespace Volt
                 { 0x68, Op_ShortConditionalJmp, 2, 1 }, { 0x69, Op_ShortConditionalJmp, 2, 1 }, { 0x6A, Op_ShortConditionalJmp, 2, 1 },  { 0x6B, Op_ShortConditionalJmp, 2, 1 },  { 0x6C, Op_ShortConditionalJmp, 2, 1 }, { 0x6D, Op_ShortConditionalJmp, 2, 1 }, { 0x6E, Op_ShortConditionalJmp, 2, 1 },  { 0x6F, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x70, Op_ShortConditionalJmp, 2, 1 }, { 0x71, Op_ShortConditionalJmp, 2, 1 }, { 0x72, Op_ShortConditionalJmp, 2, 1 },  { 0x73, Op_ShortConditionalJmp, 2, 1 },  { 0x74, Op_ShortConditionalJmp, 2, 1 }, { 0x75, Op_ShortConditionalJmp, 2, 1 }, { 0x76, Op_ShortConditionalJmp, 2, 1 },  { 0x77, Op_ShortConditionalJmp, 2, 1 }, 
                 { 0x78, Op_ShortConditionalJmp, 2, 1 }, { 0x79, Op_ShortConditionalJmp, 2, 1 }, { 0x7A, Op_ShortConditionalJmp, 2, 1 },  { 0x7B, Op_ShortConditionalJmp, 2, 1 },  { 0x7C, Op_ShortConditionalJmp, 2, 1 }, { 0x7D, Op_ShortConditionalJmp, 2, 1 }, { 0x7E, Op_ShortConditionalJmp, 2, 1 },  { 0x7F, Op_ShortConditionalJmp, 2, 1 }, 
-                { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_Unimpl, 1, 1 }, { 0x85, Op_Unimpl, 1, 1 }, { 0x86, Op_XchgModRM, 2, 1 },  { 0x87, Op_XchgModRM, 2, 1 }, 
-                { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_Unimpl, 1, 1 }, 
+                { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_TestModRm, 2, 1 }, { 0x85, Op_TestModRm, 2, 1 }, { 0x86, Op_XchgModRM, 2, 1 },  { 0x87, Op_XchgModRM, 2, 1 }, 
+                { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_PopModRM, 2, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_XchgReg, 1, 1 }, { 0x92, Op_XchgReg, 1, 1 },  { 0x93, Op_XchgReg, 1, 1 },  { 0x94, Op_XchgReg, 1, 1 }, { 0x95, Op_XchgReg, 1, 1 }, { 0x96, Op_XchgReg, 1, 1 },  { 0x97, Op_XchgReg, 1, 1 }, 
-                { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Unimpl, 1, 1 }, { 0x9D, Op_Unimpl, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
-                { 0xA0, Op_Unimpl, 1, 1 }, { 0xA1, Op_Unimpl, 1, 1 }, { 0xA2, Op_Unimpl, 1, 1 },  { 0xA3, Op_Unimpl, 1, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
-                { 0xA8, Op_Unimpl, 1, 1 }, { 0xA9, Op_Unimpl, 1, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
+                { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Pushf, 1, 1 }, { 0x9D, Op_Popf, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
+                { 0xA0, Op_MovOffset, 3, 1 }, { 0xA1, Op_MovOffset, 3, 1 }, { 0xA2, Op_MovOffset, 3, 1 },  { 0xA3, Op_MovOffset, 3, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
+                { 0xA8, Op_TestImmed, 2, 1 }, { 0xA9, Op_TestImmed, 2, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
                 { 0xC0, Op_RetNear, 2, 1 }, { 0xC1, Op_RetNear, 1, 1 }, { 0xC2, Op_RetNear, 2, 1 },  { 0xC3, Op_RetNear, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 
