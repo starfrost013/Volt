@@ -15,7 +15,7 @@ namespace Volt
     void IOx86_Init()
     {
         io_port_range = Memory_Alloc<IOx86>(TAG_EMU_COMPONENT_IO);
-        Logging_LogChannel("IOx86_Init", LogChannel::Debug);
+        Logging_LogChannel("******** IOx86_Init ********", LogChannel::Debug);
     }
 
     // Add an I/O mapping
@@ -82,7 +82,7 @@ namespace Volt
             return 0xFF;
         }
 
-        return io_port_range->entries[port].component->RegisterRead(port);
+        return io_port_range->entries[port].component->PortRead(port);
     }
     
     void IOx86_Write(uint16_t port, uint16_t value)
@@ -96,7 +96,7 @@ namespace Volt
             return;
         }
 
-        io_port_range->entries[port].component->RegisterWrite(port, value);
+        io_port_range->entries[port].component->PortWrite(port, value);
     }
 
     void IOx86_Shutdown()

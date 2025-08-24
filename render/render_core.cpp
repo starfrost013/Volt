@@ -34,7 +34,6 @@ namespace Volt
         
         snprintf(renderer_state_global.window_title, WINDOW_TITLE_BUF_SIZE, "%s Window (%s @ %s)", APP_NAME, VERSION, BUILD_DATE);
 
-        // todo - have global renderer state be separate to specific render state
         render_window_title = Cvar_Get("render_window_title", renderer_state_global.window_title, false);
 
         // because SOMEONE decided to run the engine with "+set render_width -1"

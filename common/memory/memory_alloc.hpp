@@ -109,8 +109,6 @@ namespace Volt
 		// move around the tail of the list
 		memalloc_tail = (void*)alloc;
 
-		// todo: cvar
-		
 		Logging_LogChannel("Dynamically allocated %d bytes tag=0x%08X (%.4s)", LogChannel::Debug, alloc->header.size, tag, &tag);
 
 		// this is a pointer to a memalloc_t*, so we need to simply increment it to skip past the magic

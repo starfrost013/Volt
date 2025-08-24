@@ -179,7 +179,7 @@ namespace Volt
 
         //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
-        // todo: is this slow? should we parse prefixes separately
+        // todo: should we parse prefixes separately
         if (opcode != CPU8086_PREFIX_ES
         && opcode != CPU8086_PREFIX_CS
         && opcode != CPU8086_PREFIX_SS

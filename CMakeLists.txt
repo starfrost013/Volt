@@ -65,6 +65,7 @@ add_executable (Volt
 
 # Support components
 "emulation/components/support/i8253_pit.cpp"
+"emulation/components/support/i8237_dma.cpp"
 
 # RENDER
 "render/render_core.cpp"
@@ -121,5 +122,5 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Volt PROPERTY CXX_STANDARD 20)
 endif()
 
-# TODO: Add tests and install targets if needed.f
+# TODO: Add tests and install targets if needed.
  

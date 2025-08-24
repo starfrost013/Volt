@@ -54,7 +54,6 @@ namespace Volt
 
                 final_linear_address = (reg << 4) + rm_table[modrm_decode.rm];
 
-                //TODO: PUT ADDRESS SPACE SIZE IN ADDRESS SPACE SYSTEM
                 // Prevent us going to invalid memory in the case of the CPU going wild
                 final_linear_address %= address_space->size;
 

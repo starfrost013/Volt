@@ -9,7 +9,7 @@
 
 namespace Volt
 {
-    Cvar* emu_clk_8253;
+    Cvar* emu_8253_clk;
 
     void PIT8253::Init()
     {
@@ -26,8 +26,8 @@ namespace Volt
                 break; 
         }
 
-        emu_clk_8253 = Cvar_Get("emu_clk_8253", "1193181", false);
-        clock_hz = emu_clk_8253->value;
+        emu_8253_clk = Cvar_Get("emu_8253_clk", "1193181", false);
+        clock_hz = emu_8253_clk->value;
         update = true; 
 
         IOx86_AddMapping(0x40, 0x43, this);
@@ -137,7 +137,7 @@ namespace Volt
         IOx86_DeleteMapping(0x40, 0x43);
     }
 
-    uint8_t PIT8253::RegisterRead(uint8_t port)
+    uint8_t PIT8253::PortRead(uint8_t port)
     {
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 
@@ -182,7 +182,7 @@ namespace Volt
         return ret; 
     }
 
-    void PIT8253::RegisterWrite(uint8_t port, uint8_t value)
+    void PIT8253::PortWrite(uint8_t port, uint8_t value)
     {
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 

@@ -2,7 +2,7 @@
 // VOLT
 // Copyright © 2025 starfrost
 //
-// cpu8086.hpp: Generic 808x-class CPU (8086, 8088, V30)
+// i8253_pit.hpp: Intel 8253/8254 PIT definition
 //
 
 #pragma once
@@ -21,7 +21,7 @@ namespace Volt
             enum PIT8253Variant
             {
                 PITVariant8253 = 0x8253,
-                PITVariant8254 = 0x8254,
+                PITVariant8254 = 0x8254, // TODO: Implement the 8254 variants
             };
 
             enum PIT8253Port
@@ -74,8 +74,8 @@ namespace Volt
             void Tick() override; 
             void Shutdown() override;
 
-            uint8_t RegisterRead(uint8_t port) override;
-            void RegisterWrite(uint8_t port, uint8_t value) override;
+            uint8_t PortRead(uint8_t port) override;
+            void PortWrite(uint8_t port, uint8_t value) override;
 
         protected:
         private:
