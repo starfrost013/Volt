@@ -238,9 +238,10 @@ namespace Volt
 
             // Control
             void Op_JmpFar(uint8_t opcode);
+            void Op_CallNear(uint8_t opcode);
             void Op_CallFar(uint8_t opcode);
             
-            void Op_ShortJmp(uint8_t opcode);               // Short jump
+            void Op_JmpShort(uint8_t opcode);               // Short jump
             void Op_ShortConditionalJmp(uint8_t opcode);    // Short conditional jump
             void Op_Hlt(uint8_t opcode);                    // HALT
 
@@ -430,7 +431,7 @@ namespace Volt
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
                 { 0xE0, Op_Loop, 2, 1 }, { 0xE1, Op_Loop, 2, 1 }, { 0xE2, Op_Loop, 2, 1 },  { 0xE3, Op_Loop, 2, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
-                { 0xE8, Op_Unimpl, 1, 1 }, { 0xE9, Op_ShortJmp, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_ShortJmp, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
+                { 0xE8, Op_CallNear, 3, 1 }, { 0xE9, Op_JmpShort, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_JmpShort, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
                 { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Grp45, 2, 1 },  { 0xFF, Op_Grp45, 2, 1 }, 
             };

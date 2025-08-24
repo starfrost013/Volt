@@ -23,6 +23,15 @@ namespace Volt
         Prefetch_Flush(); 
     }
 
+    void CPU8086::Op_CallNear(uint8_t opcode)
+    {
+        int16_t ip_offset = (int16_T)Prefetch_Pop16();
+
+        Stack_Push16(ip);
+
+        ip += ip_offset;
+    }
+
     void CPU8086::Op_CallFar(uint8_t opcode)
     {
         uint16_t new_ip = Prefetch_Pop16();
@@ -38,7 +47,7 @@ namespace Volt
         Prefetch_Flush(); 
     }
     
-    void CPU8086::Op_ShortJmp(uint8_t opcode)
+    void CPU8086::Op_JmpShort(uint8_t opcode)
     {
         // this is inverted from the usual "is 16 bit" check
         bool w = !(opcode & 0x02);
