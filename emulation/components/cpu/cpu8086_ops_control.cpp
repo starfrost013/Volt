@@ -25,7 +25,7 @@ namespace Volt
 
     void CPU8086::Op_CallNear(uint8_t opcode)
     {
-        int16_t ip_offset = (int16_T)Prefetch_Pop16();
+        int16_t ip_offset = (int16_t)Prefetch_Pop16();
 
         Stack_Push16(ip);
 
