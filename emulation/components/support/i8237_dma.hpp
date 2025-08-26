@@ -16,8 +16,11 @@
 namespace Volt
 {
     // Technically two 8237s
-    #define DMA8237_NUM_CHANNELS        4
- 
+    #define DMA8237_NUM_CHANNELS            4
+
+    // Who's idea was this? This is just simpler
+    #define DMA8237_PAGE_REGISTER_START     0x81
+    #define DMA8237_PAGE_REGISTER_END       0x87
 
     class DMA8237 : public Component
     {
@@ -33,7 +36,7 @@ namespace Volt
 
         private:
             // Mode for DMA transfers
-            enum DMA8237Mode
+            enum DMA8237XferType
             {
                 OnDemand = 0,
                 Single = 1,
@@ -66,7 +69,12 @@ namespace Volt
                 FlipFlop = 0x0C,
                 Temp = 0x0D,        // Read
                 MasterClear = 0x0D, // Write
-                ClearMask = 0x0F, 
+                ClearMask = 0x0E,
+                WriteMask = 0x0F, 
+                PageChannel1 = 0x81,
+                PageChannel2 = 0x82,
+                PageChannel3 = 0x83,
+                PageChannel0 = 0x87, // why
             };
 
             enum DMA8237Command
@@ -80,22 +88,25 @@ namespace Volt
                 DreqActive = 1 << 6,                // 0 = high, 1 = low
                 DackActive = 1 << 7,                // 0 = high, 1 = low
             };
-
+        
             struct DMA8237Channel
             {
-                DMA8237Mode mode; 
+                DMA8237XferType transfer_type; 
                 DMA8237Direction direction;
                 DMA8237AddressMode address_mode; 
+                DMA8237Command command; 
 
                 uint16_t start_addr; 
                 uint16_t transfer_count;
                 uint16_t word_count; 
                 uint8_t request_info;
+                uint8_t page; 
 
                 bool tc_reached;        // Has the terminal count been reached?
 
                 bool request_pending;
                 bool masked;            // turn this channel off
+                bool autoinit;
             }; 
 
             uint8_t status_reg;
@@ -108,5 +119,9 @@ namespace Volt
 
             bool is_channels_4to7;
             bool enabled;               // set bit2 in command register
+
+            // DMA tick functions
+            uint8_t Tick_Read(uint8_t channel_id);                  // Read
+            void Tick_Write(uint8_t channel, uint8_t value);     // Write
         };
 }

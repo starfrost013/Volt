@@ -275,7 +275,6 @@ namespace Volt
         }
 
         // why is the reference not working here
-        counters[counter_index] = current_counter;
         Logging_LogChannel("Intel 8253/54 PIT port %04x write, value %04x", LogChannel::Debug, port, value);
     }
 }

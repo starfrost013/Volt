@@ -185,7 +185,9 @@ namespace Volt
         }
 
         // decrement
+
         cx--; 
+        
         
         bool keep_going = false;
     
@@ -202,7 +204,8 @@ namespace Volt
                 break;
         }
 
-        disasm_suppress_logging = (keep_going);
+
+        disasm_suppress_logging = keep_going;
 
         if (keep_going)
         {

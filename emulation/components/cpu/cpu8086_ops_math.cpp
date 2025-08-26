@@ -606,14 +606,14 @@ namespace Volt
 
     void CPU8086::Op_CmpInternal8to16(uint16_t* dst_ptr, uint8_t* src_ptr)
     {
-        uint8_t old = *dst_ptr;
+        uint16_t old = *dst_ptr;
         Op_SubInternal8to16(dst_ptr, src_ptr);
         *dst_ptr = old;
     }
 
     void CPU8086::Op_CmpInternal16to16(uint16_t* dst_ptr, uint16_t* src_ptr)
     {
-        uint8_t old = *dst_ptr;
+        uint16_t old = *dst_ptr;
         Op_SubInternal16to16(dst_ptr, src_ptr);
         *dst_ptr = old;
     }
