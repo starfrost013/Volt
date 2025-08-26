@@ -9,6 +9,7 @@
 // A big part of these was never used on the PC
 
 #pragma once
+#include "component_dma_controller.hpp"
 #include <emulation/emulation.hpp>
 
 // BITFIELDS ARE IN REVERSE TO LOGICAL ORDER!
@@ -22,10 +23,10 @@ namespace Volt
     #define DMA8237_PAGE_REGISTER_START     0x81
     #define DMA8237_PAGE_REGISTER_END       0x87
 
-    class DMA8237 : public Component
+    class DMA8237 : public ComponentDMAController
     {
         public: 
-            void Init() override;
+            void Init(Machine* machine_ptr) override;
             void Start() override; 
             void Frame() override { }; // Not used here
             void Tick() override; 
@@ -33,6 +34,8 @@ namespace Volt
 
             uint8_t PortRead(uint8_t port) override;
             void PortWrite(uint8_t port, uint8_t value) override;
+
+            void SendDMARequest(uint8_t channel) override;  
 
         private:
             // Mode for DMA transfers

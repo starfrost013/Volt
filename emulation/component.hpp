@@ -9,10 +9,13 @@
 
 namespace Volt
 {
+    class Machine; 
+    
     class Component
     {
     public:
         const char* name;
+        Machine* machine;                           // don't store this if you don't need to lol
 
         // Clocking
         uint64_t clock_hz;
@@ -25,7 +28,7 @@ namespace Volt
         // A printer card does not need to be ticked.
         bool update; 
         
-        virtual void Init() = 0;
+        virtual void Init(Machine* machine_ptr) = 0;
         virtual void Start() = 0;
         virtual void Tick() = 0;
         virtual void Frame() = 0;       // Video only

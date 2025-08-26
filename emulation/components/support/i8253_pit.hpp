@@ -68,7 +68,9 @@ namespace Volt
 
             PIT8253Counter counters[PIT8253_NUM_COUNTERS];
 
-            void Init() override;
+            ComponentDMAController* dma_controller; // allow dma controller references
+
+            void Init(Machine* machine_ptr) override;
             void Start() override; 
             void Frame() override { }; // Not used here
             void Tick() override; 

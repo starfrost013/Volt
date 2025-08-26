@@ -42,7 +42,7 @@ namespace Volt
 
             CPU8086Variant variant;
 
-            void Init() override;
+            void Init(Machine* machine_ptr) override;
             void Start() override; 
             void Tick() override;
             void Frame() override;

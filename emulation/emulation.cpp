@@ -1,8 +1,9 @@
+
+#include <emulation/emulation.hpp>
 #include "components/cpu/cpu8086.hpp"
 #include "components/support/i8237_dma.hpp"
 #include "components/support/i8253_pit.hpp"
 #include <render/render.hpp>
-#include <emulation/emulation.hpp>
 
 namespace Volt
 {
@@ -24,7 +25,7 @@ namespace Volt
         test_machine.AddComponent(cpu_808x);
         test_machine.AddComponent(pit);
         test_machine.AddComponent(dma);
-        
+
         emulation_running = true; 
         
     }

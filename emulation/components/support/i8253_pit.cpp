@@ -11,8 +11,10 @@ namespace Volt
 {
     Cvar* emu_8253_clk;
 
-    void PIT8253::Init()
+    void PIT8253::Init(Machine* machine_ptr)
     {
+        machine = machine_ptr;
+
         //TEMP
         variant = PIT8253Variant::PITVariant8253;
 
@@ -37,7 +39,7 @@ namespace Volt
 
     void PIT8253::Start() 
     {
-
+        dma_controller = machine->FindComponentByClass<ComponentDMAController>();
     }
     
     void PIT8253::Tick()
@@ -111,7 +113,7 @@ namespace Volt
                                 Logging_LogChannel("PIC IRQ0 must be here, but isn't yet [PIT8253 Counter 0 Square Wave value reached!]\n", LogChannel::Warning);    
                                 break;
                             case 0x01:
-                                Logging_LogChannel("DMA2 must be here, but isn't yet [PIT8253 Counter 1 Square Wave value reached!]\n", LogChannel::Warning);    
+                                dma_controller->SendDMARequest(0);
                                 break;
                         }
                     }

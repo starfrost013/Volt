@@ -15,8 +15,10 @@ namespace Volt
     Cvar* emu_8086_disasm;
     Cvar* emu_8086_use_8088;
 
-    void CPU8086::Init()
+    void CPU8086::Init(Machine* machine_ptr)
     {        
+        machine = machine_ptr;
+
         // Load convars
         emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
         emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);

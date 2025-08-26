@@ -13,8 +13,10 @@ namespace Volt
 { 
     Cvar* emu_8237_clk;
 
-    void DMA8237::Init()
+    void DMA8237::Init(Machine* machine_ptr)
     {
+        machine = machine_ptr;
+
         name = (is_channels_4to7) ? "Intel 8237 DMA controller (Slave)" : "Intel 8237 DMA controller (Master)";
         
         emu_8237_clk = Cvar_Get("emu_8237_clk", "4772726", false);
@@ -270,4 +272,10 @@ namespace Volt
         IOx86_DeleteMapping(0xC0, 0xCF);
         IOx86_DeleteMapping(0xD0, 0xDF);
     }
+
+    void DMA8237::SendDMARequest(uint8_t channel) 
+    {
+        Logging_LogChannel("8237: DMA request initiated by another system device for channel %d [TODO]", LogChannel::Debug, channel);
+    }
+
 }

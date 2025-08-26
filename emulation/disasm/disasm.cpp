@@ -43,6 +43,10 @@ namespace Volt
     #define CPU8086_DISASM_GRP2_END             0xD3
     #define CPU8086_DISASM_LOOP_START           0xE0
     #define CPU8086_DISASM_LOOP_END             0xE2 // JCXZ doesn't count
+    #define CPU8086_DISASM_IO_IMMED_START       0xE4
+    #define CPU8086_DISASM_IO_IMMED_END         0xE7
+    #define CPU8086_DISASM_IO_MODRM_START       0xEC
+    #define CPU8086_DISASM_IO_MODRM_END         0xEF
     #define CPU8086_DISASM_GRP3_8               0xF7
     #define CPU8086_DISASM_GRP3_16              0xF8
     #define CPU8086_DISASM_GRP4                 0xFE
