@@ -332,6 +332,7 @@ namespace Volt
             void Op_TestImmed(uint8_t opcode);
 
             void Op_Cbw(uint8_t opcode);
+            void Op_Cwd(uint8_t opcode);
 
             // Moves
             void Op_MovImmedToModRM(uint8_t opcode);
@@ -448,7 +449,7 @@ namespace Volt
                 { 0x80, Op_Grp1, 3, 1 }, { 0x81, Op_Grp1, 4, 1 }, { 0x82, Op_Grp1, 3, 1 },  { 0x83, Op_Grp1, 3, 1 },  { 0x84, Op_TestModRm, 2, 1 }, { 0x85, Op_TestModRm, 2, 1 }, { 0x86, Op_XchgModRM, 2, 1 },  { 0x87, Op_XchgModRM, 2, 1 }, 
                 { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_PopModRM, 2, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_XchgReg, 1, 1 }, { 0x92, Op_XchgReg, 1, 1 },  { 0x93, Op_XchgReg, 1, 1 },  { 0x94, Op_XchgReg, 1, 1 }, { 0x95, Op_XchgReg, 1, 1 }, { 0x96, Op_XchgReg, 1, 1 },  { 0x97, Op_XchgReg, 1, 1 }, 
-                { 0x98, Op_Cbw, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Pushf, 1, 1 }, { 0x9D, Op_Popf, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
+                { 0x98, Op_Cbw, 1, 1 }, { 0x99, Op_Cwd, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Pushf, 1, 1 }, { 0x9D, Op_Popf, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
                 { 0xA0, Op_MovOffset, 3, 1 }, { 0xA1, Op_MovOffset, 3, 1 }, { 0xA2, Op_MovOffset, 3, 1 },  { 0xA3, Op_MovOffset, 3, 1 },  { 0xA4, Op_Movs, 1, 1 }, { 0xA5, Op_Movs, 1, 1 }, { 0xA6, Op_Cmps, 1, 1 },  { 0xA7, Op_Cmps, 1, 1 }, 
                 { 0xA8, Op_TestImmed, 2, 1 }, { 0xA9, Op_TestImmed, 2, 1 }, { 0xAA, Op_Stos, 1, 1 },  { 0xAB, Op_Stos, 1, 1 },  { 0xAC, Op_Lods, 1, 1 }, { 0xAD, Op_Lods, 1, 1 }, { 0xAE, Op_Scas, 1, 1 },  { 0xAF, Op_Scas, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
@@ -522,4 +523,4 @@ namespace Volt
             static constexpr const char* segreg_table_disasm[CPU8086_NUM_REGISTERS] = {"ES", "CS", "SS", "DS", "INVALID segment register 5", "INVALID segment register 6", "INVALID segment register 7"};
     };
 }
-    
+        

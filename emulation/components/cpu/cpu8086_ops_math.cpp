@@ -673,4 +673,13 @@ namespace Volt
 
         ax = new_val;
     }
+
+    void CPU8086::Op_Cwd(uint8_t opcode)
+    {
+        uint16_t new_val = (uint16_t)ax;
+
+        new_val |= (ax & 0x8000) ? 0xFFFF : 0x0000;
+
+        dx = new_val;
+    }
 }
