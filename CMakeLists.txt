@@ -95,17 +95,24 @@ endif()
 # Libraries and compiler specific stuff
 
 add_library(glfw3 STATIC IMPORTED)
+add_library(squirrel STATIC IMPORTED)
+add_library(sqstdlib STATIC IMPORTED)
 
 if (WIN32)
   include_directories("external/glfw/win64/include")
 
   if (MSVC)
-    message(FATAL_ERROR "MSVC IS DEPRECATED!")
+    message(WARNING "Use a better compiler")
   else()
     # glfw3 - win64
     set_target_properties(glfw3 PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/external/glfw/win64/lib-mingw-w64/libglfw3.a)
+    set_target_properties(squirrel PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/external/squirrel/win64/libsquirrel_static.a)
+    set_target_properties(sqstdlib PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/external/squirrel/win64/libsqstdlib_static.a)
 
     target_link_libraries(Volt glfw3)
+    target_link_libraries(Volt squirrel)
+    target_link_libraries(Volt sqstdlib)
+
   endif()
 else()
   message(FATAL_ERROR "Linux not supported yet...:(")
