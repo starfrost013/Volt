@@ -51,4 +51,10 @@ namespace Volt
     {
 
     }
+
+    void PPI8255::KeyPress(uint8_t code) 
+    {
+        
+    }
+
 }

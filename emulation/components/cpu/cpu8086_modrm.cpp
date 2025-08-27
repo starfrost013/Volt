@@ -14,6 +14,9 @@ namespace Volt
 
         bool w = opcode & 0x01;
         
+        if (opcode == CPU8086_OP_REG2SEG)
+            w = true; 
+        
         modrm_decode.modrm = Prefetch_Pop8();
 
         // handle reg part (ignored in certain cases)

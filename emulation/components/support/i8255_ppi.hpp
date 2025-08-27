@@ -13,8 +13,9 @@
 namespace Volt
 {
 
-    class PPI8255 : public Component
+    class PPI8255 : public ComponentKeyboardController
     {
+        
         public: 
             void Init(Machine* machine_ptr) override;
             void Start() override; 
@@ -24,6 +25,8 @@ namespace Volt
         
             uint8_t PortRead(uint8_t port) override;
             void PortWrite(uint8_t port, uint8_t value) override;
+
+            void KeyPress(uint8_t code) override; 
 
         private:
 

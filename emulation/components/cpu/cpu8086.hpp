@@ -27,6 +27,7 @@ namespace Volt
     #define CPU8086_PREFIX_CS           0x2E
     #define CPU8086_PREFIX_SS           0x36
     #define CPU8086_PREFIX_DS           0x3E
+    #define CPU8086_OP_REG2SEG          0x8E        // Force W *ON* with this one
     #define CPU8086_PREFIX_REPNZ        0xF2
     #define CPU8086_PREFIX_REPZ         0xF3
 

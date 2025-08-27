@@ -39,6 +39,7 @@ namespace Volt
     #define CPU8086_DISASM_MOV_SEG2REG          0x8E
     #define CPU8086_DISASM_MOV_RELATIVE_START   0xB0
     #define CPU8086_DISASM_MOV_RELATIVE_END     0xBF
+    #define CPU8086_DISASM_INT                  0xCD
     #define CPU8086_DISASM_GRP2_START           0xD0
     #define CPU8086_DISASM_GRP2_END             0xD3
     #define CPU8086_DISASM_LOOP_START           0xE0
@@ -208,21 +209,28 @@ namespace Volt
             switch (opcode & 0x03)
             {
                 case 0x00:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AL, 0x%02x", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AL, 0x%02X", address_space->access_byte[linear_pc()]);
                     break;
                 case 0x01:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AX, 0x%02x", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AX, 0x%02X", address_space->access_byte[linear_pc()]);
                     break;
                 case 0x02:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02x, AL", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_byte[linear_pc()]);
                     break;
                 case 0x03:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02x, AL", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_byte[linear_pc()]);
                     break;
             }
 
             return;
         }
+
+        if (opcode == CPU8086_DISASM_INT)
+        {
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "INT %02x", address_space->access_byte[linear_pc()]);
+            return;
+        }
+
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway
 
