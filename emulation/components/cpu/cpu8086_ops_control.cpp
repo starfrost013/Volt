@@ -237,7 +237,7 @@ namespace Volt
     {
         uint32_t int_number = 0; 
 
-        if ((opcode & 0x01)) // INT3
+        if (!(opcode & 0x01)) // INT3
             int_number = 3;
         else if (opcode & 0x02) // INTO
         {

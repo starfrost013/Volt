@@ -12,12 +12,28 @@
 
 namespace Volt
 {
+
     class PPI8255 : public Component
     {
-        void Init(Machine* machine_ptr) override;
-        void Start() override; 
-        void Frame() override { }; // Not used here
-        void Tick() override; 
-        void Shutdown() override;
+        public: 
+            void Init(Machine* machine_ptr) override;
+            void Start() override; 
+            void Frame() override { }; // Not used here
+            void Tick() override; 
+            void Shutdown() override;
+        
+            uint8_t PortRead(uint8_t port) override;
+            void PortWrite(uint8_t port, uint8_t value) override;
+
+        private:
+
+            enum PPI8255Port
+            {
+                PortA = 0x60,
+                PortB = 0x61,
+                PortC = 0x62,
+                Cmd = 0x63,
+            };
+
     };
 }

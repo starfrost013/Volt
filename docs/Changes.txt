@@ -8,6 +8,8 @@ Changes:
 === EMULATION ===
 
 8086:
+* Add string instructions
+* Fix GRP1
 
 Peripherals:
 
