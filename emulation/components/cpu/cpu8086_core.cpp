@@ -179,6 +179,8 @@ namespace Volt
             opcode = Prefetch_Pop8();
         else
         {
+            cx--; 
+            
             bool exit_condition = true;
 
             switch (rep_type)
@@ -198,8 +200,6 @@ namespace Volt
                 opcode = Prefetch_Pop8();
                 no_rep = true; 
             }
-            else   
-                cx--; 
         }
 
         clock_skip = instruction_table[opcode].cycles; //allow this to be increased by the run_function
