@@ -86,12 +86,12 @@ namespace Volt
             // This works because we only care about 40-4f
             if (opcode & 0x08)
             {
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %04X", register_table16_disasm[opcode % 0x08], address_space->read_word(linear_pc()));
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %04X", register_table16_disasm[opcode & 0x07], address_space->read_word(linear_pc()));
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             }
             else
             {
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %02X", register_table8_disasm[opcode % 0x08], address_space->access_byte[linear_pc()]);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %02X", register_table8_disasm[opcode & 0x07], address_space->access_byte[linear_pc()]);
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             }
 

@@ -14,6 +14,10 @@ namespace Volt
 {
     class PPI8255 : public Component
     {
-
+        void Init(Machine* machine_ptr) override;
+        void Start() override; 
+        void Frame() override { }; // Not used here
+        void Tick() override; 
+        void Shutdown() override;
     };
 }

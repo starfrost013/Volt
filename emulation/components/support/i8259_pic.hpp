@@ -12,8 +12,15 @@
 
 namespace Volt
 {
-    class PIC8259 : public Component
+    class PIC8259 : public ComponentInterruptController
     {
+        void Init(Machine* machine_ptr) override;
+        void Start() override; 
+        void Frame() override { }; // Not used here
+        void Tick() override; 
+        void Shutdown() override;
+
+        void SendIRQ(uint8_t irq) override; 
 
     };
 }

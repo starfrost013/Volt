@@ -8,6 +8,7 @@
 #include <util/util.hpp>
 #include <emulation/component.hpp>
 #include <emulation/components/support/component_dma_controller.hpp>
+#include <emulation/components/support/component_interrupt_controller.hpp>
 #include <emulation/machine.hpp>
 #include <emulation/components/io/io_port.hpp>
 #include <emulation/components/storage/storage_address_space.hpp>

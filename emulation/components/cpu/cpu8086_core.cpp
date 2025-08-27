@@ -196,6 +196,7 @@ namespace Volt
                 //this is awful
                 rep_type = CPU8086RepType::None;
                 opcode = Prefetch_Pop8();
+                no_rep = true; 
             }
             else   
                 cx--; 
