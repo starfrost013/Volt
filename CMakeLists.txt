@@ -102,7 +102,7 @@ if (WIN32)
   include_directories("external/glfw/win64/include")
 
   if (MSVC)
-    message(WARNING "Use a better compiler")
+    message(WARNING "MSVC is currently not supported, therefore compilation is likely to fail.")
   else()
     # glfw3 - win64
     set_target_properties(glfw3 PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/external/glfw/win64/lib-mingw-w64/libglfw3.a)
