@@ -169,7 +169,34 @@ namespace Volt
         }
 
         // Keep the prefetch queue filled up
-        uint8_t opcode = Prefetch_Pop8();
+
+        bool no_rep = (rep_type == CPU8086RepType::None);
+
+        if (rep_type != CPU8086RepType::None && (last_opcode == CPU8086_PREFIX_REPNZ || last_opcode == CPU8086_PREFIX_REPZ))
+            no_rep = true; 
+
+        if (no_rep)
+            opcode = Prefetch_Pop8();
+        else
+        {
+            cx--;
+            
+            bool exit_condition = true;
+
+            switch (rep_type)
+            {
+                case CPU8086RepType::Rep: // REPNZ
+                    exit_condition = (cx == 0) && !(CPU8086Flags::Zero);
+                    break;
+                case CPU8086RepType::Repz:
+                    exit_condition = (cx == 0) && (CPU8086Flags::Zero);
+                    break;
+            }
+
+            if (exit_condition)
+                rep_type = CPU8086RepType::None;
+        }
+
         clock_skip = instruction_table[opcode].cycles; //allow this to be increased by the run_function
 
         if (emu_8086_disasm->value)
@@ -178,8 +205,6 @@ namespace Volt
         //let run_function change clock_skip
         if (instruction_table[opcode].run_function)
             (this->*instruction_table[opcode].run_function)(opcode);
-
-        //Logging_LogAll("808x: cs=%04x ip=%04x", cs, ip);
 
         // todo: should we parse prefixes separately
         if (opcode != CPU8086_PREFIX_ES
@@ -193,6 +218,9 @@ namespace Volt
         // if trap flag is set fire INT1
         if (flags & CPU8086Flags::Trap)
             Op_GenerateInterrupt(1);
+
+        // turn on the rep_parsed_instruction thing so that we can repeat this instruction if we need to
+        last_opcode = opcode;
     }
 
     void CPU8086::Frame()

@@ -26,6 +26,8 @@ namespace Volt
     #define CPU8086_PREFIX_CS           0x2E
     #define CPU8086_PREFIX_SS           0x36
     #define CPU8086_PREFIX_DS           0x3E
+    #define CPU8086_PREFIX_REPNZ        0xF2
+    #define CPU8086_PREFIX_REPZ         0xF3
 
     class CPU8086 : public Component
     {
@@ -47,9 +49,6 @@ namespace Volt
             void Tick() override;
             void Frame() override;
             void Shutdown() override;
-
-
-            // Is the CPU in reset?
 
         
             // REGISTERS
@@ -76,6 +75,15 @@ namespace Volt
             // TODO: Would a define be faster?
             uint32_t inline linear_pc() { return ((cs << 4) + ip) % CPU8086_ADDR_SPACE_SIZE; }
             uint32_t inline linear_sp() { return ((ss << 4) + sp) % CPU8086_ADDR_SPACE_SIZE; }
+
+            enum CPU8086RepType
+            {
+                None = 0,
+                Rep = 1,
+                Repz = 2, // also called REPE
+            };
+
+            CPU8086RepType rep_type;
 
             // Stack stuff
 
@@ -183,6 +191,8 @@ namespace Volt
         protected:
         // Stuff the disassembler doesn't need
         private: 
+            uint8_t opcode;                     // Last fetched opcode. ONLY changed if NO REP PREFIX FOUND!
+            uint8_t last_opcode;                // Last opcode. used for rep checking
 
             void Disasm(uint8_t opcode);
             void Disasm_Parse(uint8_t opcode);
@@ -353,6 +363,14 @@ namespace Volt
             void Op_Int(uint8_t opcode);
             void Op_Iret(uint8_t opcode);
 
+            // String
+            void Op_RepPrefix(uint8_t opcode);
+            void Op_Movs(uint8_t opcode);
+            void Op_Cmps(uint8_t opcode);
+            void Op_Stos(uint8_t opcode);
+            void Op_Lods(uint8_t opcode);
+            void Op_Scas(uint8_t opcode);
+
             //
             // Prefetch Queue (basic impl.)
             //
@@ -432,7 +450,7 @@ namespace Volt
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 
                 { 0xE0, Op_Loop, 2, 1 }, { 0xE1, Op_Loop, 2, 1 }, { 0xE2, Op_Loop, 2, 1 },  { 0xE3, Op_Loop, 2, 1 },  { 0xE4, Op_In, 2, 1 }, { 0xE5, Op_In, 2, 1 }, { 0xE6, Op_Out, 2, 1 },  { 0xE7, Op_Out, 2, 1 }, 
                 { 0xE8, Op_CallNear, 3, 1 }, { 0xE9, Op_JmpShort, 2, 1 }, { 0xEA, Op_JmpFar, 5, 1 },  { 0xEB, Op_JmpShort, 2, 1 },  { 0xEC, Op_In, 1, 1 }, { 0xED, Op_In, 1, 1 }, { 0xEE, Op_Out, 1, 1 },  { 0xEF, Op_Out, 1, 1 }, 
-                { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_Unimpl, 1, 1 },  { 0xF3, Op_Unimpl, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
+                { 0xF0, Op_Unimpl, 1, 1 }, { 0xF1, Op_Unimpl, 1, 1 }, { 0xF2, Op_RepPrefix, 1, 1 },  { 0xF3, Op_RepPrefix, 1, 1 },  { 0xF4, Op_Hlt, 1, 1 }, { 0xF5, Op_Cmc, 1, 1 }, { 0xF6, Op_Unimpl, 1, 1 },  { 0xF7, Op_Unimpl, 1, 1 }, 
                 { 0xF8, Op_Clc, 1, 1 }, { 0xF9, Op_Stc, 1, 1 }, { 0xFA, Op_Cli, 1, 1 },  { 0xFB, Op_Sti, 1, 1 },  { 0xFC, Op_Cld, 1, 1 }, { 0xFD, Op_Std, 1, 1 }, { 0xFE, Op_Grp45, 2, 1 },  { 0xFF, Op_Grp45, 2, 1 }, 
             };
 
@@ -475,7 +493,7 @@ namespace Volt
                 "", "", "", "", "AAM", "AAD", "SALC", "XLAT",
                 "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", "x87 ESC", 
                 "LOOPNZ", "LOOPZ", "LOOP", "JCXZ", "IN", "IN", "OUT", "OUT", 
-                "CALL", "JMP", "JMP", "JMP", "IN", "IN", "OUT", "OUT", 
+                "CALL", "JMP", "JMP", "JMP", "IN AL, DX", "IN AX, DX", "OUT DX, AL", "OUT DX, AX", 
                 "LOCK", "LOCK [!]", "REPNZ", "REPZ", "HLT", "CMC", "", "", //GRP3 - Use reg to print
                 "CLC", "STC", "CLI", "STI", "CLD", "STD", "", ""  //GRP4/5 - Use reg to print
             };

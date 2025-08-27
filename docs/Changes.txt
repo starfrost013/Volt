@@ -1,20 +1,46 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
-Pre-Alpha 1.0
-XX August 2025
+Pre-Alpha 1.2
+XX XXXXXX 2025
+
+Changes:
+
+=== EMULATION ===
+
+8086:
+
+Peripherals:
+
+=== CORE SYSTEMS ===
+
+Pre-Alpha 1.0/1.1
+23/27 August 2025
 
 Changes:
 
 === EMULATION ===
 * I/O system added
+* DMA 8237 controller added (non-working enough to pass tests)
+* PIT 8259 added (enough to pass tests)
+* Components now receive a pointer to their attached machine
+* Added function (GetComponentWithClass<T*>) to find a component of a certain class
+* XTv3 BIOS (1986) reaches 16k RAM test
 
 8086:
 * Stack implemented
 * GRP4/GRP5 implemented 
-* RET, FAR CALL implemented
+* RET, NEAR CALL, FAR CALL implemented
 * LOOP implemented 
 * Fix many MOVs
-* Fix the zero flag 
+* Fix the zero flag
+* Fix 16-bit CMP 
+* Fix segment overrides
+* 9F POP + A0-A3 MOV added
+* XCHG added
+* Pop/push segreg added
+* PUSH/POPF added
+* TEST added
+* Interrupts implemetned
 
 === CORE SYSTEMS ===
 * Emulation runs on its own thread separate to everything else

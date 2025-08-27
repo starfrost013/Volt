@@ -45,8 +45,6 @@ namespace Volt
     #define CPU8086_DISASM_LOOP_END             0xE2 // JCXZ doesn't count
     #define CPU8086_DISASM_IO_IMMED_START       0xE4
     #define CPU8086_DISASM_IO_IMMED_END         0xE7
-    #define CPU8086_DISASM_IO_MODRM_START       0xEC
-    #define CPU8086_DISASM_IO_MODRM_END         0xEF
     #define CPU8086_DISASM_GRP3_8               0xF7
     #define CPU8086_DISASM_GRP3_16              0xF8
     #define CPU8086_DISASM_GRP4                 0xFE
@@ -204,6 +202,27 @@ namespace Volt
             return;
         }
 
+        if (opcode >= CPU8086_DISASM_IO_IMMED_START
+            && opcode <= CPU8086_DISASM_IO_IMMED_END)
+        {
+            switch (opcode & 0x03)
+            {
+                case 0x00:
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AL, 0x%02x", address_space->access_byte[linear_pc()]);
+                    break;
+                case 0x01:
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AX, 0x%02x", address_space->access_byte[linear_pc()]);
+                    break;
+                case 0x02:
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02x, AL", address_space->access_byte[linear_pc()]);
+                    break;
+                case 0x03:
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02x, AL", address_space->access_byte[linear_pc()]);
+                    break;
+            }
+
+            return;
+        }
         // handle reg part (ignored in certain cases)
         // length can be handled by the opcode function -- it's part of the opcode anyway
 
@@ -280,7 +299,8 @@ namespace Volt
     {
         Disasm_Parse(opcode);
 
-        if (!disasm_suppress_logging) // e.g loop
+        if (!disasm_suppress_logging
+        && (rep_type == CPU8086RepType::None)) // e.g loop
             Logging_LogChannel(disasm_buf_8086, LogChannel::Debug);
     }
 

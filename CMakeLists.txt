@@ -55,6 +55,7 @@ add_executable (Volt
 "emulation/components/cpu/cpu8086_ops_move.cpp"
 "emulation/components/cpu/cpu8086_ops_prefix.cpp"
 "emulation/components/cpu/cpu8086_ops_stack.cpp"
+"emulation/components/cpu/cpu8086_ops_string.cpp"
 
 # Disassembly system
 "emulation/disasm/disasm.cpp"

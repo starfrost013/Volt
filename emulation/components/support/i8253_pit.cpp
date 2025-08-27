@@ -230,7 +230,6 @@ namespace Volt
                     current_counter.running = true;
                 }
                 
-
                 break;
             case PIT8253Port::ControlWord:
                 // determine which channel is being configured
