@@ -179,8 +179,6 @@ namespace Volt
             opcode = Prefetch_Pop8();
         else
         {
-            cx--;
-            
             bool exit_condition = true;
 
             switch (rep_type)
@@ -194,7 +192,13 @@ namespace Volt
             }
 
             if (exit_condition)
+            {
+                //this is awful
                 rep_type = CPU8086RepType::None;
+                opcode = Prefetch_Pop8();
+            }
+            else   
+                cx--; 
         }
 
         clock_skip = instruction_table[opcode].cycles; //allow this to be increased by the run_function
@@ -221,6 +225,14 @@ namespace Volt
 
         // turn on the rep_parsed_instruction thing so that we can repeat this instruction if we need to
         last_opcode = opcode;
+
+        #ifdef DEBUG
+
+        if (cs == 0 
+            && ip == 0)
+            Logging_LogChannel("After the last instruction, CS:IP ended up at 0000:0000. This means something went very wrong", LogChannel::Fatal);
+
+        #endif 
     }
 
     void CPU8086::Frame()

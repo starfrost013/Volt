@@ -73,6 +73,10 @@ namespace Volt
 
     uint8_t IOx86_Read(uint16_t port)
     {
+        //TODO: VERY TEMPORARY ""PPI"" HACK TO MAKE THE BIOS WORK UNTIL WE HAVE DMA/PIT/PIC working
+        if (port == 0x62)
+            return 0x00;
+
         if (!io_port_range)
             return 0xFF;
 

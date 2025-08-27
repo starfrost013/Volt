@@ -51,7 +51,8 @@ namespace Volt
                 VoltFile* to_be_freed = entry; 
 
                 entry = entry->next;
-                free(to_be_freed);
+                
+                Memory_Free<VoltFile>(to_be_freed);
             }
 
             filesystem->head = filesystem->tail = nullptr;

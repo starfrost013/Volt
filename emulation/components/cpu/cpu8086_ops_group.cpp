@@ -54,7 +54,7 @@ namespace Volt
         bool is_8on16 = ((opcode & 0x03) == 0x03);
         bool is_16on16 = ((opcode & 0x03) == 0x01);
 
-        if (is_8on8 || is_16on16)
+        if (is_8on8)
             immed8 = Prefetch_Pop8();
         else
             immed16 = Prefetch_Pop16();

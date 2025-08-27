@@ -507,7 +507,7 @@ namespace Volt
             bool disasm_suppress_logging = false; 
 
             // tables used for disasm grp1-grp5
-            static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"Cmp", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
+            static constexpr const char* grp1_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ADD", "OR", "ADC", "SBB", "AND", "SUB", "XOR", "OR"};
             static constexpr const char* grp2_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"ROL", "ROR", "RCL", "RCR", "SHL", "SHR", "SETMO", "SAR"};
             static constexpr const char* grp3_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"TEST", "TEST [!]", "NOT", "NEG", "MUL", "IMUL", "DIV", "IDIV"};
             static constexpr const char* grp4_table_disasm[CPU8086_NUM_OPCODES_PER_GRP] = {"INC", "DEC", "CALLB [!]", "CALLB [!]", "JMPB [!]", "JMPB [!]", "PUSHB [!]", "PUSHB [!]"};

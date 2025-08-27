@@ -73,7 +73,6 @@ namespace Volt
                     }
             }
         }
-
     }
 
     uint8_t DMA8237::PortRead(uint8_t port) 
