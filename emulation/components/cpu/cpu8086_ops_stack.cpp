@@ -30,12 +30,12 @@ namespace Volt
     {
         // DO NOT FLUSH FOR CS!
 
-        uint16_t segreg = *segreg_table[opcode >> 3];
+        uint8_t index = (opcode >> 3);
 
-        if (segreg == 0x01)
+        if (index == 0x01)
             Logging_LogChannel("POP CS aka: it's over", LogChannel::Warning);
 
-        segreg = Stack_Pop16();
+        *segreg_table[index] = Stack_Pop16();
     }
 
     void CPU8086::Op_PopModRM(uint8_t opcode)
