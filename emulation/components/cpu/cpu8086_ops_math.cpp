@@ -664,5 +664,13 @@ namespace Volt
             ax = old_ax;
         }
     }
-    
+
+    void CPU8086::Op_Cbw(uint8_t opcode)
+    {
+        uint16_t new_val = (uint16_t)al;
+
+        new_val |= (al & 0x80) ? 0xFF00 : 0x0000;
+
+        ax = new_val;
+    }
 }

@@ -9,7 +9,8 @@ Changes:
 
 8086:
 * Add string instructions
-* Fix GRP1
+* Fix GRP1 16-to-8 variant (0x83)
+* Fix POP segreg
 
 Peripherals:
 
