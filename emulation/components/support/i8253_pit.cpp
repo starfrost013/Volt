@@ -87,7 +87,7 @@ namespace Volt
                                 Logging_LogChannel("PIC IRQ0 must be here, but isn't yet [PIT8253 Counter 0 Rate Generator zero value reached!]\n", LogChannel::Warning);    
                                 break;
                             case 0x01:
-                                Logging_LogChannel("DMA must be here, but isn't yet [PIT8253 Counter 1 Rate Generator zero value reached!]\n", LogChannel::Warning);    
+                                dma_controller->SendDMARequest(0);
                                 break;
                         }
                     }      
@@ -113,7 +113,7 @@ namespace Volt
                                 Logging_LogChannel("PIC IRQ0 must be here, but isn't yet [PIT8253 Counter 0 Square Wave value reached!]\n", LogChannel::Warning);    
                                 break;
                             case 0x01:
-                                dma_controller->SendDMARequest(0);
+                                dma_controller->SendDMARequest(2);
                                 break;
                         }
                     }
@@ -144,7 +144,7 @@ namespace Volt
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 
         uint16_t source_value;
-        PIT8253Counter& current_counter = counters[port & 0x03]; 
+        PIT8253Counter& current_counter = counters[port & 0x02]; 
 
         switch (port)
         {
@@ -188,7 +188,7 @@ namespace Volt
     {
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 
-        PIT8253Counter& current_counter = counters[port & 0x03]; 
+        PIT8253Counter& current_counter = counters[port & 0x02]; 
 
         switch (port)
         {
@@ -234,7 +234,7 @@ namespace Volt
             case PIT8253Port::ControlWord:
                 // determine which channel is being configured
                 // set control
-                counter_index = (value >> 6) & 0x03;
+                counter_index = (value >> 6) & 0x02;
 
                 //latch not needed for these
                 current_counter = counters[counter_index];
@@ -254,7 +254,7 @@ namespace Volt
                     if (current_counter.control & PIT8253Ctrl::BCD)
                         Logging_LogChannel("TODO: BCD mode not yet implemented!", LogChannel::Warning);    
 
-                    uint8_t selected_counter = (current_counter.control >> 6) & 0x03;
+                    uint8_t selected_counter = (current_counter.control >> 6) & 0x02;
 
                     // don't cast we need to xor it
                     operating_mode = (value >> 1) & 0x07;

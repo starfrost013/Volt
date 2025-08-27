@@ -20,6 +20,7 @@ namespace Volt
     #define CPU8088_PREFETCH_QUEUE_SIZE 4
     #define CPU8086_START_LOCATION_CS   0xFFFF
     #define CPU8086_START_LOCATION_IP   0x0000
+    #define CPU8086_SEGMENT_SIZE        0xFFFF
     
     // This is stupid nonsense for CPU8086::Tick
     #define CPU8086_PREFIX_ES           0x26
@@ -74,6 +75,8 @@ namespace Volt
 
             // TODO: Would a define be faster?
             uint32_t inline linear_pc() { return ((cs << 4) + ip) % CPU8086_ADDR_SPACE_SIZE; }
+            uint32_t inline linear_ds_si() { return ((ds << 4) + si) % CPU8086_ADDR_SPACE_SIZE; }
+            uint32_t inline linear_es_di() { return ((es << 4) + di) % CPU8086_ADDR_SPACE_SIZE; }
             uint32_t inline linear_sp() { return ((ss << 4) + sp) % CPU8086_ADDR_SPACE_SIZE; }
 
             enum CPU8086RepType
@@ -371,6 +374,9 @@ namespace Volt
             void Op_Lods(uint8_t opcode);
             void Op_Scas(uint8_t opcode);
 
+            void Op_UpdateStringLocation8();
+            void Op_UpdateStringLocation16();
+
             //
             // Prefetch Queue (basic impl.)
             //
@@ -440,8 +446,8 @@ namespace Volt
                 { 0x88, Op_MovModRM, 2, 1 }, { 0x89, Op_MovModRM, 2, 1 }, { 0x8A, Op_MovModRM, 2, 1 },  { 0x8B, Op_MovModRM, 2, 1 },  { 0x8C, Op_MovRegToSeg, 2, 1 }, { 0x8D, Op_Unimpl, 1, 1 }, { 0x8E, Op_MovRegToSeg, 2, 1 },  { 0x8F, Op_PopModRM, 2, 1 }, 
                 { 0x90, Op_Nop, 1, 1 }, { 0x91, Op_XchgReg, 1, 1 }, { 0x92, Op_XchgReg, 1, 1 },  { 0x93, Op_XchgReg, 1, 1 },  { 0x94, Op_XchgReg, 1, 1 }, { 0x95, Op_XchgReg, 1, 1 }, { 0x96, Op_XchgReg, 1, 1 },  { 0x97, Op_XchgReg, 1, 1 }, 
                 { 0x98, Op_Unimpl, 1, 1 }, { 0x99, Op_Unimpl, 1, 1 }, { 0x9A, Op_CallFar, 3, 1 },  { 0x9B, Op_Unimpl, 1, 1 },  { 0x9C, Op_Pushf, 1, 1 }, { 0x9D, Op_Popf, 1, 1 }, { 0x9E, Op_Sahf, 1, 1 },  { 0x9F, Op_Lahf, 1, 1 }, 
-                { 0xA0, Op_MovOffset, 3, 1 }, { 0xA1, Op_MovOffset, 3, 1 }, { 0xA2, Op_MovOffset, 3, 1 },  { 0xA3, Op_MovOffset, 3, 1 },  { 0xA4, Op_Unimpl, 1, 1 }, { 0xA5, Op_Unimpl, 1, 1 }, { 0xA6, Op_Unimpl, 1, 1 },  { 0xA7, Op_Unimpl, 1, 1 }, 
-                { 0xA8, Op_TestImmed, 2, 1 }, { 0xA9, Op_TestImmed, 2, 1 }, { 0xAA, Op_Unimpl, 1, 1 },  { 0xAB, Op_Unimpl, 1, 1 },  { 0xAC, Op_Unimpl, 1, 1 }, { 0xAD, Op_Unimpl, 1, 1 }, { 0xAE, Op_Unimpl, 1, 1 },  { 0xAF, Op_Unimpl, 1, 1 }, 
+                { 0xA0, Op_MovOffset, 3, 1 }, { 0xA1, Op_MovOffset, 3, 1 }, { 0xA2, Op_MovOffset, 3, 1 },  { 0xA3, Op_MovOffset, 3, 1 },  { 0xA4, Op_Movs, 1, 1 }, { 0xA5, Op_Movs, 1, 1 }, { 0xA6, Op_Cmps, 1, 1 },  { 0xA7, Op_Cmps, 1, 1 }, 
+                { 0xA8, Op_TestImmed, 2, 1 }, { 0xA9, Op_TestImmed, 2, 1 }, { 0xAA, Op_Stos, 1, 1 },  { 0xAB, Op_Stos, 1, 1 },  { 0xAC, Op_Lods, 1, 1 }, { 0xAD, Op_Lods, 1, 1 }, { 0xAE, Op_Scas, 1, 1 },  { 0xAF, Op_Scas, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
                 { 0xC0, Op_RetNear, 2, 1 }, { 0xC1, Op_RetNear, 1, 1 }, { 0xC2, Op_RetNear, 2, 1 },  { 0xC3, Op_RetNear, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 

@@ -66,6 +66,7 @@ namespace Volt
                 
             };
 
+
             PIT8253Counter counters[PIT8253_NUM_COUNTERS];
 
             ComponentDMAController* dma_controller; // allow dma controller references
