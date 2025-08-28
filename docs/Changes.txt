@@ -15,6 +15,9 @@ Changes:
 Peripherals:
 
 === CORE SYSTEMS ===
+* Fix closing files
+* Much more comprehensive shutdown functions
+
 
 Pre-Alpha 1.0/1.1
 23/27 August 2025

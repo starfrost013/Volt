@@ -37,6 +37,7 @@ add_executable (Volt
 
 # Emulation Core
 "emulation/emulation.cpp"
+"emulation/emulation_commands.cpp"
 
 # Emulation Components 
 

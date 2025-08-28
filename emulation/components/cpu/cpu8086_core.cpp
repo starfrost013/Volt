@@ -22,7 +22,7 @@ namespace Volt
         // Load convars
         emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
         emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);
-        emu_8086_use_8088 = Cvar_Get("emu_8086_use_8088", "0", false); //TODO: FLIP THIS AROUND!
+        emu_8086_use_8088 = Cvar_Get("emu_8086_use_8088", "0", false); //TODO: Make this defualt
 
         // cannot use constructor here due to MemAlloc limitations
         if (emu_8086_use_8088->value)

@@ -120,6 +120,23 @@ namespace Volt
 
         char* str = Util_GetTokenSeparatedPart(last_token, STRING_SINGLE_SPACE, argv);
         
+        uint32_t position = strlen(str);
+
+        while (position > 0)
+        {
+            uint8_t last_char = str[position];
+
+            if (isspace(last_char) 
+            || str[position] == '\n'
+            || str[position] == '\r')
+            {
+                str[position] = '\0'; //terminate the string early
+            }
+            
+
+            position--;
+        }
+
         if (!str)
             return STRING_EMPTY;
     

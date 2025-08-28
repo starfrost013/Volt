@@ -101,6 +101,7 @@ namespace Volt
 
     void IOx86_Shutdown()
     {
-        Memory_Free<IOx86>(io_port_range);
+        if (io_port_range)
+            Memory_Free<IOx86>(io_port_range);
     }
 }

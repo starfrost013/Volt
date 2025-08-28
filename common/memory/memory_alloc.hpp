@@ -35,6 +35,8 @@
 #define TAG_EMU_COMPONENT_HDD			0x30444448	// HDD component					'HDD0'
 #define TAG_EMU_COMPONENT_NET			0x3054454E	// Network component				'NET0'
 
+#define TAG_EMU_COMPONENT_GEN			0x47504D43	// Dynamically created component	'CMPG'
+
 // More to come...
 
 namespace Volt

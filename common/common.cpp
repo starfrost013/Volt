@@ -51,10 +51,11 @@ namespace Volt
 
         common_is_running = true;
         
-        //  Last step: Run autoexec.volt
+        // Last step: Run autoexec.volt, and any other cfg files the user may wish to run
         
         Console_ExecuteCommand("exec autoexec.volt");
-        
+        Cmdline_ParseExec();
+
         Logging_LogChannel("******** Common_Init done! ********", LogChannel::Message);
         
         // Start emulating
@@ -137,7 +138,6 @@ namespace Volt
         // shut down the client, server and renderer if they are running
 
         Emulation_Shutdown(); 
-        Render_Shutdown();
 
         // shut down in reverse order to starting up
         Net_Shutdown();

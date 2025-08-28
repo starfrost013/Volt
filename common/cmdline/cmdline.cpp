@@ -12,14 +12,14 @@ namespace Volt
 	char** cmdline_argv;					// Holds a pointer to the engine's command line options
 
 	/* Functions only used in this translation unit */
-	void Cmdline_ParsePlusCommands();
+	void Cmdline_ParseEarlyCvars();
 
 	void Cmdline_Init(int32_t argc, char** argv)
 	{
 		// is this safe on all platforms?
 		cmdline_argv = argv;
 		cmdline_argc = argc;
-		Cmdline_ParsePlusCommands();
+		Cmdline_ParseEarlyCvars();
 	}
 	
 	// Check if a command line option exists.
@@ -53,7 +53,31 @@ namespace Volt
 	}
 
 	/* See if any of our commands start with a +. If so, use that to create some cvars...*/
-	void Cmdline_ParsePlusCommands()
+	void Cmdline_ParseEarlyCvars()
+	{
+		/* -2 because we need to provide a "+set" string , cvar name, and the value*/
+		for (uint32_t arg = 0; arg < cmdline_argc - 2; arg++)
+		{
+			// don't crash
+			if (!cmdline_argv[arg])
+				break;
+
+			if (!strcasecmp(cmdline_argv[arg], "+set"))
+			{
+				char* name = cmdline_argv[arg + 1];
+				char* value = cmdline_argv[arg + 2];
+
+				Logging_LogChannel("+set detected on command line creating cvar - %s, %s", LogChannel::Debug, name, value);
+				Cvar_Set(name, value, false);
+				arg += 2; // skip the ones we don't need
+				continue;
+			}
+		}
+	}
+
+
+	/* See if +exec was provided, so we can create the machine right after init */
+	void Cmdline_ParseExec()
 	{
 		char exec_buf[MAX_STRING_LENGTH] = {0};
 
@@ -64,17 +88,6 @@ namespace Volt
 			if (!cmdline_argv[arg])
 				break;
 
-			if (!strcasecmp(cmdline_argv[arg], "+set")
-			&& (cmdline_argc - arg) > 2)
-			{
-				char* name = cmdline_argv[arg + 1];
-				char* value = cmdline_argv[arg + 2];
-
-				Logging_LogChannel("+set detected on command line creating cvar - %s, %s", LogChannel::Debug, name, value);
-				Cvar_Set(name, value, false);
-				arg += 2; // skip the ones we don't need
-				continue;
-			}
 			if (!strcasecmp(cmdline_argv[arg], "+exec"))
 			{
 				char* file_name = cmdline_argv[arg + 1];

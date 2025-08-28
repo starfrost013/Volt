@@ -1,5 +1,8 @@
+// 
+// VOLT
+// Copyright © 2025 starfrost
 //
-// Emulation Core
+// emulation.hpp: Core emulation definitions
 //
 
 #pragma once
@@ -17,10 +20,11 @@
 namespace Volt
 {
     void Emulation_Init();
+    void Emulation_InitCommands();
     void Emulation_Start();
     void Emulation_Tick();
     void Emulation_Shutdown();
 
     // Test machine
-    extern Machine test_machine;
+    extern Machine emu_machine;
 }
