@@ -20,7 +20,7 @@ namespace Volt
             void Init(Machine* machine_ptr) override;
             void Start() override; 
             void Frame() override { }; // Not used here
-            void Tick() override; 
+            void Tick() override { }; // Not used here 
             void Shutdown() override;
         
             uint8_t PortRead(uint8_t port) override;

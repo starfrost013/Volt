@@ -9,8 +9,12 @@
 
 namespace Volt
 {
+    Cvar* emu_8259_clk;
+
     void PIC8259::Init(Machine* machine_ptr)
     {
+        emu_8259_clk = Cvar_Get("emu_8259_clk", "4772726", false);
+
         machine = machine_ptr;
         name = "Intel 8259 Programmable Interrupt Controller";
     }

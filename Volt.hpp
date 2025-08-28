@@ -19,6 +19,7 @@
 #include <iostream>
 #include <string>
 #include <thread>
+#include <unordered_map>
 #include <vector>
 
 #include <common/common.hpp>        // Common between client and server incl. network system

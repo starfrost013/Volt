@@ -9,21 +9,9 @@
 #   define PDJSON_SYMEXPORT
 #endif
 
-#ifdef __cplusplus
-extern "C" {
-#else
-#if defined(__STDC_VERSION__) && (__STDC_VERSION__ >= 199901L)
-    #include <stdbool.h>
-#else
-    #ifndef bool
-        #define bool int
-        #define true 1
-        #define false 0
-    #endif /* bool */
-#endif /* __STDC_VERSION__ */
-#endif /* __cplusplus */
 
-#include <stdio.h>
+#include <cstdbool>
+#include <cstdio>
 
 enum json_type {
     JSON_ERROR = 1, JSON_DONE,
@@ -113,9 +101,5 @@ struct json_stream {
     struct json_allocator alloc;
     char errmsg[128];
 };
-
-#ifdef __cplusplus
-} /* extern "C" */
-#endif /* __cplusplus */
 
 #endif

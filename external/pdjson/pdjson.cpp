@@ -13,7 +13,7 @@
 #include <ctype.h>
 
 #ifndef PDJSON_H
-#  include "pdjson.h"
+#  include "pdjson.hpp"
 #endif
 
 #define JSON_FLAG_ERROR      (1u << 0)

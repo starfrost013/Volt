@@ -26,11 +26,6 @@ namespace Volt
 
     }
 
-    void PPI8255::Tick()
-    {
-
-    }
-
     void PPI8255::Shutdown() 
     {
 

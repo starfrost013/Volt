@@ -11,7 +11,7 @@ namespace Volt
     // Stolen from quake 3, we can always increase it later.
     #define MAX_LOOPBACK        16
     #define MAX_PACKET          4096 //4kb seems reasonable
-    #define MAX_STRING_LENGTH   1024 
+    constexpr size_t MAX_STRING_LENGTH = 1024; 
 
     typedef enum 
     {

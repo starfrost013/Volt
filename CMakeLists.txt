@@ -11,10 +11,11 @@ add_executable (Volt
 
 # EXTERNAL
 "external/glad/src/glad.c"
-"external/pdjson/pdjson.c"
+"external/pdjson/pdjson.cpp"
 
 # CORE
 "Volt.cpp"
+
 
 # COMMON
 "common/common.cpp" 
@@ -26,6 +27,7 @@ add_executable (Volt
 "common/console/console.cpp"
 "common/net/net_core.cpp" "common/net/types/net_loopback.cpp"
 "common/filesystem/filesystem.hpp" "common/filesystem/filesystem_core.cpp"
+"common/config/config.cpp"
 
 # UTIL
 "util/util.hpp" "util/util.cpp" 
