@@ -136,8 +136,9 @@ namespace Volt
         Logging_LogChannel("******** Common_Shutdown starting ********", LogChannel::Debug);
         // shut down the client, server and renderer if they are running
 
-        //Emulation_Shutdown(); 
-    
+        Emulation_Shutdown(); 
+        Render_Shutdown();
+        
         // shut down in reverse order to starting up
         Net_Shutdown();
         Cvar_Shutdown();

@@ -87,6 +87,15 @@ namespace Volt
                 }
             }
 
+            void Shutdown()
+            {
+                for (auto component : components)
+                {
+                    component->Shutdown();
+                    //Memory_Free<Component>(component);
+                }
+            }
+
             // Get around stupid include crap
             static void LogComponent(const char* name)
             {

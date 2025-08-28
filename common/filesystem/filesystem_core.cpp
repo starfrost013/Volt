@@ -1,7 +1,6 @@
 //
-// S7_Engine
+// VOLT
 // Copyright © 2024-2025 Connor Hyde
-// CONFIDENTIAL
 //
 
 #include <common/filesystem/filesystem.hpp>

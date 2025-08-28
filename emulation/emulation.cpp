@@ -4,6 +4,7 @@
 #include "components/support/i8237_dma.hpp"
 #include "components/support/i8253_pit.hpp"
 #include "components/support/i8255_ppi.hpp"
+#include <emulation/components/io/io_port.hpp>
 #include <render/render.hpp>
 
 namespace Volt
@@ -47,6 +48,7 @@ namespace Volt
 
     void Emulation_Shutdown()
     {
-        Render_Shutdown(); 
+        test_machine.Shutdown();
+        IOx86_Shutdown();           // kill IOx86 last just in case
     }
 }
