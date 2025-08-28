@@ -1,7 +1,7 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
 Pre-Alpha 1.2
-XX XXXXXX 2025
+28 August 2025
 
 Changes:
 
@@ -11,13 +11,17 @@ Changes:
 * Add string instructions
 * Fix GRP1 16-to-8 variant (0x83)
 * Fix POP segreg
+* Add CBW and CWD instructions
 
 Peripherals:
+* Some basic 8255 PPI emulation (not much)
 
 === CORE SYSTEMS ===
 * Fix closing files
 * Much more comprehensive shutdown functions
-
+* Add "machine_add_component" command to configure component system
+* Strings passed through Command_Argv are now trimmed on the right by default (they don't need to be trimmed on the left)
+* Add the "+exec" command line option to run any number of optional files. They are processed immediately after autoexec.Volt
 
 Pre-Alpha 1.0/1.1
 23/27 August 2025

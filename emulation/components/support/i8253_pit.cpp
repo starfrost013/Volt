@@ -9,7 +9,7 @@
 
 namespace Volt
 {
-    Cvar* emu_8253_clk;
+    Cvar* emu_8253_clock;
 
     void PIT8253::Init(Machine* machine_ptr)
     {
@@ -28,8 +28,8 @@ namespace Volt
                 break; 
         }
 
-        emu_8253_clk = Cvar_Get("emu_8253_clk", "1193181", false);
-        clock_hz = emu_8253_clk->value;
+        emu_8253_clock = Cvar_Get("emu_8253_clock", "1193181", false);
+        clock_hz = emu_8253_clock->value;
         update = true; 
 
         IOx86_AddMapping(0x40, 0x43, this);

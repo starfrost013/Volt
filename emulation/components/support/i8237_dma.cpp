@@ -11,7 +11,7 @@
 
 namespace Volt
 { 
-    Cvar* emu_8237_clk;
+    Cvar* emu_8237_clock;
 
     void DMA8237::Init(Machine* machine_ptr)
     {
@@ -19,7 +19,7 @@ namespace Volt
 
         name = (is_channels_4to7) ? "Intel 8237 DMA controller (Slave)" : "Intel 8237 DMA controller (Master)";
         
-        emu_8237_clk = Cvar_Get("emu_8237_clk", "4772726", false);
+        emu_8237_clock = Cvar_Get("emu_8237_clock", "4772726", false);
 
         //only map 1 each unless they are continguous
         IOx86_AddMapping(0x81, 0x83, this);

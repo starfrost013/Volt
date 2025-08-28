@@ -11,7 +11,7 @@
 namespace Volt
 {
     // TEMP convar
-    Cvar* emu_8086_clk;
+    Cvar* emu_8086_clock;
     Cvar* emu_8086_disasm;
     Cvar* emu_8086_use_8088;
 
@@ -20,8 +20,13 @@ namespace Volt
         machine = machine_ptr;
 
         // Load convars
-        emu_8086_clk = Cvar_Get("emu_8086_clk", "4772726", false);
+        emu_8086_clock = Cvar_Get("emu_8086_clock", "4772726", false);
+
+        #ifdef DEBUG
         emu_8086_disasm = Cvar_Get("emu_8086_disasm", "1", false);
+        #elif RELEASE
+        emu_8086_disasm = Cvar_Get("emu_8086_disasm", "0", false);
+        #endif
         emu_8086_use_8088 = Cvar_Get("emu_8086_use_8088", "0", false); //TODO: Make this defualt
 
         // cannot use constructor here due to MemAlloc limitations
@@ -53,7 +58,7 @@ namespace Volt
         if (!io_port_range)
             IOx86_Init();
         
-        clock_hz = uint64_t(emu_8086_clk->value);
+        clock_hz = uint64_t(emu_8086_clock->value);
         
         Logging_LogChannel("8086: Clock speed = %d Hz", LogChannel::Debug, clock_hz);
 
