@@ -11,6 +11,7 @@ add_executable (Volt
 
 # EXTERNAL
 "external/glad/src/glad.c"
+"external/pdjson/pdjson.c"
 
 # CORE
 "Volt.cpp"
