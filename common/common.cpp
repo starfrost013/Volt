@@ -42,8 +42,8 @@ namespace Volt
         Common_InitCvar();                              // Initialise cvars
         Common_SignonMessage();                         // Print the sign-on message
         Filesystem_Init();                              // Initialise the filesystem
-        Cmdline_Init(argc, argv);                       // Initialise the command line
         Command_Init();                                 // Initialise the command system
+        Cmdline_Init(argc, argv);                       // Initialise the command line
         Net_Init(NetworkType::Loopback);                // Initialise the network
 
         // Initialise emulation layer.
@@ -56,7 +56,7 @@ namespace Volt
         Console_ExecuteCommand("exec autoexec.volt");
         
         Logging_LogChannel("******** Common_Init done! ********", LogChannel::Message);
-
+        
         // Start emulating
         Emulation_Start(); 
 
@@ -138,7 +138,7 @@ namespace Volt
 
         Emulation_Shutdown(); 
         Render_Shutdown();
-        
+
         // shut down in reverse order to starting up
         Net_Shutdown();
         Cvar_Shutdown();

@@ -142,9 +142,15 @@ namespace Volt
 
         // now check if it is the head/tail to keep the GameImage structures consistent
         if (entry == filesystem->tail)   
+        {
             filesystem->tail = entry->prev; 
+            filesystem->tail->next = nullptr;
+        }
         else if (entry == filesystem->head)
+        {
             filesystem->head = entry->next; 
+            filesystem->head->prev = nullptr; 
+        }
         
         // we aren't the head of the tail, so just make sure the linked list is consistent
         if (entry->prev && entry->next)
@@ -155,7 +161,7 @@ namespace Volt
 
         Logging_LogChannel("Closed file %s", LogChannel::Debug, entry->path);
 
-        free(entry);
+        Memory_Free<VoltFile>(entry);
     }
 
 

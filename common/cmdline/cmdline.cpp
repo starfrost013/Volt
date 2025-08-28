@@ -12,14 +12,14 @@ namespace Volt
 	char** cmdline_argv;					// Holds a pointer to the engine's command line options
 
 	/* Functions only used in this translation unit */
-	void Cmdline_EarlyCreateCvars();
+	void Cmdline_ParsePlusCommands();
 
 	void Cmdline_Init(int32_t argc, char** argv)
 	{
 		// is this safe on all platforms?
 		cmdline_argv = argv;
 		cmdline_argc = argc;
-		Cmdline_EarlyCreateCvars();
+		Cmdline_ParsePlusCommands();
 	}
 	
 	// Check if a command line option exists.
@@ -53,16 +53,19 @@ namespace Volt
 	}
 
 	/* See if any of our commands start with a +. If so, use that to create some cvars...*/
-	void Cmdline_EarlyCreateCvars()
+	void Cmdline_ParsePlusCommands()
 	{
+		char exec_buf[MAX_STRING_LENGTH] = {0};
+
 		/* -2 because we need to provide a "+set", cvar name, and the value*/
-		for (uint32_t arg = 0; arg < cmdline_argc - 2; arg++)
+		for (uint32_t arg = 0; arg < cmdline_argc - 1; arg++)
 		{
 			// don't crash
 			if (!cmdline_argv[arg])
 				break;
 
-			if (!strcasecmp(cmdline_argv[arg], "+set"))
+			if (!strcasecmp(cmdline_argv[arg], "+set")
+			&& (cmdline_argc - arg) > 2)
 			{
 				char* name = cmdline_argv[arg + 1];
 				char* value = cmdline_argv[arg + 2];
@@ -71,6 +74,19 @@ namespace Volt
 				Cvar_Set(name, value, false);
 				arg += 2; // skip the ones we don't need
 				continue;
+			}
+			if (!strcasecmp(cmdline_argv[arg], "+exec"))
+			{
+				char* file_name = cmdline_argv[arg + 1];
+
+				Logging_LogChannel("Executing command %s", LogChannel::Debug);
+
+				snprintf(exec_buf, MAX_STRING_LENGTH, "exec %s", file_name);
+				
+				// YOU MUST CALL COMMAND_INIT BEFORE CMDLINE_INIT
+				Command_Execute(exec_buf, CommandType::GlobalCommand);
+
+				arg++; // skip the ones we parsed
 			}
 		}
 	}

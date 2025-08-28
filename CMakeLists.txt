@@ -11,7 +11,6 @@ add_executable (Volt
 
 # EXTERNAL
 "external/glad/src/glad.c"
-"external/pdjson/pdjson.cpp"
 
 # CORE
 "Volt.cpp"
@@ -27,7 +26,6 @@ add_executable (Volt
 "common/console/console.cpp"
 "common/net/net_core.cpp" "common/net/types/net_loopback.cpp"
 "common/filesystem/filesystem.hpp" "common/filesystem/filesystem_core.cpp"
-"common/config/config.cpp"
 
 # UTIL
 "util/util.hpp" "util/util.cpp" 
@@ -101,9 +99,12 @@ add_library(glfw3 STATIC IMPORTED)
 add_library(squirrel STATIC IMPORTED)
 add_library(sqstdlib STATIC IMPORTED)
 
+# most platforms don't use extensions for binaries
+set(FINAL_BINARY_NAME "${CMAKE_PROJECT_NAME}")
+
 if (WIN32)
   include_directories("external/glfw/win64/include")
-
+  set(FINAL_BINARY_NAME "${CMAKE_PROJECT_NAME}.exe")
   if (MSVC)
     message(WARNING "MSVC is currently not supported, therefore compilation is likely to fail.")
   else()
@@ -118,7 +119,7 @@ if (WIN32)
 
   endif()
 else()
-  message(FATAL_ERROR "Linux not supported yet...:(")
+  message(WARNING "Linux not supported yet...:(")
 endif()
 
 
@@ -134,5 +135,14 @@ if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET Volt PROPERTY CXX_STANDARD 20)
 endif()
 
-# TODO: Add tests and install targets if needed.
- 
+add_custom_command(TARGET Volt POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different
+  ${CMAKE_BINARY_DIR}/${FINAL_BINARY_NAME}
+  ${CMAKE_BINARY_DIR}/out/${FINAL_BINARY_NAME}
+  )
+
+add_custom_command(TARGET Volt POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_directory
+  ${CMAKE_CURRENT_SOURCE_DIR}/assets
+  ${CMAKE_BINARY_DIR}/out
+)
