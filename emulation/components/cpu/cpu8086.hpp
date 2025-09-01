@@ -264,7 +264,6 @@ namespace Volt
 
             void Op_Loop(uint8_t opcode);
 
-
             // Flag set/clear
             void Op_Sti(uint8_t opcode);
             void Op_Cli(uint8_t opcode);
@@ -343,6 +342,8 @@ namespace Volt
 
             void Op_XchgReg(uint8_t opcode);
             void Op_XchgModRM(uint8_t opcode);
+
+            void Op_LesLds(uint8_t opcode);
 
             // Group
             void Op_Grp1(uint8_t opcode);
@@ -454,7 +455,7 @@ namespace Volt
                 { 0xA8, Op_TestImmed, 2, 1 }, { 0xA9, Op_TestImmed, 2, 1 }, { 0xAA, Op_Stos, 1, 1 },  { 0xAB, Op_Stos, 1, 1 },  { 0xAC, Op_Lods, 1, 1 }, { 0xAD, Op_Lods, 1, 1 }, { 0xAE, Op_Scas, 1, 1 },  { 0xAF, Op_Scas, 1, 1 }, 
                 { 0xB0, Op_MovImmedToReg, 2, 1 }, { 0xB1, Op_MovImmedToReg, 2, 1 }, { 0xB2, Op_MovImmedToReg, 2, 1 },  { 0xB3, Op_MovImmedToReg, 2, 1 },  { 0xB4, Op_MovImmedToReg, 2, 1 }, { 0xB5, Op_MovImmedToReg, 2, 1 }, { 0xB6, Op_MovImmedToReg, 2, 1 },  { 0xB7, Op_MovImmedToReg, 2, 1 }, 
                 { 0xB8, Op_MovImmedToReg, 3, 1 }, { 0xB9, Op_MovImmedToReg, 3, 1 }, { 0xBA, Op_MovImmedToReg, 3, 1 },  { 0xBB, Op_MovImmedToReg, 3, 1 },  { 0xBC, Op_MovImmedToReg, 3, 1 }, { 0xBD, Op_MovImmedToReg, 3, 1 }, { 0xBE, Op_MovImmedToReg, 3, 1 },  { 0xBF, Op_MovImmedToReg, 3, 1 }, 
-                { 0xC0, Op_RetNear, 2, 1 }, { 0xC1, Op_RetNear, 1, 1 }, { 0xC2, Op_RetNear, 2, 1 },  { 0xC3, Op_RetNear, 1, 1 },  { 0xC4, Op_Unimpl, 1, 1 }, { 0xC5, Op_Unimpl, 1, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 
+                { 0xC0, Op_RetNear, 2, 1 }, { 0xC1, Op_RetNear, 1, 1 }, { 0xC2, Op_RetNear, 2, 1 },  { 0xC3, Op_RetNear, 1, 1 },  { 0xC4, Op_LesLds, 2, 1 }, { 0xC5, Op_LesLds, 2, 1 }, { 0xC6, Op_MovImmedToModRM, 3, 1 },  { 0xC7, Op_MovImmedToModRM, 3, 1 }, 
                 { 0xC8, Op_RetFar, 2, 1 }, { 0xC9, Op_RetFar, 1, 1 }, { 0xCA, Op_RetFar, 1, 1 },  { 0xCB, Op_RetFar, 1, 1 },  { 0xCC, Op_Int, 1, 1 }, { 0xCD, Op_Int, 2, 1 }, { 0xCE, Op_Int, 1, 1 },  { 0xCF, Op_Iret, 1, 1 }, 
                 { 0xD0, Op_Grp2, 2, 1 }, { 0xD1, Op_Grp2, 2, 1 }, { 0xD2, Op_Grp2, 2, 1 },  { 0xD3, Op_Grp2, 2, 1 },  { 0xD4, Op_Unimpl, 1, 1 }, { 0xD5, Op_Unimpl, 1, 1 }, { 0xD6, Op_Unimpl, 1, 1 },  { 0xD7, Op_Unimpl, 1, 1 }, 
                 { 0xD8, Op_Unimpl, 1, 1 }, { 0xD9, Op_Unimpl, 1, 1 }, { 0xDA, Op_Unimpl, 1, 1 },  { 0xDB, Op_Unimpl, 1, 1 },  { 0xDC, Op_Unimpl, 1, 1 }, { 0xDD, Op_Unimpl, 1, 1 }, { 0xDE, Op_Unimpl, 1, 1 },  { 0xDF, Op_Unimpl, 1, 1 }, 

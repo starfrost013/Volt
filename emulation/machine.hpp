@@ -47,12 +47,16 @@ namespace Volt
 
             void Start()
             {
+                Logging_LogChannel("Machine Startup: Starting early_start components...", LogChannel::Debug);
+
                 // start stuff like roms so they can be mapped into cpu address space
                 for (auto component : components)
                 {
                     if (component->early_start)
                         component->Start();
                 }
+
+                Logging_LogChannel("Machine Startup: Starting all other components...", LogChannel::Debug);
 
                 // start non-early start components
                 for (auto component : components)

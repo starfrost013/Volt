@@ -125,5 +125,21 @@ namespace Volt
         }
     }
 
+    void CPU8086::Op_LesLds(uint8_t opcode)
+    {
+        bool is_lds = (opcode & 0x01);
+
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        uint16_t* reg = register_table16[modrm.reg];
+
+        *reg = address_space->read_word(*modrm.ea_ptr);
+
+        if (is_lds)
+            ds = address_space->read_word(*(modrm.ea_ptr + 2) & (address_space_primary->size - 1));
+        else
+            es = address_space->read_word(*(modrm.ea_ptr + 2) & (address_space_primary->size - 1));
+
+    }
 
 }

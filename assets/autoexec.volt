@@ -1,11 +1,10 @@
-memstats
-echo Memory Information:
-memlist
-cvarlist
-
 machine_add_component cpu8086
 machine_add_component dma8237
 machine_add_component pit8253
 machine_add_component ppi8255
 machine_add_component pic8259
 machine_add_component biosxtv3
+
+echo Memory Information:
+memlist
+cvarlist

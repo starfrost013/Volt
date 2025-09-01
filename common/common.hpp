@@ -17,11 +17,11 @@ namespace Volt
 {
     #define ENGINE_TICKRATE		        60		// The engine's tickrate
 
-    extern double max_time;              // Time of the last frame
+    extern double max_time;                     // Time of the last frame
     extern double common_last_frametime;
     extern double common_last_updatetime;
     extern Cvar* common_tickrate;
-    extern bool common_is_running;                 // Determines if the app is running
+    extern bool common_is_running;              // Determines if the app is running
 
     // Base component headers
     void Common_Init(int32_t argc, char** argv);

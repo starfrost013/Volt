@@ -1,5 +1,8 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
+Pre-Alpha 1.4
+XX XXXXXXX 2025
+
 Pre-Alpha 1.3
 1 September 2025
 
@@ -9,16 +12,19 @@ Changes:
 
 General:
 Renamed all _clk cvars to be _clock
-Implemented a memory mapping system. Devices can provide real memory mappings
+Implemented a memory mapping system. Devices can provide physical memory mappings and load into RAM. Later on, methods of the Component
+class will be called to allow custom AddressSpaces
+
 Add the ability to limit the amount of system RAM using emu_system_ram
 Add config .volt files
+Add "early_start" components for components that other components depend on the memory mapping of
 
 8086:
 Fix CMP immed actually doing XOR
 
 === CORE SYSTEMS ===
 Made the BIOS a component (machine_add_component ibmxtv3)
-Remove "exec" command mapping 
+Remove "exec" command mapping ()
 Close the BIOS files after opening
 
 Pre-Alpha 1.2

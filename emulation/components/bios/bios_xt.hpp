@@ -38,6 +38,13 @@ namespace Volt
                 bios_low = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary);
                 bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_high->string, VoltFileMode::Binary);
 
+                if (!bios_low->file
+                || !bios_high->file)
+                {
+                    Logging_LogChannel("Failed to load BIOS %s", LogChannel::Fatal, name);
+                    return; // to be safe
+                }
+
                 // here so the order doesn't matter
                 address_space_primary->AddMapping(0xF0000, 0xFFFFF, this);
 

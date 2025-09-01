@@ -149,10 +149,10 @@ namespace Volt
         {
             if (is_primary)
             {
-                ((index & (size - 1)) > (emu_system_ram->value)) ? ret |= 0xFF000000 : ret |= (access_byte[index + 3] << 24);
-                ((index & (size - 1)) > (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_byte[index + 2] << 16);
-                ((index & (size - 1)) > (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
-                ((index & (size - 1)) > emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_byte[index]);
+                ((index + 3) % size) > (emu_system_ram->value) ? ret |= 0xFF000000 : ret |= (access_byte[index + 3] << 24);
+                (((index + 2) % size) > (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_byte[index + 2] << 16);
+                (((index + 1) % size) > (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
+                ((index % size) > emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_byte[index]);
             }
             else
                 ret = access_byte[index + 3] << 24 | access_byte[index + 2] << 16
