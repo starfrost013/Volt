@@ -19,7 +19,7 @@ namespace Volt
 
         const char* file_path = Command_Argv(1);
 
-        exec_cfg_ptr = Filesystem_OpenFile(file_path, Text, true);
+        exec_cfg_ptr = Filesystem_OpenFile(file_path, VoltFileMode::Text);
 
         if (!exec_cfg_ptr)
         {

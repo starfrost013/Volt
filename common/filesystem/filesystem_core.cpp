@@ -67,7 +67,7 @@ namespace Volt
 
     // Open a file and, if the cached parameter is true, optionally cache it/
     //
-    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode, bool cached)
+    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode)
     {
         // allocate a new open file entry
         VoltFile* entry = Memory_Alloc<VoltFile>(TAG_FILESYSTEM);

@@ -113,7 +113,7 @@ namespace Volt
     void Filesystem_Shutdown();
 
     // File open/close functions
-    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode = Binary, bool cached = false);
+    VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode = Binary);
     void Filesystem_CloseFile(VoltFile* entry);
 
     // File read/write functions

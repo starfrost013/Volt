@@ -30,7 +30,7 @@
 
 // Global Defines
 #define APP_NAME			"Volt Research Emulator"
-#define VERSION		        "Pre-Alpha 1.3"
+#define VERSION		        "Pre-Alpha 1.4"
 #define VERSION_STRING		"Version " VERSION
 #define BUILD_DATE          __DATE__ " " __TIME__
 #define	BUILD_STRING 		"Built " BUILD_STRING
