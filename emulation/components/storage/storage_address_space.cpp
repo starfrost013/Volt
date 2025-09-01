@@ -245,7 +245,7 @@ namespace Volt
         if (!is_primary)
             return nullptr;
 
-        AddressSpaceMapping* mapping;  
+        AddressSpaceMapping* mapping = mapping_head;  
 
         while (mapping)
         {
