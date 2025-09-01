@@ -32,8 +32,6 @@ namespace Volt
         while (!exec_cfg.eof)
         {
             Filesystem_ReadString(exec_cfg_ptr, fs_string_buf);
-
-            Logging_LogChannel("exec file command: %s\n", LogChannel::Debug, fs_string_buf);
             Command_Execute(fs_string_buf, CommandType::ConsoleCommand); 
         }
     }

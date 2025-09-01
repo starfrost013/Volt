@@ -31,7 +31,7 @@ namespace Volt
                 emu_bios_xtv3_path_high = Cvar_Get("emu_bios_xtv3_path_low", "BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", false);
 
                 bios_low = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary, false);
-                bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary, false);
+                bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_high->string, VoltFileMode::Binary, false);
             }
         
             void Start() override
@@ -42,6 +42,10 @@ namespace Volt
                 // componentread* is for e.g. PCI BARs
                 bios_low->file.read((char*)&address_space_primary->access_byte[0xF0000], 32768);
                 bios_high->file.read((char*)&address_space_primary->access_byte[0xF8000], 32768);
+
+                // we don't need them anymore so we can close them
+                Filesystem_CloseFile(bios_low);
+                Filesystem_CloseFile(bios_high);
 
             }
 

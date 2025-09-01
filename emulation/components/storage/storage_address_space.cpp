@@ -217,6 +217,8 @@ namespace Volt
         mapping->start = start;
         mapping->end = end;
         mapping->component = comp;
+
+        Logging_LogChannel("Added address mapping from 0x%X-0x%x for component: %s", LogChannel::Debug, start, end, comp->name);
     }
 
     bool AddressSpace::AddressIsMapped(uint32_t addr)
