@@ -33,7 +33,7 @@ namespace Volt
             return access_byte[(index & (size - 1))];
     
         if (is_primary)
-            return (index >= emu_system_ram->value) ? 0xFF : access_byte[index];
+            return (index > emu_system_ram->value) ? 0xFF : access_byte[index];
         else
             return access_byte[index];
     }
@@ -57,7 +57,7 @@ namespace Volt
         else
         {
             if (is_primary)
-                if (index >= emu_system_ram->value)
+                if (index > emu_system_ram->value)
                     return;
                 else
                     access_byte[index] = value;
@@ -89,8 +89,8 @@ namespace Volt
         {
             if (is_primary)
             {
-                ((index % size) >= (emu_system_ram->value)) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
-                ((index % size) >= emu_system_ram->value - 1) ? ret |= 0xFF : ret |= (access_byte[index]);
+                ((index % size) > (emu_system_ram->value)) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
+                ((index % size) > emu_system_ram->value - 1) ? ret |= 0xFF : ret |= (access_byte[index]);
             }
             else
                 ret = (access_byte[index + 1] << 8 | access_byte[index]);
@@ -121,8 +121,8 @@ namespace Volt
         }
         else 
         {
-            if ((index % size) >= (emu_system_ram->value)) access_byte[((index + 1) % size)] = (value >> 8);
-            if ((index % size) >= (emu_system_ram->value) - 1) access_byte[(index % size)] = value & 0xFF;
+            if ((index % size) < (emu_system_ram->value)) access_byte[((index + 1) % size)] = (value >> 8);
+            if ((index % size) < (emu_system_ram->value) - 1) access_byte[(index % size)] = value & 0xFF;
         }
     };
 
@@ -149,10 +149,10 @@ namespace Volt
         {
             if (is_primary)
             {
-                ((index & (size - 1)) >= (emu_system_ram->value)) ? ret |= 0xFF000000 : ret |= (access_byte[index + 3] << 24);
-                ((index & (size - 1)) >= (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_byte[index + 2] << 16);
-                ((index & (size - 1)) >= (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
-                ((index & (size - 1)) >= emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_byte[index]);
+                ((index & (size - 1)) > (emu_system_ram->value)) ? ret |= 0xFF000000 : ret |= (access_byte[index + 3] << 24);
+                ((index & (size - 1)) > (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_byte[index + 2] << 16);
+                ((index & (size - 1)) > (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
+                ((index & (size - 1)) > emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_byte[index]);
             }
             else
                 ret = access_byte[index + 3] << 24 | access_byte[index + 2] << 16
@@ -177,10 +177,11 @@ namespace Volt
 
         if (comp && comp->allow_device_writes)
         {
-            if ((index % size) >= (emu_system_ram->value)) access_byte[((index + 3) % size)] = (value >> 24);
-            if ((index % size) >= (emu_system_ram->value) - 1) access_byte[((index + 2) % size)] = (value >> 16) & 0xFF;
-            if ((index % size) >= (emu_system_ram->value) - 2) access_byte[((index + 1) % size)] = (value >> 8) & 0xFF;
-            if ((index % size) >= (emu_system_ram->value) - 3) access_byte[(index % size)] = value & 0xFF;
+            // check if we are within System RAM
+            if ((index % size) < (emu_system_ram->value)) access_byte[((index + 3) % size)] = (value >> 24);
+            if ((index % size) < (emu_system_ram->value) - 1) access_byte[((index + 2) % size)] = (value >> 16) & 0xFF;
+            if ((index % size) < (emu_system_ram->value) - 2) access_byte[((index + 1) % size)] = (value >> 8) & 0xFF;
+            if ((index % size) < (emu_system_ram->value) - 3) access_byte[(index % size)] = value & 0xFF;
         }
         else
         {
