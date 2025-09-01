@@ -133,12 +133,16 @@ namespace Volt
 
         uint16_t* reg = register_table16[modrm.reg];
 
-        *reg = address_space->read_word(*modrm.ea_ptr);
+        //use the segment override when necessary
+        uint16_t seg_base = (seg_override == seg_override_none) ? ds : *seg_override_reg_ptr;
+        uint32_t final_addr = (((uint32_t)seg_base << 4) + rm_table[modrm.rm]) % address_space->size;
+
+        *reg = address_space->read_word(final_addr);
 
         if (is_lds)
-            ds = address_space->read_word(*(modrm.ea_ptr + 2) & (address_space_primary->size - 1));
+            ds = address_space->read_word((final_addr + 2) & (address_space_primary->size - 1));
         else
-            es = address_space->read_word(*(modrm.ea_ptr + 2) & (address_space_primary->size - 1));
+            es = address_space->read_word((final_addr + 2) & (address_space_primary->size - 1));
 
     }
 
