@@ -35,8 +35,7 @@ namespace Volt
         if (emu_machine.components.size() == 0)
             Logging_LogChannel("Provide a config file!\n", LogChannel::Fatal);
         else
-            
-        emu_machine.Start();
+            emu_machine.Start();
     }
 
     // ENTRY POINT OF THE EMU_THREAD!

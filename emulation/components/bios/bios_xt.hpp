@@ -26,16 +26,18 @@ namespace Volt
                 update = false; 
                 allow_device_writes = false; 
                 allow_device_reads = true; 
-
-                emu_bios_xtv3_path_low = Cvar_Get("emu_bios_xtv3_path_low", "BIOS_5160_09MAY86_U19_62X0819_68X4370_27256_F000.BIN", false);
-                emu_bios_xtv3_path_high = Cvar_Get("emu_bios_xtv3_path_low", "BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", false);
-
-                bios_low = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary, false);
-                bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_high->string, VoltFileMode::Binary, false);
+                early_start = true; 
+                name = "IBM XT BIOS Version 3 (May 1986)";
             }
         
             void Start() override
             {
+                emu_bios_xtv3_path_low = Cvar_Get("emu_bios_xtv3_path_low", "BIOS_5160_09MAY86_U19_62X0819_68X4370_27256_F000.BIN", false);
+                emu_bios_xtv3_path_high = Cvar_Get("emu_bios_xtv3_path_high", "BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", false);
+
+                bios_low = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary, false);
+                bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_high->string, VoltFileMode::Binary, false);
+
                 // here so the order doesn't matter
                 address_space_primary->AddMapping(0xF0000, 0xFFFFF, this);
 

@@ -47,9 +47,18 @@ namespace Volt
 
             void Start()
             {
+                // start stuff like roms so they can be mapped into cpu address space
                 for (auto component : components)
                 {
-                    component->Start();
+                    if (component->early_start)
+                        component->Start();
+                }
+
+                // start non-early start components
+                for (auto component : components)
+                {
+                    if (!component->early_start)
+                        component->Start();
                 }
             }
 

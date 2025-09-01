@@ -29,7 +29,8 @@ namespace Volt
         bool update; 
         bool allow_device_reads;                    // If false, this device is write only. E.g. EGA
         bool allow_device_writes;                   // If false, this device is read only. E.g. ROM
-        
+        bool early_start;                           // Start this device early.
+
         virtual void Init(Machine* machine_ptr) = 0;
         virtual void Start() = 0;
         virtual void Tick() = 0;
