@@ -198,9 +198,9 @@ namespace Volt
         if (!is_primary)
             return; 
         
-        if (end > start)
+        if (end < start)
         {
-            Logging_LogChannel("Failed to add primary address space mapping because end > start", LogChannel::Warning);
+            Logging_LogChannel("Failed to add primary address space mapping because end < start", LogChannel::Warning);
             return;    
         }
 
