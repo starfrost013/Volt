@@ -167,14 +167,12 @@ namespace Volt
 
         // Keep the prefetch queue filled up
 
-        bool no_rep = (rep_type == CPU8086RepType::None);
+        bool get_new_opcode = (rep_type == CPU8086RepType::None);
 
         if (rep_type != CPU8086RepType::None && (last_opcode == CPU8086_PREFIX_REPNZ || last_opcode == CPU8086_PREFIX_REPZ))
-            no_rep = true; 
+            get_new_opcode = true; 
 
-        if (no_rep)
-            opcode = Prefetch_Pop8();
-        else
+        if (!get_new_opcode)
         {
             cx--; 
             
@@ -194,10 +192,12 @@ namespace Volt
             {
                 //this is awful
                 rep_type = CPU8086RepType::None;
-                opcode = Prefetch_Pop8();
-                no_rep = true; 
+                get_new_opcode = true; 
             }
         }
+            
+        if (get_new_opcode)
+            opcode = Prefetch_Pop8();
 
         clock_skip = instruction_table[opcode].cycles; //allow this to be increased by the run_function
 
