@@ -283,9 +283,9 @@ namespace Volt
             immed16 = Prefetch_Pop16();
 
         if (!is_16)  
-            Op_XorInternal8to8(&al, &immed8);
+            Op_CmpInternal8to8(&al, &immed8);
         else
-            Op_XorInternal16to16(&ax, &immed16);
+            Op_CmpInternal16to16(&ax, &immed16);
     }
 
     //

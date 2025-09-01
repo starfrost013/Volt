@@ -33,18 +33,25 @@ namespace Volt
 
     uint8_t PPI8255::PortRead(uint8_t port) 
     {
+        uint8_t ret = 0x00;
+
         switch (port)
         {
             default:
-                return 0xFF; 
+                ret = 0xFF; 
+                break; 
             case PPI8255Port::PortC:
-                return 0x00; 
+                ret = 0x00;
+                break; 
         }
+
+        Logging_LogChannel("8255 PPI read port %04X value %02x", LogChannel::Debug, port, ret);
+        return ret; 
     }
 
     void PPI8255::PortWrite(uint8_t port, uint8_t value)
     {
-
+        Logging_LogChannel("8255 PPI write port %04X value %02x", LogChannel::Debug, port, value);
     }
 
     void PPI8255::KeyPress(uint8_t code) 
