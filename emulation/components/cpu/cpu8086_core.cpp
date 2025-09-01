@@ -137,7 +137,7 @@ namespace Volt
         }
 
         for (int32_t i = (prefetch_size - size); i < prefetch_size; i++)
-            prefetch[i] = address_space->access_byte[linear_pc() + i];
+            prefetch[i] = address_space->read_byte(linear_pc() + i);
 
         prefetch_ptr -= size; 
 
@@ -151,7 +151,7 @@ namespace Volt
         uint8_t prefetch_size = (variant == CPU8086Variant::cpu808x_8088) ? CPU8088_PREFETCH_QUEUE_SIZE : CPU8086_PREFETCH_QUEUE_SIZE;
 
         for (int32_t i = 0; i < prefetch_size; i++)
-            prefetch[i] = address_space->access_byte[linear_pc() + i];
+            prefetch[i] = address_space->read_byte(linear_pc() + i);
 
         // do NOT move IP
         prefetch_ptr = 0;
@@ -175,7 +175,7 @@ namespace Volt
         if (!get_new_opcode)
         {
             cx--; 
-            
+
             bool exit_condition = true;
 
             switch (rep_type)

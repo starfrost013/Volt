@@ -49,8 +49,8 @@ namespace Volt
                 address_space_primary->AddMapping(0xF0000, 0xFFFFF, this);
 
                 // componentread* is for e.g. PCI BARs
-                bios_low->file.read((char*)&address_space_primary->access_byte[0xF0000], 32768);
-                bios_high->file.read((char*)&address_space_primary->access_byte[0xF8000], 32768);
+                bios_low->file.read((char*)&address_space_primary->access_raw[0xF0000], 32768);
+                bios_high->file.read((char*)&address_space_primary->access_raw[0xF8000], 32768);
 
                 // we don't need them anymore so we can close them
                 Filesystem_CloseFile(bios_low);

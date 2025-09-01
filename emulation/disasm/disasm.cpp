@@ -92,7 +92,7 @@ namespace Volt
             }
             else
             {
-                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %02X", register_table8_disasm[opcode & 0x07], address_space->access_byte[linear_pc()]);
+                snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, " %s, %02X", register_table8_disasm[opcode & 0x07], address_space->access_raw[linear_pc()]);
                 strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
             }
 
@@ -120,7 +120,7 @@ namespace Volt
 
         CPU8086::CPU8086InstructionModRM modrm_decode = {0}; 
 
-        modrm_decode.modrm = address_space->access_byte[linear_pc()];
+        modrm_decode.modrm = address_space->access_raw[linear_pc()];
         
         // check for group instructions
         if ((opcode >= CPU8086_DISASM_GRP1_START && opcode <= CPU8086_DISASM_GRP1_END)
@@ -209,16 +209,16 @@ namespace Volt
             switch (opcode & 0x03)
             {
                 case 0x00:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AL, 0x%02X", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AL, 0x%02X", address_space->access_raw[linear_pc()]);
                     break;
                 case 0x01:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AX, 0x%02X", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "IN AX, 0x%02X", address_space->access_raw[linear_pc()]);
                     break;
                 case 0x02:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_raw[linear_pc()]);
                     break;
                 case 0x03:
-                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_byte[linear_pc()]);
+                    snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "OUT 0x%02X, AL", address_space->access_raw[linear_pc()]);
                     break;
             }
 
@@ -227,7 +227,7 @@ namespace Volt
 
         if (opcode == CPU8086_DISASM_INT)
         {
-            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "INT %02x", address_space->access_byte[linear_pc()]);
+            snprintf(disasm_buf_8086, MAX_DISASM_BUF_SIZE, "INT %02x", address_space->access_raw[linear_pc()]);
             return;
         }
 
@@ -277,7 +277,7 @@ namespace Volt
 
                 if (modrm_decode.mod == 0x01) // +disp8
                 {
-                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %02X", address_space->access_byte[(linear_pc() + 1)]);
+                    snprintf(disasm_buf_scratch, MAX_DISASM_BUF_SIZE, ", %02X", address_space->access_raw[(linear_pc() + 1)]);
                     strncat(disasm_buf_8086, disasm_buf_scratch, MAX_DISASM_BUF_SIZE - 1);
                 }
                 else if (modrm_decode.mod == 0x02) // +disp16

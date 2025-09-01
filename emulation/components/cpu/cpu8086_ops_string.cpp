@@ -48,7 +48,7 @@ namespace Volt
         }
         else // movsb
         {
-            address_space->access_byte[dst_location] = address_space->access_byte[src_location];
+            address_space->write_byte(dst_location, address_space->read_byte(src_location));
             Op_UpdateStringLocation8();
         }
     }
@@ -75,8 +75,8 @@ namespace Volt
         }
         else
         {
-            uint8_t real_start8 = address_space->access_byte[src_location];
-            uint8_t real_end8 = address_space->access_byte[dst_location];
+            uint8_t real_start8 = address_space->read_byte(src_location);
+            uint8_t real_end8 = address_space->read_byte(dst_location);
 
             Op_CmpInternal8to8(&real_end8, &real_start8);
             Op_UpdateStringLocation8();
@@ -95,7 +95,7 @@ namespace Volt
         }
         else
         {
-            address_space->access_byte[dst_location] = al; 
+            address_space->write_byte(dst_location, al); 
             Op_UpdateStringLocation8();
         }
     }
@@ -116,7 +116,7 @@ namespace Volt
         }
         else
         {
-            al = address_space->access_byte[dst_location];
+            al = address_space->read_byte(dst_location);
             si += (flags & CPU8086Flags::Direction) ? -1 : 1;
             si %= CPU8086_SEGMENT_SIZE;
         }
@@ -137,7 +137,7 @@ namespace Volt
         }
         else
         {
-            uint8_t real_end8 = address_space->access_byte[dst_location];
+            uint8_t real_end8 = address_space->read_byte(dst_location);
 
             Op_CmpInternal8to8(&al, &real_end8);
             Op_UpdateStringLocation8();

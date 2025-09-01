@@ -30,12 +30,12 @@ namespace Volt
         // if the address is mapped, immediately return
         // TODO: read_function
         if (comp && comp->allow_device_reads)
-            return access_byte[(index & (size - 1))];
+            return access_raw[(index & (size - 1))];
     
         if (is_primary)
-            return (index > emu_system_ram->value) ? 0xFF : access_byte[index];
+            return (index > emu_system_ram->value) ? 0xFF : access_raw[index];
         else
-            return access_byte[index];
+            return access_raw[index];
     }
 
     void AddressSpace::write_byte(uint32_t index, uint8_t value)
@@ -53,16 +53,16 @@ namespace Volt
 
         //TODO: read_function
         if (comp && comp->allow_device_writes)
-            access_byte[index] = value;
+            access_raw[index] = value;
         else
         {
             if (is_primary)
                 if (index > emu_system_ram->value)
                     return;
                 else
-                    access_byte[index] = value;
+                    access_raw[index] = value;
             else
-                access_byte[index] = value;
+                access_raw[index] = value;
         }
 
     }
@@ -84,16 +84,16 @@ namespace Volt
         // if the address is mapped, immediately return
         // TODO: read_function
         if (comp && comp->allow_device_reads)
-            ret = (access_byte[index + 1] << 8 | access_byte[index]);  
+            ret = (access_raw[index + 1] << 8 | access_raw[index]);  
         else
         {
             if (is_primary)
             {
-                ((index % size) > (emu_system_ram->value)) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
-                ((index % size) > emu_system_ram->value - 1) ? ret |= 0xFF : ret |= (access_byte[index]);
+                ((index % size) > (emu_system_ram->value)) ? ret |= 0xFF00 : ret |= (access_raw[index + 1] << 8);
+                ((index % size) > emu_system_ram->value - 1) ? ret |= 0xFF : ret |= (access_raw[index]);
             }
             else
-                ret = (access_byte[index + 1] << 8 | access_byte[index]);
+                ret = (access_raw[index + 1] << 8 | access_raw[index]);
         }
 
     
@@ -116,13 +116,13 @@ namespace Volt
 
         if (comp && comp->allow_device_writes)
         {            
-            access_byte[index + 1] = (value >> 8);
-            access_byte[index] = value & 0xFF;
+            access_raw[index + 1] = (value >> 8);
+            access_raw[index] = value & 0xFF;
         }
         else 
         {
-            if ((index % size) < (emu_system_ram->value)) access_byte[((index + 1) % size)] = (value >> 8);
-            if ((index % size) < (emu_system_ram->value) - 1) access_byte[(index % size)] = value & 0xFF;
+            if ((index % size) < (emu_system_ram->value)) access_raw[((index + 1) % size)] = (value >> 8);
+            if ((index % size) < (emu_system_ram->value) - 1) access_raw[(index % size)] = value & 0xFF;
         }
     };
 
@@ -142,21 +142,21 @@ namespace Volt
         
         if (comp && comp->allow_device_reads)
         {
-            ret = access_byte[index + 3] << 24 | access_byte[index + 2] << 16
-            | access_byte[index + 1] << 8 | access_byte[index];
+            ret = access_raw[index + 3] << 24 | access_raw[index + 2] << 16
+            | access_raw[index + 1] << 8 | access_raw[index];
         }
         else
         {
             if (is_primary)
             {
-                ((index + 3) % size) > (emu_system_ram->value) ? ret |= 0xFF000000 : ret |= (access_byte[index + 3] << 24);
-                (((index + 2) % size) > (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_byte[index + 2] << 16);
-                (((index + 1) % size) > (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_byte[index + 1] << 8);
-                ((index % size) > emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_byte[index]);
+                ((index + 3) % size) > (emu_system_ram->value) ? ret |= 0xFF000000 : ret |= (access_raw[index + 3] << 24);
+                (((index + 2) % size) > (emu_system_ram->value) - 1) ? ret |= 0xFF0000 : ret |= (access_raw[index + 2] << 16);
+                (((index + 1) % size) > (emu_system_ram->value) - 2) ? ret |= 0xFF00 : ret |= (access_raw[index + 1] << 8);
+                ((index % size) > emu_system_ram->value - 3) ? ret |= 0xFF : ret |= (access_raw[index]);
             }
             else
-                ret = access_byte[index + 3] << 24 | access_byte[index + 2] << 16
-                | access_byte[index + 1] << 8 | access_byte[index];
+                ret = access_raw[index + 3] << 24 | access_raw[index + 2] << 16
+                | access_raw[index + 1] << 8 | access_raw[index];
         }
             
         return ret; 
@@ -178,17 +178,17 @@ namespace Volt
         if (comp && comp->allow_device_writes)
         {
             // check if we are within System RAM
-            if ((index % size) < (emu_system_ram->value)) access_byte[((index + 3) % size)] = (value >> 24);
-            if ((index % size) < (emu_system_ram->value) - 1) access_byte[((index + 2) % size)] = (value >> 16) & 0xFF;
-            if ((index % size) < (emu_system_ram->value) - 2) access_byte[((index + 1) % size)] = (value >> 8) & 0xFF;
-            if ((index % size) < (emu_system_ram->value) - 3) access_byte[(index % size)] = value & 0xFF;
+            if ((index % size) < (emu_system_ram->value)) access_raw[((index + 3) % size)] = (value >> 24);
+            if ((index % size) < (emu_system_ram->value) - 1) access_raw[((index + 2) % size)] = (value >> 16) & 0xFF;
+            if ((index % size) < (emu_system_ram->value) - 2) access_raw[((index + 1) % size)] = (value >> 8) & 0xFF;
+            if ((index % size) < (emu_system_ram->value) - 3) access_raw[(index % size)] = value & 0xFF;
         }
         else
         {
-            access_byte[((index + 3) % size)] = (value >> 24);
-            access_byte[((index + 2) % size)] = (value >> 16) & 0xFF;
-            access_byte[((index + 1) % size)] = (value >> 8) & 0xFF;
-            access_byte[(index % size)] = value & 0xFF;
+            access_raw[((index + 3) % size)] = (value >> 24);
+            access_raw[((index + 2) % size)] = (value >> 16) & 0xFF;
+            access_raw[((index + 1) % size)] = (value >> 8) & 0xFF;
+            access_raw[(index % size)] = value & 0xFF;
         }
 
 

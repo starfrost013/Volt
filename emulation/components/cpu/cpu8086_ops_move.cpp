@@ -87,13 +87,13 @@ namespace Volt
         bool dir = (opcode & 0x02);
 
         if (!dir)
-            (w) ? ax = address_space->read_word(seg_offset) : al = address_space->access_byte[seg_offset];
+            (w) ? ax = address_space->read_word(seg_offset) : al = address_space->read_byte(seg_offset);
         else // todo: make byte like (d)word
         {
             if (w) 
                 address_space->write_word(seg_offset, ax);
             else
-                address_space->access_byte[seg_offset] = al;
+                address_space->write_byte(seg_offset, al);
         }
     }
 

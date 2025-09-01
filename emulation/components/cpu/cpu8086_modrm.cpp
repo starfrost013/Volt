@@ -35,7 +35,7 @@ namespace Volt
                 if (modrm_decode.mod == 0x00 
                     && modrm_decode.rm == 6)
                 {
-                        modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[linear_pc() + 2];
+                        modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[linear_pc() + 2];
 
                         Prefetch_Pop16(); // pop prefetch, but don't return a pointer to it
                         return modrm_decode; //return early
@@ -60,7 +60,7 @@ namespace Volt
                 // Prevent us going to invalid memory in the case of the CPU going wild
                 final_linear_address %= address_space->size;
 
-                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
+                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[final_linear_address];
 
                 if (modrm_decode.mod == 0x01) // +disp8
                     final_linear_address += Prefetch_Pop8();
@@ -68,7 +68,7 @@ namespace Volt
                     final_linear_address += Prefetch_Pop16();
 
                 final_linear_address %= address_space->size;
-                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_byte[final_linear_address];
+                modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[final_linear_address];
                 return modrm_decode;
    
             case 0x03:  // 11

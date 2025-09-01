@@ -26,7 +26,7 @@ namespace Volt
     {
         public: 
             uint32_t size; 
-            uint8_t* access_byte;
+            uint8_t* access_raw;
             bool is_primary; 
 
             AddressSpaceMapping* mapping_head;      // Only valid if is_primary is true
@@ -65,7 +65,7 @@ namespace Volt
             return nullptr; 
         }
 
-        addr->access_byte = Memory_Alloc<uint8_t, Size>(TAG_EMU_GUEST_MEM);
+        addr->access_raw = Memory_Alloc<uint8_t, Size>(TAG_EMU_GUEST_MEM);
         addr->size = Size;
 
         if (!address_space_primary)
