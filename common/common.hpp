@@ -4,12 +4,12 @@
 // include common stuff
 
 #include <Volt.hpp>
+#include <common/cvar/cvar.hpp>             // CVar system
 #include <common/memory/memory_alloc.hpp>   // Memory allocator
 #include <common/net/net.hpp>               // Network system
 #include <common/cmdline/cmdline.hpp>       // Command line parser
 #include <common/command/command.hpp>       // Command system
 #include <common/console/console.hpp>       // Console
-#include <common/cvar/cvar.hpp>             // CVar system
 #include <common/filesystem/filesystem.hpp> // Filesystem
 #include <util/util.hpp>
 

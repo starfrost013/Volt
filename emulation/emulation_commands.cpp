@@ -7,6 +7,9 @@
 #include "components/support/i8255_ppi.hpp"
 #include "components/support/i8259_pic.hpp"
 
+// BIOS
+#include "components/bios/bios_xt.hpp"
+
 namespace Volt
 {
 
@@ -25,6 +28,7 @@ namespace Volt
         { "pit8253", &Emulation_CreateComponent<PIT8253> },
         { "ppi8255", &Emulation_CreateComponent<PPI8255> },
         { "pic8259", &Emulation_CreateComponent<PIC8259> },
+        { "biosxtv3", &Emulation_CreateComponent<BIOSXTv3> },
     };
 
     void Emulation_Cmd_MachineAddComponent(Volt::CommandType type)

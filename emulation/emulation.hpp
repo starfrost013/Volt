@@ -27,4 +27,5 @@ namespace Volt
 
     // Test machine
     extern Machine emu_machine;
+
 }

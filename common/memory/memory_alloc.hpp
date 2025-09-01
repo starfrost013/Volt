@@ -19,6 +19,7 @@
 #define TAG_CVAR 						0x52415643	// Convar system allocations		'CVAR'
 #define TAG_FILESYSTEM                  0x454C4946	// Filesystem allocations 			'FILE'  
 #define TAG_EMU_ADDR					0x52444441	// Emulation address spaces			'ADDR'
+#define TAG_EMU_ADDR_MAP				0x50414D4D	// Emulation mapping				'MMAP'
 #define TAG_EMU_GUEST_MEM				0x304D454D	// Emulation address allocations	'MEM0'
 
 #define TAG_EMU_COMPONENT_CPU			0x30555043	// CPU component					'CPU0'

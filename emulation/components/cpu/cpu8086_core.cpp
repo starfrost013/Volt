@@ -69,14 +69,6 @@ namespace Volt
     // The start method is run after all components have initialised.
     void CPU8086::Start()
     {
-        // Open the IBM PC 5160 BIOS as a test
-        //TODO: MACHINE CONFIG, BIOS CONFIG, ANTI-86BOX CONFIG!
-        VoltFile* bios_low = Filesystem_OpenFile("BIOS_5160_09MAY86_U19_62X0819_68X4370_27256_F000.BIN", VoltFileMode::Binary);
-        VoltFile* bios_high = Filesystem_OpenFile("BIOS_5160_09MAY86_U18_59X7268_62X0890_27256_F800.BIN", VoltFileMode::Binary);
-
-        bios_low->file.read((char*)&address_space->access_byte[0xF0000], 32768);
-        bios_high->file.read((char*)&address_space->access_byte[0xF8000], 32768);
-    
         cs = CPU8086_START_LOCATION_CS;
         ip = CPU8086_START_LOCATION_IP;
 
@@ -235,8 +227,8 @@ namespace Volt
         #ifdef DEBUG
 
         if (cs == 0 
-            && ip == 0)
-            Logging_LogChannel("After the last instruction, CS:IP ended up at 0000:0000. This means something went very wrong", LogChannel::Fatal);
+            && ip <= 0x3FF)
+            Logging_LogChannel("After the last instruction, CS:IP ended up inside the interrupt vector table. This means something went very wrong", LogChannel::Fatal);
 
         #endif 
     }

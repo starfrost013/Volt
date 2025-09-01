@@ -12,6 +12,9 @@ namespace Volt
 
     bool emulation_running; 
 
+    // TODO: Is this the best place for these?
+    Cvar* emu_system_ram; 
+
     //TEMP
     void Emulation_Init()
     {
@@ -20,6 +23,8 @@ namespace Volt
         Emulation_InitCommands();
 
         Render_Init();
+
+        emu_system_ram = Cvar_Get("emu_system_ram", "655360", false);
 
         emulation_running = true; 
     }
