@@ -77,8 +77,8 @@ namespace Volt
             void Tick() override; 
             void Shutdown() override;
 
-            uint8_t PortRead(uint8_t port) override;
-            void PortWrite(uint8_t port, uint8_t value) override;
+            uint8_t PortRead(uint16_t port) override;
+            void PortWrite(uint16_t port, uint8_t value) override;
 
         protected:
         private:

@@ -75,7 +75,7 @@ namespace Volt
         }
     }
 
-    uint8_t DMA8237::PortRead(uint8_t port) 
+    uint8_t DMA8237::PortRead(uint16_t port) 
     {
         bool is_channel_4to7 = (port >= 0xC0);
         bool w = true;
@@ -155,7 +155,7 @@ namespace Volt
         return ret; 
     }
 
-    void DMA8237::PortWrite(uint8_t port, uint8_t value) 
+    void DMA8237::PortWrite(uint16_t port, uint8_t value) 
     {
         bool is_channel_4to7 = (port >= 0xC0);
         bool w = true;

@@ -37,8 +37,8 @@ namespace Volt
         virtual void Frame() = 0;       // Video only
         virtual void Shutdown() = 0;
 
-        virtual uint8_t PortRead(uint8_t port) { return 0x00; };
-        virtual void PortWrite(uint8_t port, uint8_t value) { };
+        virtual uint8_t PortRead(uint16_t port) { return 0x00; };
+        virtual void PortWrite(uint16_t port, uint8_t value) { };
 
         virtual uint8_t MemoryReadByte(uint32_t pos) { return 0x00; };
         virtual uint16_t MemoryReadWord(uint32_t pos) { return 0x00; };

@@ -139,7 +139,7 @@ namespace Volt
         IOx86_DeleteMapping(0x40, 0x43);
     }
 
-    uint8_t PIT8253::PortRead(uint8_t port)
+    uint8_t PIT8253::PortRead(uint16_t port)
     {
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 
@@ -184,7 +184,7 @@ namespace Volt
         return ret; 
     }
 
-    void PIT8253::PortWrite(uint8_t port, uint8_t value)
+    void PIT8253::PortWrite(uint16_t port, uint8_t value)
     {
         uint8_t ret = 0x00;
         uint8_t counter_index, access_mode, operating_mode; 
