@@ -63,13 +63,12 @@ namespace Volt
                 bool read_2nd_byte;                 // should we *read* the 2nd byte? a separate bool so that it does not conflict with the write
                 bool output;                        // clock output
                 bool running;                       // is this running?
-                
             };
-
 
             PIT8253Counter counters[PIT8253_NUM_COUNTERS];
 
-            ComponentDMAController* dma_controller; // allow dma controller references
+            ComponentDMAController* dma_controller;         // allow dma controller references
+            ComponentInterruptController* irq_controller;   
 
             void Init(Machine* machine_ptr) override;
             void Start() override; 

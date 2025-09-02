@@ -40,6 +40,7 @@ namespace Volt
     void PIT8253::Start() 
     {
         dma_controller = machine->FindComponentByClass<ComponentDMAController>();
+        irq_controller = machine->FindComponentByClass<ComponentInterruptController>();
     }
     
     void PIT8253::Tick()
@@ -84,7 +85,7 @@ namespace Volt
                         switch (counter_id)
                         {
                             case 0x00:
-                                Logging_LogChannel("PIC IRQ0 must be here, but isn't yet [PIT8253 Counter 0 Rate Generator zero value reached!]\n", LogChannel::Warning);    
+                                irq_controller->SendIRQ(0);
                                 break;
                             case 0x01:
                                 dma_controller->SendDMARequest(0);
@@ -110,7 +111,7 @@ namespace Volt
                         switch (counter_id)
                         {
                             case 0x00:
-                                Logging_LogChannel("PIC IRQ0 must be here, but isn't yet [PIT8253 Counter 0 Square Wave value reached!]\n", LogChannel::Warning);    
+                                irq_controller->SendIRQ(0);  
                                 break;
                             case 0x01:
                                 dma_controller->SendDMARequest(2);
