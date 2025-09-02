@@ -28,4 +28,5 @@ namespace Volt
     // Test machine
     extern Machine emu_machine;
 
+    extern std::thread* emu_thread;
 }

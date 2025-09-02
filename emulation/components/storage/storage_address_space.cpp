@@ -106,11 +106,11 @@ namespace Volt
         // large positive indexes are handled below
         if (index < 0)
         {
-            Logging_LogChannel("Invalid write_dword index, nothing will happen", LogChannel::Error);
+            Logging_LogChannel("Invalid write_word index, nothing will happen", LogChannel::Error);
             return;
         }
         if (index > size) 
-            Logging_LogChannel("Invalid write_dword index, the write will go to the wrong place", LogChannel::Error);
+            Logging_LogChannel("Invalid write_word index, the write will go to the wrong place", LogChannel::Error);
 
         Component* comp = AddressGetComponent(index);
 
@@ -190,8 +190,6 @@ namespace Volt
             access_raw[((index + 1) % size)] = (value >> 8) & 0xFF;
             access_raw[(index % size)] = value & 0xFF;
         }
-
-
     };
 
     void AddressSpace::AddMapping(uint32_t start, uint32_t end, Component* comp)

@@ -23,6 +23,7 @@ namespace Volt
         // length can be handled by the opcode function -- it's part of the opcode anyway
         modrm_decode.reg_ptr8 = register_table8[modrm_decode.reg];
         modrm_decode.reg_ptr16 = register_table16[modrm_decode.reg];
+        modrm_decode.displacement = 0; // start value
 
         // default = DS for this part.
         uint16_t reg = ds;
@@ -37,7 +38,7 @@ namespace Volt
                 {
                         modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[linear_pc() + 2];
 
-                        Prefetch_Pop16(); // pop prefetch, but don't return a pointer to it
+                        modrm_decode.displacement = Prefetch_Pop16(); // pop prefetch, but don't return a pointer to it
                         return modrm_decode; //return early
                 }
                  // now decode the RM
@@ -63,10 +64,11 @@ namespace Volt
                 modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[final_linear_address];
 
                 if (modrm_decode.mod == 0x01) // +disp8
-                    final_linear_address += Prefetch_Pop8();
+                    modrm_decode.displacement = Prefetch_Pop8();
                 else if (modrm_decode.mod == 0x02) // +disp16
-                    final_linear_address += Prefetch_Pop16();
+                    modrm_decode.displacement = Prefetch_Pop16();
 
+                final_linear_address += modrm_decode.displacement;
                 final_linear_address %= address_space->size;
                 modrm_decode.ea_ptr = (uint16_t*)&address_space->access_raw[final_linear_address];
                 return modrm_decode;

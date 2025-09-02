@@ -160,7 +160,7 @@ namespace Volt
     {
         // renderer_state_global.running is set to false in render_core.cpp
         // because the renderer exists, we know this_client exists
-        //emulation.initialised = false
+        Common_Shutdown();
     }
 
     // Shuts down the renderer

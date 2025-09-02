@@ -102,6 +102,7 @@ namespace Volt
 
             void Shutdown()
             {
+                
                 for (auto component : components)
                 {
                     component->Shutdown();

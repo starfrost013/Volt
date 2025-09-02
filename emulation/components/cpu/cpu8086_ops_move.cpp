@@ -137,12 +137,30 @@ namespace Volt
         uint16_t seg_base = (seg_override == seg_override_none) ? ds : *seg_override_reg_ptr;
         uint32_t final_addr = (((uint32_t)seg_base << 4) + rm_table[modrm.rm]) % address_space->size;
 
+        // yes we have to add the displacement again too
+        final_addr += modrm.displacement;
+
         *reg = address_space->read_word(final_addr);
 
         if (is_lds)
             ds = address_space->read_word((final_addr + 2) & (address_space_primary->size - 1));
         else
             es = address_space->read_word((final_addr + 2) & (address_space_primary->size - 1));
+    }
+
+
+    void CPU8086::Op_Lea(uint8_t opcode)
+    {
+        CPU8086InstructionModRM modrm = Decode_ModRM(opcode);
+
+        // Since *ea_ptr is a pointer and the segment gets effectively ignored we have to spcial case this and basically do the calculation "again"
+        uint16_t seg_base = (seg_override == seg_override_none) ? ds : *seg_override_reg_ptr;
+        uint32_t final_addr = (((uint32_t)seg_base << 4) + rm_table[modrm.rm]) % address_space->size;
+
+        // yes we have to add the displacement again too
+        final_addr += modrm.displacement;
+
+        *register_table16[modrm.reg] = (uint16_t)(final_addr & 0xFFFF);//only lower 16 bits get stored
 
     }
 
