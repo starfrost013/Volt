@@ -9,16 +9,16 @@
 
 namespace Volt
 {
-    class VideoMDA : public GPUComponent
+    class VideoMDA : public ComponentGPU
     {
-        public:
-            void Init(Machine* machine_ptr) override { };
-            void Start() override { };
-            void Tick() override { };
-            void Frame() override { };      // Video only
-            void Shutdown() override { };
+    public:
+        void Init(Machine* machine_ptr);
+        void Start();
+        void Tick();
+        void Frame();    
+        void Shutdown();
 
-            uint8_t PortRead(uint16_t port) override;
-            void PortWrite(uint16_t port, uint8_t value) override;
-    }
+        uint8_t PortRead(uint16_t port);
+        void PortWrite(uint16_t port, uint8_t value);
+    };
 }

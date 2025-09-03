@@ -1,9 +1,20 @@
-#include "render_shader_manager.hpp"
+// 
+// VOLT
+// Copyright © 2025 starfrost
+//
+// shader_manager_core.cpp: Core shader loader/unloader
+//
+
+
+#include <render/render.hpp>
 
 namespace Volt
 {
     #define STR_TEMPBUF_MIN_SIZE        1024
 
+    VoltShaderSet* shader_set_head;
+    VoltShaderSet* shader_set_tail;
+    
     // Using a vector is the most sensible thing here.
     // This does not fit
     // Minimum size provided so that we don't endlessly resize ofr the first bit
@@ -39,8 +50,8 @@ namespace Volt
         return true;
     }
 
-    bool Shader_LoadSet(const char* vertex_path = nullptr, const char* fragment_path = nullptr, 
-        const char* compute_path = nullptr, const char* geometry_path = nullptr)
+    bool Shader_LoadSet(const char* vertex_path, const char* fragment_path, 
+        const char* compute_path, const char* geometry_path)
     {
         if (!vertex_path
         && !fragment_path
@@ -52,8 +63,6 @@ namespace Volt
         }
 
         VoltShaderSet* shader_set = Memory_Alloc<VoltShaderSet>(TAG_RENDER_SHADER);
-
-        VoltShader target;
 
         // Figure out the size of the file
 
@@ -94,7 +103,6 @@ namespace Volt
             }
         }
 
-
         // put the file in the shader set chain
         if (!shader_set_head && !shader_set_tail)
         {
@@ -111,7 +119,8 @@ namespace Volt
 
     bool Shader_UnloadSet(VoltShaderSet* set)
     {
-
+        
+        return true; 
     }
 
     void Shader_Shutdown()

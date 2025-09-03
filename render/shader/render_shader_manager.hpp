@@ -1,13 +1,12 @@
-#pragma once
-#include <common/common.hpp>
-#include <render/render.hpp>
-
 // 
 // VOLT
 // Copyright © 2025 starfrost
 //
 // render_shader_manager.hpp: API-agnostic shader manager for the renderer
 //
+
+#pragma once
+#include <common/common.hpp>
 
 namespace Volt
 {

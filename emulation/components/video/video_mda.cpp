@@ -31,17 +31,23 @@ namespace Volt
 
     }
 
+    void VideoMDA::Frame()
+    {
+
+    }   
+
     void VideoMDA::Shutdown() 
     {
         
     }
 
-    uint8_t PortRead(uint16_t port)
+    uint8_t VideoMDA::PortRead(uint16_t port)
     {
         Logging_LogChannel("IBM MDA read port %04x", LogChannel::Debug, port);
+        return 0xFF;
     }
 
-    void PortWrite(uint16_t port, uint8_t value)
+    void VideoMDA::PortWrite(uint16_t port, uint8_t value)
     {
         Logging_LogChannel("IBM MDA write port %04x, value %02X", LogChannel::Debug, port, value);
     }

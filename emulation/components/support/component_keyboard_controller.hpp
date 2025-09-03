@@ -7,7 +7,7 @@
 //
 
 #pragma once
-#include <emulation/emulation.hpp>// 
+#include <emulation/emulation.hpp>
 
 namespace Volt
 {

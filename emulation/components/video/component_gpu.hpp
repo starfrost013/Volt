@@ -11,11 +11,13 @@ namespace Volt
 {
     class ComponentGPU : public Component
     {
-        public:
-            void Init(Machine* machine_ptr) override { };
-            void Start() override { };
-            void Tick() override { };
-            void Frame() override { };      // Video only
-            void Shutdown() override { };
-    }
+    public:
+        void Init(Machine* machine_ptr) override { };
+        void Start() override { };
+        void Tick() override { };
+        void Frame() override { };      // Video only
+        void Shutdown() override { };
+    protected:
+    private:
+    };
 }

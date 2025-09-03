@@ -76,6 +76,7 @@ add_executable (Volt
 
 # RENDER
 "render/render_core.cpp"
+"render/shader/shader_manager_core.cpp"
 
 # RENDERER - OPENGL 3
 "render/gl3/gl3_core.cpp"

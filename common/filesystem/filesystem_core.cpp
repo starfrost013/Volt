@@ -240,7 +240,7 @@ namespace Volt
     {
         // Is using "tellg" a good idea? I would rather not introduce std::filesystem for this library
         if (!file)
-            return;
+            return -1;
 
         auto old_pos = file->stream.tellg();
 

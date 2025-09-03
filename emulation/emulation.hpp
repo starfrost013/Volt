@@ -10,6 +10,7 @@
 #include <util/logging/logging.hpp>
 #include <util/util.hpp>
 #include <emulation/component.hpp>
+#include <emulation/components/video/component_gpu.hpp>
 #include <emulation/components/support/component_dma_controller.hpp>
 #include <emulation/components/support/component_interrupt_controller.hpp>
 #include <emulation/components/support/component_keyboard_controller.hpp>

@@ -36,6 +36,6 @@ namespace Volt
 
     void PIC8259::SendIRQ(uint8_t irq)
     {
-        Logging_LogChannel("IRQ %d sent!", irq);
+        Logging_LogChannel("IRQ %d sent!", LogChannel::Debug, irq);
     }
 }
