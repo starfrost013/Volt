@@ -4,6 +4,7 @@ machine_add_component pit8253
 machine_add_component ppi8255
 machine_add_component pic8259
 machine_add_component biosxtv3
+machine_add_component video_mda
 
 echo Memory Information:
 memlist

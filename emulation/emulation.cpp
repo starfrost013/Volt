@@ -1,3 +1,10 @@
+// 
+// VOLT
+// Copyright © 2025 starfrost
+//
+// emulation.cpp: Core emulation code
+//
+
 #include <emulation/emulation.hpp>
 #include "components/cpu/cpu8086.hpp"
 #include "components/support/i8237_dma.hpp"

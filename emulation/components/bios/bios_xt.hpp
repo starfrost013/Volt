@@ -38,8 +38,8 @@ namespace Volt
                 bios_low = Filesystem_OpenFile(emu_bios_xtv3_path_low->string, VoltFileMode::Binary);
                 bios_high = Filesystem_OpenFile(emu_bios_xtv3_path_high->string, VoltFileMode::Binary);
 
-                if (!bios_low->file
-                || !bios_high->file)
+                if (!bios_low->stream
+                || !bios_high->stream)
                 {
                     Logging_LogChannel("Failed to load BIOS %s", LogChannel::Fatal, name);
                     return; // to be safe
@@ -49,8 +49,8 @@ namespace Volt
                 address_space_primary->AddMapping(0xF0000, 0xFFFFF, this);
 
                 // componentread* is for e.g. PCI BARs
-                bios_low->file.read((char*)&address_space_primary->access_raw[0xF0000], 32768);
-                bios_high->file.read((char*)&address_space_primary->access_raw[0xF8000], 32768);
+                bios_low->stream.read((char*)&address_space_primary->access_raw[0xF0000], 32768);
+                bios_high->stream.read((char*)&address_space_primary->access_raw[0xF8000], 32768);
 
                 // we don't need them anymore so we can close them
                 Filesystem_CloseFile(bios_low);

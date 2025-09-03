@@ -64,23 +64,23 @@ namespace Volt
         VoltFileMode mode;                      // the mode to open the file in
         char path[FS_MAX_PATH];                 // the path to the file relative to fs_basedir
         bool eof;                               // Irrelevant if type == FS_Folder
-        std::fstream file;                      // Irrelevant if type == FS_GameImage
+        std::fstream stream;                      // Irrelevant if type == FS_GameImage
         VoltFile* prev; 
         VoltFile* next; 
 
         template <typename T>
         std::ostream& operator<<(T const &p)
         {
-            return this->file << p; 
+            return this->stream << p; 
 
-            if (this->file.eof())
+            if (this->stream.eof())
                 this->eof = true; 
         }
 
         template <typename T>
         std::ostream& operator>>(T const &p)
         {
-            return this->file >> p; 
+            return this->stream >> p; 
         }
 
     };
@@ -114,12 +114,13 @@ namespace Volt
 
     // File open/close functions
     VoltFile* Filesystem_OpenFile(const char* path, VoltFileMode mode = Binary);
-    void Filesystem_CloseFile(VoltFile* entry);
+    void Filesystem_CloseFile(VoltFile* file);
+    size_t Filesystem_GetFileSize(VoltFile* file);
 
     // File read/write functions
     // For most functions, we can use the contents of the stream in order to read/write
 
     // READ CV1
-    void Filesystem_ReadString(VoltFile* entry, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
-    void Filesystem_WriteString(VoltFile* entry, char* string);
+    void Filesystem_ReadString(VoltFile* file, char* buf = fs_string_buf, uint32_t n = FS_MAX_STRING_LENGTH);
+    void Filesystem_WriteString(VoltFile* file, char* string);
 }

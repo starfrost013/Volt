@@ -41,15 +41,15 @@ namespace Volt
         if (filesystem->head)
         {
             // walk through the linked list of open files and close them all
-            VoltFile* entry = filesystem->head;
+            VoltFile* file = filesystem->head;
             
-            while (entry->next) 
+            while (file->next) 
             {
-                entry->file.close();
+                file->stream.close();
 
-                VoltFile* to_be_freed = entry; 
+                VoltFile* to_be_freed = file; 
 
-                entry = entry->next;
+                file = file->next;
                 
                 Memory_Free<VoltFile>(to_be_freed);
             }
@@ -88,9 +88,9 @@ namespace Volt
             if (mode == VoltFileMode::Binary)
                 mode_stream |= std::ios::binary;
 
-            entry->file.open(real_path, mode_stream);
+            entry->stream.open(real_path, mode_stream);
 
-            if (!entry->file.good())
+            if (!entry->stream.good())
             {
                 Logging_LogChannel("Failed to open file %s using FS_Folder method\n", LogChannel::Warning, path);
                 Memory_Free<VoltFile>(entry);
@@ -98,7 +98,7 @@ namespace Volt
             }   
 
             // turn off whitespace skip
-            entry->file >> std::noskipws;
+            entry->stream >> std::noskipws;
         }
 
         // set up the first entry
@@ -124,48 +124,48 @@ namespace Volt
     //
     // Closes a file that the game has already opened.,
     //
-    void Filesystem_CloseFile(VoltFile* entry)
+    void Filesystem_CloseFile(VoltFile* file)
     {
-        assert(entry);
+        assert(file);
 
         if (static_cast<int32_t>(fs_type->value) == VoltFilesystemType::FS_Folder)
         {
-            entry->file.close();
+            file->stream.close();
         }
 
         // free the entry, first check if its the only entry
-        if (entry == filesystem->head 
+        if (file == filesystem->head 
         && filesystem->head == filesystem->tail)
         {
             filesystem->head = filesystem->tail = nullptr;
         }
 
         // now check if it is the head/tail to keep the GameImage structures consistent
-        if (entry == filesystem->tail)   
+        if (file == filesystem->tail)   
         {
-            filesystem->tail = entry->prev; 
+            filesystem->tail = file->prev; 
             filesystem->tail->next = nullptr;
         }
-        else if (entry == filesystem->head)
+        else if (file == filesystem->head)
         {
-            filesystem->head = entry->next; 
+            filesystem->head = file->next; 
             filesystem->head->prev = nullptr; 
         }
         
         // we aren't the head of the tail, so just make sure the linked list is consistent
-        if (entry->prev && entry->next)
+        if (file->prev && file->next)
         {
-            entry->prev->next = entry->next;
-            entry->next->prev = entry->prev; 
+            file->prev->next = file->next;
+            file->next->prev = file->prev; 
         }
 
-        Logging_LogChannel("Closed file %s", LogChannel::Debug, entry->path);
+        Logging_LogChannel("Closed file %s", LogChannel::Debug, file->path);
 
-        Memory_Free<VoltFile>(entry);
+        Memory_Free<VoltFile>(file);
     }
 
 
-    void Filesystem_ReadString(VoltFile* entry, char* fs_buf, uint32_t n)
+    void Filesystem_ReadString(VoltFile* file, char* fs_buf, uint32_t n)
     {
         // fs_buf DEFAULT is fs_string_buf (NOT compatible with MULTI-THREADING!!!!!)
 
@@ -174,7 +174,7 @@ namespace Volt
         // Pascal styled-strings are used here in order to get around the issue of 
         // not knowing the length of what we're going to read.
         // Also, we can't do operator overrides on pointers.
-        std::fstream& stream = entry->file;
+        std::fstream& stream = file->stream;
 
         uint32_t length = strlen(fs_buf);
 
@@ -187,7 +187,7 @@ namespace Volt
         }
             
 
-        if (entry->mode == VoltFileMode::Binary)
+        if (file->mode == VoltFileMode::Binary)
             stream >> n;
     
         char next_str_byte = 0x00; 
@@ -204,12 +204,12 @@ namespace Volt
 
             if (stream.eof())
             {
-                entry->eof = true;
+                file->eof = true;
                 return;
             }
 
             // if we reached a new line and it is text mode, end
-            if (entry->mode == Text)
+            if (file->mode == Text)
             {
                 if (fs_buf[byte] == '\r'
                 || fs_buf[byte] == '\n')
@@ -221,27 +221,45 @@ namespace Volt
          
     }
 
-    void Filesystem_WriteString(VoltFile* entry, char* string)
+    void Filesystem_WriteString(VoltFile* file, char* string)
     {
         if (!string)
             return; 
 
         uint32_t length = ARRAY_SIZE(string);                  // ONLY valid for SINGLE-BYTE ENCODING!
 
-        if (entry->mode == VoltFileMode::Binary)
-            entry->file << length;
+        if (file->mode == VoltFileMode::Binary)
+            file->stream << length;
 
         // blast the whole string at once for efficiency reasons
-        entry->file.write(string, length);
+        file->stream.write(string, length);
     }   
 
-    // Write to the filesystem.
+    // Get the size of a file.
+    size_t Filesystem_GetFileSize(VoltFile* file)
+    {
+        // Is using "tellg" a good idea? I would rather not introduce std::filesystem for this library
+        if (!file)
+            return;
+
+        auto old_pos = file->stream.tellg();
+
+        file->stream.seekg(0, std::ios_base::beg);
+        size_t start_pos = static_cast<size_t>(file->stream.tellg());
+        file->stream.seekg(0, std::ios_base::end);
+        size_t new_pos = static_cast<size_t>(file->stream.tellg());
+        file->stream.seekg(old_pos);
+
+        return static_cast<size_t>(new_pos - start_pos);
+    }
+
+    // Flush a file.
 
     void Filesystem_Flush(VoltFile* entry)
     {
         assert(entry);
 
-        entry->file.flush();
+        entry->stream.flush();
     }
 
 

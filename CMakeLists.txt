@@ -71,6 +71,9 @@ add_executable (Volt
 "emulation/components/support/i8255_ppi.cpp"
 "emulation/components/support/i8259_pic.cpp"
 
+# Video
+"emulation/components/video/video_mda.cpp"
+
 # RENDER
 "render/render_core.cpp"
 

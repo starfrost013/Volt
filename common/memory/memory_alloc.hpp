@@ -38,6 +38,8 @@
 
 #define TAG_EMU_COMPONENT_GEN			0x47504D43	// Dynamically created component	'CMPG'
 
+#define TAG_RENDER_SHADER				0x52444853	// Shader							'SHDR'
+
 // More to come...
 
 namespace Volt

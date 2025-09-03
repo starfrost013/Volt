@@ -1,9 +1,12 @@
 #pragma once
 #include <common/common.hpp>
+#include <render/shader/render_shader_manager.hpp>
 
+// 
+// VOLT
+// Copyright © 2025 starfrost
 //
-// render.hpp
-// Header file for components shared across all renderers.
+// render.hpp: Shared header for files acorss all renderers
 //
 
 namespace Volt
@@ -29,6 +32,8 @@ namespace Volt
         char window_title[WINDOW_TITLE_BUF_SIZE];
         RendererType type; //default value does not matter
         bool running = false;
+        void (*Shader_CompileFunction)(VoltShaderSet set, VoltShaderType type);
+        void (*Shader_FreeFunction)(VoltShaderSet set, VoltShaderType type);
     };
 
     extern RendererState renderer_state_global;

@@ -1,3 +1,9 @@
+// 
+// VOLT
+// Copyright © 2025 starfrost
+//
+// emulation_commands.cpp: Provides commands to modify the machine information. Ties everything together
+//
 
 // Yes this will have to include every single header file for every component
 #include <emulation/emulation.hpp>
@@ -9,6 +15,9 @@
 
 // BIOS
 #include "components/bios/bios_xt.hpp"
+
+// Video
+#include "components/video/video_mda.hpp"
 
 namespace Volt
 {
@@ -29,6 +38,7 @@ namespace Volt
         { "ppi8255", &Emulation_CreateComponent<PPI8255> },
         { "pic8259", &Emulation_CreateComponent<PIC8259> },
         { "biosxtv3", &Emulation_CreateComponent<BIOSXTv3> },
+        { "videomda", &Emulation_CreateComponent<VideoMDA> },
     };
 
     void Emulation_Cmd_MachineAddComponent(Volt::CommandType type)
