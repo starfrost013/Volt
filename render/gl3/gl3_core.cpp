@@ -153,9 +153,43 @@ namespace Volt
                 clear_frame_number++; 
         }
 
-
     }
 
+    bool R_GL3_CompileShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file)
+    {
+        const char* shader_code;
+
+        std::stringstream string;
+        string << file->stream.rdbuf();
+        shader_code = string.str().c_str();
+
+        uint32_t shader_type = GL_VERTEX_SHADER;
+
+        if (shader_type == VoltShaderType::Fragment)
+            shader_type = GL_FRAGMENT_SHADER;
+        else if (shader_type == VoltShaderType::Geometry)
+            shader_type = GL_GEOMETRY_SHADER;
+
+
+        switch (type)
+        {
+            case VoltShaderType::Vertex:
+                glCreateShader(GL_VERTEX_SHADER);
+                break;
+        }
+        
+        return true; 
+    }
+
+    bool R_GL3_FreeShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file)
+    {
+        switch (type)
+        {
+            
+        }
+
+        return true; 
+    }
     void R_GL3_Close(GLFWwindow* window)
     {
         // renderer_state_global.running is set to false in render_core.cpp

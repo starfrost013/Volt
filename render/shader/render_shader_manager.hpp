@@ -10,6 +10,8 @@
 
 namespace Volt
 {
+    #define MAX_SHADER_NAME_LENGTH      128 // Doesn't need to be as long as MAX_STRING_LENGTH
+
     // Used to compile the shader
     enum VoltShaderType
     {
@@ -22,7 +24,9 @@ namespace Volt
     struct VoltShader
     {
         // This is the shader code
-        char* code;           // It's the code of the shade; is this a good idea?
+        char* code;                     // It's the code of the shade; is this a good idea?
+        char name[MAX_SHADER_NAME_LENGTH];
+        char path[FS_MAX_PATH];         // A buffer holding the path
     };
 
     // Defines a set of shaders 
@@ -33,7 +37,8 @@ namespace Volt
         VoltShader fragment;
         VoltShader compute;
         VoltShader geometry;
-
+        
+        VoltShaderSet* prev; 
         VoltShaderSet* next; 
     };
 

@@ -32,8 +32,8 @@ namespace Volt
         char window_title[WINDOW_TITLE_BUF_SIZE];
         RendererType type; //default value does not matter
         bool running = false;
-        bool (*Shader_CompileFunction)(VoltShaderSet* set, VoltShaderType type);
-        void (*Shader_FreeFunction)(VoltShaderSet* set, VoltShaderType type);
+        bool (*Shader_CompileFunction)(VoltShaderSet* set, VoltShaderType type, VoltFile* stream);
+        void (*Shader_FreeFunction)(VoltShaderSet* set, VoltShaderType type, VoltFile* stream);
     };
 
     extern RendererState renderer_state_global;

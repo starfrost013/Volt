@@ -24,4 +24,7 @@ namespace Volt
     void R_Null_Init();
     void R_Null_Frame();
     void R_Null_Shutdown();
+    bool R_Null_CompileShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
+    bool R_Null_FreeShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
+
 }

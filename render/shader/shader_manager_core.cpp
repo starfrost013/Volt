@@ -6,6 +6,7 @@
 //
 
 
+#include "render_shader_manager.hpp"
 #include <render/render.hpp>
 
 namespace Volt
@@ -22,6 +23,20 @@ namespace Volt
 
     bool Shader_Load(const char* file_path, VoltShaderSet* shader_set, VoltShaderType shader_type)
     {
+        // copy in the name of the file
+        VoltShader &target = shader_set->vertex;
+
+        // if its a vertex shader just use the value above
+        if (shader_type == VoltShaderType::Fragment)
+            target = shader_set->fragment;
+        else if (shader_type == VoltShaderType::Geometry)
+            target = shader_set->geometry;
+        else if (shader_type == VoltShaderType::Compute)
+            target = shader_set->compute;
+
+        //probably will be removed anyway
+        strncpy(target.path, file_path, FS_MAX_PATH);
+
         VoltFile* file = Filesystem_OpenFile(file_path, VoltFileMode::Text);
 
         if (!file)
@@ -40,11 +55,14 @@ namespace Volt
             shader_tempbuf.push_back(ch);
         }
 
-        if (!renderer_state_global.Shader_CompileFunction(shader_set, shader_type))
+        // Pass the file to the render backend in case some backend-specific processing is needed on the file data
+        if (!renderer_state_global.Shader_CompileFunction(shader_set, shader_type, file))
             return false;
 
         // close it, we don't need the file anymore
         Filesystem_CloseFile(file); 
+
+        // create the shader. Is this even needed?
 
         shader_tempbuf.clear(); // horrible
         return true;
@@ -58,7 +76,7 @@ namespace Volt
         && !compute_path
         && !geometry_path)
         {
-            Logging_LogChannel("Shader_LoadSet: You must load at least one of vertex, fragment, compute, and shader!", LogChannel::Error);
+            Logging_LogChannel("Shader_LoadSet: You must load at least one of vertex, fragment, compute, and geometry shader!", LogChannel::Error);
             return false;
         }
 
@@ -112,6 +130,7 @@ namespace Volt
         {
             shader_set_tail->next = shader_set;
             shader_set_tail = shader_set;
+            shader_set->prev = shader_set_tail;
         }
 
         return true; 
@@ -119,7 +138,28 @@ namespace Volt
 
     bool Shader_UnloadSet(VoltShaderSet* set)
     {
-        
+        if (set == shader_set_head)
+        {
+            if (set == shader_set_tail)
+                shader_set_head = shader_set_tail = nullptr;
+            else
+            {
+                shader_set_head = set->next;
+            }
+        }        
+        else if (set == shader_set_tail)
+        {
+            // we already checked for both
+            shader_set_tail = set->prev;
+        }
+        else
+        {
+            set->next->prev = set->prev;
+            set->prev->next = set->next;
+        }
+
+        Memory_Free<VoltShaderSet>(set);
+
         return true; 
     }
 
