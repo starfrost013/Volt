@@ -159,21 +159,21 @@ extern "C" {
 
 #elif defined(GLFW_INCLUDE_ES3)
 
- #include <GLES3/gl3.h>
+ #include <GLES3/gl4.h>
  #if defined(GLFW_INCLUDE_GLEXT)
   #include <GLES2/gl2ext.h>
  #endif
 
 #elif defined(GLFW_INCLUDE_ES31)
 
- #include <GLES3/gl31.h>
+ #include <GLES3/gl41.h>
  #if defined(GLFW_INCLUDE_GLEXT)
   #include <GLES2/gl2ext.h>
  #endif
 
 #elif defined(GLFW_INCLUDE_ES32)
 
- #include <GLES3/gl32.h>
+ #include <GLES3/gl42.h>
  #if defined(GLFW_INCLUDE_GLEXT)
   #include <GLES2/gl2ext.h>
  #endif
@@ -182,9 +182,9 @@ extern "C" {
 
  #if defined(__APPLE__)
 
-  #include <OpenGL/gl3.h>
+  #include <OpenGL/gl4.h>
   #if defined(GLFW_INCLUDE_GLEXT)
-   #include <OpenGL/gl3ext.h>
+   #include <OpenGL/gl4ext.h>
   #endif /*GLFW_INCLUDE_GLEXT*/
 
  #else /*__APPLE__*/
@@ -216,14 +216,14 @@ extern "C" {
       !defined(__gl_h_) && \
       !defined(__gles1_gl_h_) && \
       !defined(__gles2_gl2_h_) && \
-      !defined(__gles2_gl3_h_) && \
-      !defined(__gles2_gl31_h_) && \
-      !defined(__gles2_gl32_h_) && \
+      !defined(__gles2_gl4_h_) && \
+      !defined(__gles2_gl41_h_) && \
+      !defined(__gles2_gl42_h_) && \
       !defined(__gl_glcorearb_h_) && \
       !defined(__gl2_h_) /*legacy*/ && \
-      !defined(__gl3_h_) /*legacy*/ && \
-      !defined(__gl31_h_) /*legacy*/ && \
-      !defined(__gl32_h_) /*legacy*/ && \
+      !defined(__gl4_h_) /*legacy*/ && \
+      !defined(__gl41_h_) /*legacy*/ && \
+      !defined(__gl42_h_) /*legacy*/ && \
       !defined(__glcorearb_h_) /*legacy*/ && \
       !defined(__GL_H__) /*non-standard*/ && \
       !defined(__gltypes_h_) /*non-standard*/ && \

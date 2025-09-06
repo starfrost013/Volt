@@ -14,13 +14,13 @@ namespace Volt
     enum RendererType
     {
         // OpenGL 3.3
-        GL3 = 0,
+        GL4 = 0,
 
         // No renderer
         Null = 1,
 
         // The default renderer value.
-        Default = GL3,
+        Default = GL4,
     };
 
     // Defines

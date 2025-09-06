@@ -167,7 +167,7 @@ Pre-Alpha 0.6 (March 6, 2025)
 	* The client, server and common all have Tick functions that are called each tick and Frame functions that are called each frame.
 	* Added shutdown functions that are called by Common_Shutdown on client and server shutdown
 	* Cvars:
-		* renderer is the current renderer. Either none (not currently implemented) or "gl3".
+		* renderer is the current renderer. Either none (not currently implemented) or "gl4".
 		* render_width is the current width.
 		* render_height is the current height.
 

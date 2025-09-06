@@ -79,7 +79,7 @@ add_executable (Volt
 "render/shader/shader_manager_core.cpp"
 
 # RENDERER - OPENGL 3
-"render/gl3/gl3_core.cpp"
+"render/gl4/gl4_core.cpp"
 
 # RENDERER - NULL
 "render/null/null_core.cpp"

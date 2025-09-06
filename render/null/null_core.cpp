@@ -5,7 +5,7 @@ namespace Volt
     /* Globals */
     RendererStateNull render_state_null;
 
-    // Initialises the GL3 renderer
+    // Initialises the GL4 renderer
     void R_Null_Init()
     {
         Logging_LogChannel("******** R_Null_Init ********", LogChannel::Debug);

@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 //
-// render_gl3.hpp
+// render_gl4.hpp
 // Header file for the OpenGL 3.x renderer
 //
 
@@ -12,7 +12,7 @@ namespace Volt
 {
 
     // Sets up the tasks the renderer can do
-    enum RendererStateGL3Task
+    enum RendererStateGL4Task
     {
         Spin = 0,
 
@@ -20,7 +20,7 @@ namespace Volt
     };
 
     // Holds the OpenGL 3.x renderer state.
-    struct RendererStateGL3
+    struct RendererStateGL4
     {
         RendererState global;
 
@@ -32,17 +32,17 @@ namespace Volt
         int32_t last_window_pos_y;
 
         std::thread video_thread; 
-        RendererStateGL3Task task;
+        RendererStateGL4Task task;
     };
 
-    extern RendererStateGL3 render_state_gl3;
+    extern RendererStateGL4 render_state_gl4;
 
     /* Functions */
 
-    void R_GL3_Init();
-    void R_GL3_Frame();
-    void R_GL3_Shutdown();
-    bool R_GL3_CompileShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
-    bool R_GL3_FreeShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
+    void R_GL4_Init();
+    void R_GL4_Frame();
+    void R_GL4_Shutdown();
+    bool R_GL4_CompileShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
+    bool R_GL4_FreeShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
 
 }

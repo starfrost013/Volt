@@ -1,5 +1,5 @@
 #include <render/render.hpp>
-#include <render/gl3/render_gl3.hpp>
+#include <render/gl4/render_gl4.hpp>
 #include <render/null/render_null.hpp>
 
 //
@@ -25,7 +25,7 @@ namespace Volt
     {
         // set the renderer type based on the "renderer" cvar
 
-        renderer = Cvar_Get("renderer", "gl3", false);
+        renderer = Cvar_Get("renderer", "gl4", false);
 
         // set up some basic cvars 
         render_width = Cvar_Get("render_width", "1024", false);
@@ -47,16 +47,16 @@ namespace Volt
             Cvar_Set("render_height", "768", false);
         
         // set render_type and the rendere based on the "render" cvar
-        if (!strcasecmp(renderer->string, "gl3"))
-            renderer_state_global.type = RendererType::GL3;
+        if (!strcasecmp(renderer->string, "gl4"))
+            renderer_state_global.type = RendererType::GL4;
         else if (!strcasecmp(renderer->string, "null"))
             renderer_state_global.type = RendererType::Null;
 
         switch (renderer_state_global.type)
         {
-            case RendererType::GL3: // gl3 renderer
+            case RendererType::GL4: // gl4 renderer
                 Logging_LogChannel("Selected Renderer: OpenGL 3.3, Core Profile", LogChannel::Message);
-                R_GL3_Init();
+                R_GL4_Init();
                 break;
             case RendererType::Null: // Null debug renderer
                 Logging_LogChannel("Selected Renderer: Null renderer", LogChannel::Message);
@@ -72,8 +72,8 @@ namespace Volt
         // call the function depending on the type of renderer
         switch (renderer_state_global.type)
         {
-            case RendererType::GL3:
-                R_GL3_Frame();
+            case RendererType::GL4:
+                R_GL4_Frame();
                 break;
             case RendererType::Null:
                 R_Null_Frame();
@@ -87,9 +87,9 @@ namespace Volt
     {
         switch (renderer_state_global.type)
         {
-            case RendererType::GL3:
-                Logging_LogChannel("Shutting down renderer: GL3", LogChannel::Message);
-                R_GL3_Shutdown();
+            case RendererType::GL4:
+                Logging_LogChannel("Shutting down renderer: GL4", LogChannel::Message);
+                R_GL4_Shutdown();
                 break;
             case RendererType::Null:
                 Logging_LogChannel("Shutting down renderer: Null", LogChannel::Message);
