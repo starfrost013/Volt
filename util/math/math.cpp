@@ -5,7 +5,7 @@ namespace Volt
 {
 	//
 	// math.cpp
-	// Vector and Matricies Library
+	// Vector and Matrices Library
 	// 18 November 2024
 	//
 

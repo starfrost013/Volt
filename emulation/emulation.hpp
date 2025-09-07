@@ -7,8 +7,9 @@
 
 #pragma once
 #include <common/common.hpp>
-#include <util/logging/logging.hpp>
 #include <util/util.hpp>
+#include <util/logging/logging.hpp>
+#include <util/math/math.hpp>
 #include <emulation/component.hpp>
 #include <emulation/components/video/component_gpu.hpp>
 #include <emulation/components/support/component_dma_controller.hpp>

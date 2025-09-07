@@ -12,6 +12,8 @@
 #include <common/console/console.hpp>       // Console
 #include <common/filesystem/filesystem.hpp> // Filesystem
 #include <util/util.hpp>
+#include <util/logging/logging.hpp>
+#include <util/math/math.hpp>
 
 namespace Volt
 {
