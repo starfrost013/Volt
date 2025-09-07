@@ -55,7 +55,7 @@ namespace Volt
         switch (renderer_state_global.type)
         {
             case RendererType::GL4: // gl4 renderer
-                Logging_LogChannel("Selected Renderer: OpenGL 3.3, Core Profile", LogChannel::Message);
+                Logging_LogChannel("Selected Renderer: OpenGL 4.3, Core Profile", LogChannel::Message);
                 R_GL4_Init();
                 break;
             case RendererType::Null: // Null debug renderer

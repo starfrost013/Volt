@@ -2,7 +2,7 @@
 // VOLT
 // Copyright © 2025 starfrost
 //
-// shader_manager_core.cpp: Core shader loader/unloader
+// render_shader_manager.cpp: Core shader loader/unloader
 //
 
 
@@ -47,25 +47,22 @@ namespace Volt
 
         size_t size = Filesystem_GetFileSize(file);
 
+        const char* shader_code; 
+
         // TODO: WARNING: CRAP!
-        for (uint32_t i = 0; i < size; i++)
-        {
-            char ch = 0x00;
-            file->stream.get(ch);
-            shader_tempbuf.push_back(ch);
-        }
+        std::stringstream string;
+        string << file->stream.rdbuf();
+        target.code = string.str().c_str();
 
         // Pass the file to the render backend in case some backend-specific processing is needed on the file data
-        if (!renderer_state_global.Shader_CompileFunction(shader_set, shader_type, file))
+        if (!renderer_state_global.Shader_CompileFunction(shader_set))
             return false;
 
         // close it, we don't need the file anymore
         Filesystem_CloseFile(file); 
 
         // create the shader. Is this even needed?
-
-        shader_tempbuf.clear(); // horrible
-        return true;
+                return true;
     }
 
     bool Shader_LoadSet(const char* vertex_path, const char* fragment_path, 

@@ -24,9 +24,10 @@ namespace Volt
     struct VoltShader
     {
         // This is the shader code
-        char* code;                     // It's the code of the shade; is this a good idea?
-        char name[MAX_SHADER_NAME_LENGTH];
+        const char* code;               // It's the code of the shader; is this a good idea? Only valid if !loaded
+        bool loaded;                    // Is this valid?
         char path[FS_MAX_PATH];         // A buffer holding the path
+        uint32_t id;                    // OpenGL sahader ID
     };
 
     // Defines a set of shaders 
@@ -38,6 +39,8 @@ namespace Volt
         VoltShader compute;
         VoltShader geometry;
         
+        uint32_t program_id; 
+
         VoltShaderSet* prev; 
         VoltShaderSet* next; 
     };
@@ -45,9 +48,6 @@ namespace Volt
     extern VoltShaderSet* shader_set_head;
     extern VoltShaderSet* shader_set_tail;
     
-    // THIS IS AWFUL
-    extern std::vector<char> shader_tempbuf;
-
     bool Shader_LoadSet(const char* vertex = nullptr, const char* fragment = nullptr, const char* compute = nullptr, const char* geometry = nullptr);
     bool Shader_UnloadSet(VoltShaderSet* set);
 

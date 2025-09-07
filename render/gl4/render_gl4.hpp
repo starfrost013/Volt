@@ -42,7 +42,7 @@ namespace Volt
     void R_GL4_Init();
     void R_GL4_Frame();
     void R_GL4_Shutdown();
-    bool R_GL4_CompileShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
-    bool R_GL4_FreeShader(VoltShaderSet* set, VoltShaderType type, VoltFile* file);
+    bool R_GL4_CompileShader(VoltShaderSet* set);
+    bool R_GL4_FreeShader(VoltShaderSet* set);
 
 }
