@@ -1,18 +1,40 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
+Pre-Alpha 1.5
+XX XXXXXXXXX 2025
+
 Pre-Alpha 1.4
-XX XXXXXXX 2025
+7 September 2025
 
 Changes:
 
 === EMULATION ===
-* PortRead and PortWrite are now acutally 16 bit
+
+8086:
+* Implement LES, LDS, LEA instructions
+
+Peripherals:
+* PortRead and PortWrite now use 16-bit port numbers 
+* Added base class for keyboard controller
+* Added MDA skeleton 
+* Start working on IRQ
+* Renamed VoltFile::entry to VoltFile::stream
+
+Address space:
+* Limit the amount of system RAM using the emu_system_ram
+* Rename access_byte to access_raw and add read_byte and read_word functions 
 
 === CORE SYSTEMS ===
 
 * Moved OpenGL renderer from OpenGL 3.3 Core Profile to OpenGL 4.3 Core Profile so that compute shaders can be used
 	* Renamed GL3 renderer to GL4 renderer
 	* GPU support is now for all dedicated GPUs released in 2010 and later and integrated GPUs released in 2013 and later, rather than 2006 and 2012. 
+* Added a shader manager
+	* Supports vertex, fragment, geometry and compute shaders
+* Remove unused file caching stuff left over from S7
+
+=== BUGFIXES ===
+* Do not try to run the emulation if the BIOS is not found
 
 Pre-Alpha 1.3
 1 September 2025
@@ -35,6 +57,7 @@ Fix CMP immed actually doing XOR
 
 === CORE SYSTEMS ===
 Made the BIOS a component (machine_add_component ibmxtv3)
+	* Change the location of the bios using emu_bios_xtv3_path_high and emu_bios_xtv3_path_low convars
 Remove "exec" command mapping ()
 Close the BIOS files after opening
 
