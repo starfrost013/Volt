@@ -160,6 +160,11 @@ namespace Volt
         return true; 
     }
 
+    void Shader_UseSet(VoltShaderSet* set)
+    {
+        renderer_state_global.Shader_UseFunction(set);
+    }
+
     void Shader_Shutdown()
     {
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <common/common.hpp>
+#include <render/texture/render_texture.hpp>
 #include <render/shader/render_shader_manager.hpp>
 
 // 
@@ -33,8 +34,12 @@ namespace Volt
         RendererType type; //default value does not matter
         bool running = false;
         bool (*Shader_CompileFunction)(VoltShaderSet* set);
-        void (*Shader_FreeFunction)(VoltShaderSet* set);
+        void (*Shader_UseFunction)(VoltShaderSet* set);
+        bool (*Shader_FreeFunction)(VoltShaderSet* set);
+        void (*Texture_CreateFunction)(Texture* texture);
+        void (*Texture_LoadFromFile)(Texture* texture);
     };
+
 
     extern RendererState renderer_state_global;
 

@@ -21,6 +21,13 @@ namespace Volt
     float clear_a = 1.0f; 
     float clear_frame_number = 0;
 
+    void R_GL4_Init_SetupFunctions()
+    {
+        renderer_state_global.Shader_CompileFunction = R_GL4_CompileShader;
+        renderer_state_global.Shader_UseFunction = R_GL4_UseShader;
+        renderer_state_global.Shader_FreeFunction = R_GL4_FreeShader;
+    }
+
     // Initialises the GL4 renderer
     // Failure to initialise is a FATAL ERROR.
     void R_GL4_Init()
@@ -52,7 +59,7 @@ namespace Volt
         glfwMakeContextCurrent(render_state_gl4.window);
         glfwSetFramebufferSizeCallback(render_state_gl4.window, R_GL4_SetViewportSize);
         glfwSetWindowCloseCallback(render_state_gl4.window, R_GL4_Close);
-
+        
         if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
             Logging_LogChannel("GL4 Renderer failed to initialise. gladLoadGLLoader failed. Can only run with +set renderer none.", LogChannel::Fatal);
 
@@ -80,6 +87,9 @@ namespace Volt
         }
 
         Logging_LogChannel("OpenGL Version %s", LogChannel::Debug, glGetString(GL_VERSION));
+
+        // Set up function pointers for the rest of the engine
+        R_GL4_Init_SetupFunctions();
 
         // At this point it's safe to do rendering stuff, so set fullscreen if it's set
         R_GL4_OnFullscreenChanged();
@@ -240,7 +250,7 @@ namespace Volt
 
         if (set->fragment.code)
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Fragment);
-            
+
         if (!successful)
             return false;
 
@@ -294,6 +304,11 @@ namespace Volt
             return false;
         }
         return true; 
+    }
+
+    void R_GL4_UseShader(VoltShaderSet* set)
+    {
+        glUseProgram(set->program_id);
     }
 
     bool R_GL4_FreeShader(VoltShaderSet* set)

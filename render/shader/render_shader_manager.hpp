@@ -27,7 +27,7 @@ namespace Volt
         const char* code;               // It's the code of the shader; is this a good idea? Only valid if !loaded
         bool loaded;                    // Is this valid?
         char path[FS_MAX_PATH];         // A buffer holding the path
-        uint32_t id;                    // OpenGL sahader ID
+        uint32_t id;                    // Backend shader ID
     };
 
     // Defines a set of shaders 
@@ -39,7 +39,7 @@ namespace Volt
         VoltShader compute;
         VoltShader geometry;
         
-        uint32_t program_id; 
+        uint32_t program_id;            // Backend program ID
 
         VoltShaderSet* prev; 
         VoltShaderSet* next; 
@@ -50,6 +50,7 @@ namespace Volt
     
     bool Shader_LoadSet(const char* vertex = nullptr, const char* fragment = nullptr, const char* compute = nullptr, const char* geometry = nullptr);
     bool Shader_UnloadSet(VoltShaderSet* set);
-
+    void Shader_UseSet(VoltShaderSet* set);
+    
     void Shader_Shutdown();
 }

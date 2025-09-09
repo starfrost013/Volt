@@ -30,13 +30,14 @@ namespace Volt
     // Prints a sign-on message.
     void Common_SignonMessage()
     {
-        Logging_LogChannel("" APP_NAME " " VERSION " " BUILD_DATE, LogChannel::Message);
+        Logging_LogChannel("" APP_NAME_FULL " " VERSION " " BUILD_DATE, LogChannel::Message);
         Logging_LogChannel("******** Common_Init starting ********", LogChannel::Debug);
     }
 
     void Common_Init(int32_t argc, char** argv)
     {
         logger.settings.fatal_function = Common_Fatal;  // Initialise logging
+        logger.settings.file_name = APP_NAME".log";
         Logging_Init();                                 
         Console_Init(ConsoleType::CommandLineConsole);  // Initialise the console
         Common_InitCvar();                              // Initialise cvars

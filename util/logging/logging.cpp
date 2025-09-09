@@ -1,17 +1,22 @@
+// 
+// VOLT
+// Copyright © 2023-2025 starfrost
+//
+// Logging.cpp: Handles logging for the Volt project
+//
+
 #include "logging.hpp"
 #include <util/util.hpp>
 
 namespace Volt
 {
-	// Logging.cpp
-	// Handles logging for the Volt project
-
+	
 	// Defines 
 	#define	LOGGING_MAX_LENGTH_TEXT		1024												// Maximum length of text being logged via the logger.
 	#define LOGGING_MAX_LENGTH_DATE		32													// Length of the string containing the current date.
 	#define LOGGING_MAX_LENGTH_TOTAL	LOGGING_MAX_LENGTH_TEXT + LOGGING_MAX_LENGTH_DATE	// Total length of the logging text buffer.
 
-	#define ITS_OVER					0x43524150											// 'CRAP'
+	#define ITS_OVER					0x43524150											// 'CRAP' Exit code used on failure
 
 	// Prototypes for "internal" functions only used in this source file
 	void Logging_Log(const char* text, LogChannel channel, va_list args);

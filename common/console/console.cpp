@@ -68,23 +68,7 @@ namespace Volt
 
     void Console_RenderCommandLine()
     {
-        /*
-        Util_ConsoleSaveCursorPosition();
-        Util_ConsoleSetPosition(0, 0);
-        Util_ConsoleSetBackgroundColor(ConsoleColor::BrightBlue);
-        Util_ConsoleSetForegroundColor(ConsoleColor::BrightWhite);
 
-
-        printf(APP_NAME " " VERSION " " BUILD_DATE "\n");
-        printf("%s\n", funny_console_messages[funny_message_id]);
-        
-        printf("Tickrate - %.2f; %.2f FPS (%.2fms last update + %.2fms last render. Max time for this tickrate = %.2fms)\n", 
-            tickrate_emu->value, 1000.0 / common_last_frametime, common_last_updatetime, common_last_frametime, max_time);
-
-        Util_ConsoleResetBackgroundColor();
-        Util_ConsoleResetForegroundColor();
-        Util_ConsoleRestoreCursorPosition();
-        */
     }
 
     void Console_RenderGame()
