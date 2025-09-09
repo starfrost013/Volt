@@ -1,12 +1,16 @@
+//
+// VOLT
+// Copyright © 2025 starfrost
+//
+// render_gl4.hpp: 
+// Header file for the OpenGL 4.x renderer. This is a OpenGL 4.3/4.4/4.5/4.6 hardware-accel
+//
+
+
 #pragma once
 #include <render/render.hpp>
 #include <GLAD/glad.h>
 #include <GLFW/glfw3.h>
-
-//
-// render_gl4.hpp
-// Header file for the OpenGL 3.x renderer
-//
 
 namespace Volt
 {

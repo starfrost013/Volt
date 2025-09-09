@@ -1,9 +1,12 @@
 #include <render/gl4/render_gl4.hpp>
 
 //
-// gl4_core.cpp
-// Core GL4 renderer functions - initialisation, main loop, and shutdown.
+// VOLT
+// Copyright © 2025 starfrost
 //
+// gl4_core.cpp: Core GL4 renderer functions - initialisation, main loop, shader stuff, and shutdown.
+//
+
 namespace Volt
 {
     /* Globals */

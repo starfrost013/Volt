@@ -25,12 +25,17 @@ namespace Volt
         renderer_state_global.running = false; 
     }
 
-    bool R_Null_CompileShader(VoltShaderSet* set, VoltFile* file)
+    bool R_Null_CompileShader(VoltShaderSet* set)
     {
         return true; 
     }
 
-    bool R_Null_FreeShader(VoltShaderSet* set, VoltFile* file)
+    void R_Null_UseShader(VoltShaderSet* set)
+    {
+        
+    }
+
+    bool R_Null_FreeShader(VoltShaderSet* set)
     {
         return true; 
     }

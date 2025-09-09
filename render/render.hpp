@@ -1,5 +1,6 @@
 #pragma once
 #include <common/common.hpp>
+#include <render/display/render_display.hpp>
 #include <render/texture/render_texture.hpp>
 #include <render/shader/render_shader_manager.hpp>
 

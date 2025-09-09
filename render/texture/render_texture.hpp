@@ -18,6 +18,4 @@ namespace Volt
     };
 
     Texture* Render_CreateTexture(const char* path);
-
-
 }

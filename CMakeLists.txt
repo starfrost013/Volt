@@ -74,14 +74,16 @@ add_executable (Volt
 # Video
 "emulation/components/video/video_mda.cpp"
 
-# RENDER
+# Render & Display
 "render/render_core.cpp"
+"render/display/render_display.cpp"
 "render/shader/render_shader_manager.cpp"
+"render/texture/render_texture.cpp"
 
-# RENDERER - OPENGL 3
+# Renderer - OpenGL 4.x
 "render/gl4/gl4_core.cpp"
 
-# RENDERER - NULL
+# Renderer - Null
 "render/null/null_core.cpp"
 
 # SYS

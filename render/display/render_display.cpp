@@ -5,10 +5,12 @@
 // render_display.cpp: Display system implementation for Volt emulator
 //
 
+#include <render/display/render_display.hpp>
+
 namespace Volt
 {
     void Monitor::SetSize(uint32_t x, uint32_t y)
     {
-        
+
     }
 }

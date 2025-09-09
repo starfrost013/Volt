@@ -5,6 +5,9 @@
 // render_display.hpp: Display system definition for Volt emulator
 //
 
+#pragma once
+#include <render/render.hpp>
+
 namespace Volt
 {
     // System Monitor list
