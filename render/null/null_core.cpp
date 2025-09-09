@@ -10,6 +10,11 @@ namespace Volt
     {
         Logging_LogChannel("******** R_Null_Init ********", LogChannel::Debug);
 
+        //setup functions
+        renderer_state_global.Shader_CompileFunction = R_Null_CompileShader;
+        renderer_state_global.Shader_UseFunction = R_Null_UseShader;
+        renderer_state_global.Shader_FreeFunction = R_Null_FreeShader;
+
         Logging_LogChannel("******** R_Null_Init was successful! ********", LogChannel::Message);
     }
 
@@ -32,7 +37,7 @@ namespace Volt
 
     void R_Null_UseShader(VoltShaderSet* set)
     {
-        
+
     }
 
     bool R_Null_FreeShader(VoltShaderSet* set)
