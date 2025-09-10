@@ -12,6 +12,11 @@ namespace Volt
     /* Globals */
     RendererStateGL4 render_state_gl4;
 
+    std::unordered_map<uint32_t, uint32_t> volt_formats_to_gl_formats =
+    {
+        { TextureFormat::RGBA32, GL_RGBA32F }, // GL_RGBA == GL_RGBA32F
+    };
+
     /* Functions only used in this translation unit */
     void R_GL4_SetViewportSize(GLFWwindow* window, int32_t width, int32_t height);
     void R_GL4_OnFullscreenChanged();
@@ -316,9 +321,18 @@ namespace Volt
 
     bool R_GL4_FreeShader(VoltShaderSet* set)
     {
-
         return true; 
     }
+
+    void R_GL4_CreateTexture(Texture* texture)
+    {
+        glGenTextures(1, &texture->id);
+
+        glBindTexture(GL_TEXTURE_2D, texture->id);
+        glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
+        texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
+    }
+
     void R_GL4_Close(GLFWwindow* window)
     {
         // renderer_state_global.running is set to false in render_core.cpp

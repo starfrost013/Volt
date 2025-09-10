@@ -9,7 +9,7 @@
 
 namespace Volt
 {
-    void Monitor::SetSize(uint32_t x, uint32_t y)
+    void Display::SetSize(Vector2i size)
     {
 
     }

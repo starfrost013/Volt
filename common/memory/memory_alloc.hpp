@@ -39,6 +39,7 @@
 #define TAG_EMU_COMPONENT_GEN			0x47504D43	// Dynamically created component	'CMPG'
 
 #define TAG_RENDER_SHADER				0x52444853	// Shader							'SHDR'
+#define TAG_RENDER_TEXTURE				0x30584554	// Texture							'TEX0'
 
 // More to come...
 

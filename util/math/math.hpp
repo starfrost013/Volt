@@ -4,10 +4,10 @@
 namespace Volt
 {
 	//
-	// Mathematical Utilities for 3D Rendering
+	// Mathematical Utilities for 3D Rendering implementation
 	//
 
-	// Defines a two-dimensional vector
+	// Defines a two-dimensional vector where the dimensions are expressed as floating-point coordinates
 	struct Vector2
 	{
 		float x, y;
@@ -20,6 +20,20 @@ namespace Volt
 		float DotProduct(const Vector2& other);		// Calculates the dot product of a two-dimensional vector.
 	};
 
+	// Defines a two-dimensional vector where the dimensions are expressed as 32-bit signed integers.
+	struct Vector2i
+	{
+		uint32_t x, y;
+
+		Vector2i operator +(const Vector2i& other);	// Adds two two-dimensional integer vectors.
+		Vector2i operator -(const Vector2i& other);	// Subtracts two two-dimensional integer vectors
+		Vector2i operator *(float& scale);			// Multiplies a two-dimensional integer vector by a scalar
+
+		int32_t Magnitude(const Vector2i& other);	// Calculates the magnitude of a two-dimensional vector.
+		int32_t DotProduct(const Vector2i& other);	// Calculates the dot product of a two-dimensional vector.
+	};
+
+	// Defines a three-dimensional vector where the dimensions are expressed as floating-point coordinates.
 	struct Vector3
 	{
 		float x, y, z;
@@ -32,6 +46,20 @@ namespace Volt
 		float DotProduct(const Vector3& other);		// Calculates the dot product of a three-dimensional vector.
 	};
 
+	// Defines a three-dimensional vector where the dimensions are expressed as 32-bit signed integers.
+	struct Vector3i
+	{
+		int32_t x, y, z;
+
+		Vector3i operator +(const Vector3i& other);	// Adds two three-dimensional vectors.
+		Vector3i operator -(const Vector3i& other);	// Subtracts two three-dimensional vectors
+		Vector3i operator *(float& scale);			// Multiplies a three-dimensional vector by a scalar
+
+		int32_t Magnitude(const Vector3i& other);	// Calculates the magnitude of a three-dimensional vector.
+		int32_t DotProduct(const Vector3i& other);	// Calculates the dot product of a three-dimensional vector.
+	};
+
+	// Defines a four-dimensional vector where the dimensions are expressed as floating-point coordinates.
 	struct Vector4
 	{
 		float x, y, z, w;
@@ -42,6 +70,19 @@ namespace Volt
 
 		float Magnitude(const Vector4& other);		// Calculates the magnitude of a four-dimensional vector.
 		float DotProduct(const Vector4& other);		// Calculates the dot product of a four-dimensional vector.
+	};
+
+	// Defines a four-dimensional vector where the dimensions are expressed as 32-bit signed integers.
+	struct Vector4i
+	{
+		int32_t x, y, z, w;
+
+		Vector4i operator +(const Vector4i& other);	// Adds two four-dimensional vectors.
+		Vector4i operator -(const Vector4i& other);	// Subtracts two four-dimensional vectors
+		Vector4i operator *(float& scale);			// Multiplies a four-dimensional vector by a scalar
+
+		int32_t Magnitude(const Vector4i& other);	// Calculates the magnitude of a four-dimensional vector.
+		int32_t DotProduct(const Vector4i& other);	// Calculates the dot product of a four-dimensional vector.
 	};
 
 	struct Matrix22

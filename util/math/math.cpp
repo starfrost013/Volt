@@ -17,14 +17,32 @@ namespace Volt
 		return (x * other.y) + (y * other.y);
 	}
 
+	// Gets the dot product of a 2-dimensional integer vector.
+	int32_t Vector2i::DotProduct(const Vector2i& other)
+	{
+		return (x * other.y) + (y * other.y);
+	}
+
 	// Gets the dot product of a 3-dimensional vector.
 	float Vector3::DotProduct(const Vector3& other)
 	{
 		return (x * other.y) + (y * other.y) + (z * other.z);
 	}
 
+	// Gets the dot product of a 3-dimensional integer vector.
+	int32_t Vector3i::DotProduct(const Vector3i& other)
+	{
+		return (x * other.y) + (y * other.y) + (z * other.z);
+	}
+
 	// Gets the dot product of a 4-dimensional vector.
 	float Vector4::DotProduct(const Vector4& other)
+	{
+		return (x * other.y) + (y * other.y) + (z * other.z) + (w * other.w);
+	}
+
+	// Gets the dot product of a 4-dimensional integer vector.
+	int32_t Vector4i::DotProduct(const Vector4i& other)
 	{
 		return (x * other.y) + (y * other.y) + (z * other.z) + (w * other.w);
 	}
@@ -38,8 +56,20 @@ namespace Volt
 		return (x * x) + (y * y); 		
 	}
 
+	// Gets the magnitude of a two-dimensional integer vector.
+	int32_t Vector2i::Magnitude(const Vector2i& other)
+	{
+		return (x * x) + (y * y); 		
+	}
+
 	// Gets the magnitude of a three-dimensional vector.
 	float Vector3::Magnitude(const Vector3& other)
+	{
+		return (x * x) + (y * y) + (z * z);
+	}
+
+	// Gets the magnitude of a three-dimensional integer vector.
+	int32_t Vector3i::Magnitude(const Vector3i& other)
 	{
 		return (x * x) + (y * y) + (z * z);
 	}
@@ -50,22 +80,46 @@ namespace Volt
 		return (x * x) + (y * y) + (z * z) + (w * w);
 	}
 
+	// Gets the magnitude of a four-dimensional integer vector.
+	int32_t Vector4i::Magnitude(const Vector4i& other)
+	{
+		return (x * x) + (y * y) + (z * z) + (w * w);
+	}
+
 	// Vector Addition
 
 	// Adds two two-dimensional vectors.
-	Vector2 Vector2::operator +(const Vector2& other)
+	Vector2 Vector2::operator+(const Vector2& other)
+	{
+		return { x + other.x, y + other.y };
+	}
+
+	// Adds two two-dimensional integer vectors.
+	Vector2i Vector2i::operator+(const Vector2i& other)
 	{
 		return { x + other.x, y + other.y };
 	}
 
 	// Adds two three-dimensional vectors.
-	Vector3 Vector3::operator +(const Vector3& other)
+	Vector3 Vector3::operator+(const Vector3& other)
+	{
+		return { x + other.x, y + other.y, z + other.z };
+	}
+	
+	// Adds two three-dimensional integer vectors.
+	Vector3i Vector3i::operator+(const Vector3i& other)
 	{
 		return { x + other.x, y + other.y, z + other.z };
 	}
 
 	// Adds two four-dimensional vectors.
-	Vector4 Vector4::operator +(const Vector4& other)
+	Vector4 Vector4::operator+(const Vector4& other)
+	{
+		return { x + other.x, y + other.y, z + other.z, w + other.w };
+	}
+
+	// Adds two four-dimensional integer vectors.
+	Vector4i Vector4i::operator+(const Vector4i& other)
 	{
 		return { x + other.x, y + other.y, z + other.z, w + other.w };
 	}
@@ -75,19 +129,37 @@ namespace Volt
 	//
 
 	// Subtracts two two-dimensional vectors.
-	Vector2 Vector2::operator -(const Vector2& other)
+	Vector2 Vector2::operator-(const Vector2& other)
+	{
+		return { x - other.x, y - other.y };
+	}
+
+	// Subtracts two two-dimensional integer vectors.
+	Vector2i Vector2i::operator-(const Vector2i& other)
 	{
 		return { x - other.x, y - other.y };
 	}
 
 	// Subtracts two three-dimensional vectors.
-	Vector3 Vector3::operator -(const Vector3& other)
+	Vector3 Vector3::operator-(const Vector3& other)
+	{
+		return { x - other.x, y - other.y, z - other.z };
+	}
+
+	// Subtracts two three-dimensional integer vectors.
+	Vector3i Vector3i::operator-(const Vector3i& other)
 	{
 		return { x - other.x, y - other.y, z - other.z };
 	}
 
 	// Subtracts two four-dimensional vectors.
-	Vector4 Vector4::operator -(const Vector4& other)
+	Vector4 Vector4::operator-(const Vector4& other)
+	{
+		return { x - other.x, y - other.y, z - other.z, w - other.w };
+	}
+
+	// Subtracts two four-dimensional integer vectors.
+	Vector4i Vector4i::operator-(const Vector4i& other)
 	{
 		return { x - other.x, y - other.y, z - other.z, w - other.w };
 	}
@@ -95,22 +167,41 @@ namespace Volt
 	// Vector Multiply
 
 	// Scales a two-dimensional vector by a scalar value.
-	Vector2 Vector2::operator *(float& scale)
+	Vector2 Vector2::operator*(float& scale)
+	{
+		return { x * scale, y * scale };
+	}
+
+	// Scales a two-dimensional integer vector by a scalar value.
+	Vector2i Vector2i::operator*(float& scale)
 	{
 		return { x * scale, y * scale };
 	}
 
 	// Scales a three-dimensional vector by a scalar value.
-	Vector3 Vector3::operator *(float& scale)
+	Vector3 Vector3::operator*(float& scale)
+	{
+		return { x * scale, y * scale, z * scale };
+	}
+
+	// Scales a three-dimensional integer vector by a scalar value.
+	Vector3i Vector3i::operator*(float& scale)
 	{
 		return { x * scale, y * scale, z * scale };
 	}
 
 	// Scales a four-dimensional vector by a scalar value.
-	Vector4 Vector4::operator *(float& scale)
+	Vector4 Vector4::operator*(float& scale)
 	{
 		return { x * scale, y * scale, z * scale, w * scale };
 	}
+
+	// Scales a three-dimensional integer vector by a scalar value.
+	Vector4i Vector4i::operator*(float& scale)
+	{
+		return { x * scale, y * scale, z * scale };
+	}
+
 
 	// Matrix Transposition
 

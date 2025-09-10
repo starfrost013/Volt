@@ -11,14 +11,13 @@
 namespace Volt
 {
     // System Monitor list
-    class Monitor
+    class Display
     {
     public:
-        void SetSize(uint32_t x, uint32_t y);
+        void SetSize(Vector2i size);
         
     private: 
-        uint32_t x;
-        uint32_t y; 
+        Vector2i size; 
 
     };
 

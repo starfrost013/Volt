@@ -9,13 +9,23 @@
 
 namespace Volt
 {
-    struct Texture
+    // These are converted to real texture foramts using an std::unordered_map in each renderer
+    enum TextureFormat
     {
-        uint32_t size_x;
-        uint32_t size_y;
-
-        uint32_t id;
+        RGBA32 = 0, 
     };
 
-    Texture* Render_CreateTexture(const char* path);
+    struct Texture
+    {
+        Vector2i size;
+
+        uint32_t id;
+        
+        TextureFormat format; 
+
+        uint32_t* pixels; 
+    };
+
+    template <Vector2i Size>
+    Texture* Render_CreateTexture(TextureFormat format, const char* path = nullptr); // path is optional
 }

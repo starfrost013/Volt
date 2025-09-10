@@ -49,5 +49,5 @@ namespace Volt
     bool R_GL4_CompileShader(VoltShaderSet* set);
     void R_GL4_UseShader(VoltShaderSet* set);
     bool R_GL4_FreeShader(VoltShaderSet* set);
-
+    void R_GL4_CreateTexture(Texture* texture);
 }
