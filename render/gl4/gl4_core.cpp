@@ -34,6 +34,7 @@ namespace Volt
         renderer_state_global.Shader_CompileFunction = R_GL4_CompileShader;
         renderer_state_global.Shader_UseFunction = R_GL4_UseShader;
         renderer_state_global.Shader_FreeFunction = R_GL4_FreeShader;
+        renderer_state_global.Texture_CreateFunction = R_GL4_CreateTexture;
     }
 
     // Initialises the GL4 renderer
@@ -311,6 +312,32 @@ namespace Volt
             Logging_LogChannel("******** Shader program linking failure. ********\nInformation: %s", LogChannel::Error, info_log);
             return false;
         }
+
+        // Once you have linked the program, you can delete the original loose shaders since they will be contained as part of the shader program
+        if (set->vertex.loaded)
+        {
+            glDeleteShader(set->vertex.id);
+            set->vertex.id = 0;   
+        }
+
+        if (set->fragment.loaded)
+        {
+            glDeleteShader(set->fragment.id);
+            set->fragment.id = 0;   
+        }
+
+        if (set->geometry.loaded)
+        {
+            glDeleteShader(set->geometry.id);
+            set->geometry.id = 0;   
+        }
+    
+        if (set->compute.loaded)
+        {
+            glDeleteShader(set->compute.id);
+            set->compute.id = 0;   
+        }
+
         return true; 
     }
 
@@ -321,6 +348,7 @@ namespace Volt
 
     bool R_GL4_FreeShader(VoltShaderSet* set)
     {
+        glDeleteProgram(set->program_id);
         return true; 
     }
 
