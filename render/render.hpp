@@ -38,6 +38,7 @@ namespace Volt
         void (*Shader_UseFunction)(VoltShaderSet* set);
         bool (*Shader_FreeFunction)(VoltShaderSet* set);
         void (*Texture_CreateFunction)(Texture* texture);
+        void (*Texture_FreeFunction)(Texture* texture);
     };
 
     extern RendererState renderer_state_global;

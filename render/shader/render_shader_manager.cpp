@@ -167,6 +167,14 @@ namespace Volt
 
     void Shader_Shutdown()
     {
+        VoltShaderSet* shader_set = shader_set_head;
 
+        while (shader_set)
+        {
+            // stop next being destroyed
+            VoltShaderSet* next = shader_set->next;
+            Shader_UnloadSet(shader_set);
+            shader_set = next;
+        }
     }
 }

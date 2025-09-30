@@ -35,6 +35,7 @@ namespace Volt
         renderer_state_global.Shader_UseFunction = R_GL4_UseShader;
         renderer_state_global.Shader_FreeFunction = R_GL4_FreeShader;
         renderer_state_global.Texture_CreateFunction = R_GL4_CreateTexture;
+        renderer_state_global.Texture_FreeFunction = R_GL4_FreeTexture;
     }
 
     // Initialises the GL4 renderer
@@ -359,6 +360,30 @@ namespace Volt
         glBindTexture(GL_TEXTURE_2D, texture->id);
         glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
         texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
+
+        glGenVertexArrays(1, &texture->vertexArray);
+        glGenBuffers(1, &texture->vertexBuffer);
+
+        // bind the buffer
+        // TODO: how slow is this? we *can* use only 1 VBO/VAO for every texture, but then we give up UV :thinking:. We don't have many textures anyway.
+        glBindBuffer(GL_ARRAY_BUFFER, texture->vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(generic2DVertexBuffer), generic2DVertexBuffer, GL_STATIC_DRAW); // configurable?
+
+        // bind the vertex buffer and load the vertex array into it for this texture
+        glBindVertexArray(texture->vertexArray);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic2DVertexBuffer
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    
+    }
+    
+    void R_GL4_FreeTexture(Texture* texture)
+    {
+        glDeleteVertexArrays(1, &texture->vertexArray);
+        glDeleteBuffers(1, &texture->vertexBuffer);
+        glDeleteTextures(1, &texture->id);
+
     }
 
     void R_GL4_Close(GLFWwindow* window)

@@ -40,7 +40,8 @@ namespace Volt
         VoltShader geometry;
         
         uint32_t program_id;            // Backend program ID
-
+        char name[FS_MAX_PATH];         // Shader name ID
+        
         VoltShaderSet* prev; 
         VoltShaderSet* next; 
     };

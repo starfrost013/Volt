@@ -19,13 +19,21 @@ namespace Volt
     {
         Vector2i size;
 
-        uint32_t id;
+        uint32_t id;                            // Texture id
         
         TextureFormat format; 
 
-        uint32_t* pixels; 
+        uint32_t* pixels;
+
+        // Todo: render-agnostic...
+        uint32_t vertexBuffer;                  // Vertex Buffer ID
+        uint32_t vertexArray;                   // Vertex Array ID
     };
 
-    template <Vector2i Size>
-    Texture* Render_CreateTexture(TextureFormat format, const char* path = nullptr); // path is optional
+    // Sorry for designing a memory allocator like this :(
+    template <size_t SizeLinear>
+    Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* path = nullptr); // path is optional
+
+    template <size_t SizeLinear>
+    void Render_FreeTexture(Texture* texture); // path is optional
 }
