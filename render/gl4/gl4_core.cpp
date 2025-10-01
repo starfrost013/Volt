@@ -12,6 +12,17 @@ namespace Volt
     /* Globals */
     RendererStateGL4 render_state_gl4;
 
+    float generic2DVertexBuffer[] = 
+    {
+        // <pos x> <pos y> <tex x> <tex y>
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+        0.0f, 0.0f, 0.0f, 0.0f, 
+        0.0f, 1.0f, 0.0f, 1.0f,
+        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 0.0f, 1.0f, 0.0f,
+    };
+
     std::unordered_map<uint32_t, uint32_t> volt_formats_to_gl_formats =
     {
         { TextureFormat::RGBA32, GL_RGBA32F }, // GL_RGBA == GL_RGBA32F

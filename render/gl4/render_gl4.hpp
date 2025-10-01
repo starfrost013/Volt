@@ -53,16 +53,7 @@ namespace Volt
     // Since this is just a sprite, we don't need to specify any subset of the coordinates for either the position or the texture.
     // It is just a 1 to 1 mapping and we can just do this
     // TODO: Batching?
-    float generic2DVertexBuffer[] = 
-    {
-        // <pos x> <pos y> <tex x> <tex y>
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f, 
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-    };
+    extern float generic2DVertexBuffer[];
     
     void R_GL4_CreateTexture(Texture* texture);
     void R_GL4_FreeTexture(Texture* texture);
