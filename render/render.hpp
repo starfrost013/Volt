@@ -1,8 +1,9 @@
 #pragma once
 #include <common/common.hpp>
 #include <render/display/render_display.hpp>
-#include <render/texture/render_texture.hpp>
 #include <render/shader/render_shader_manager.hpp>
+
+#include <render/texture/render_texture.hpp>
 
 // 
 // VOLT
@@ -26,7 +27,7 @@ namespace Volt
     };
 
     // Defines
-    #define WINDOW_TITLE_BUF_SIZE       256
+    #define WINDOW_TITLE_BUF_SIZE               256
 
     // State shared across all renderers
     struct RendererState
@@ -39,6 +40,8 @@ namespace Volt
         bool (*Shader_FreeFunction)(VoltShaderSet* set);
         void (*Texture_CreateFunction)(Texture* texture);
         void (*Texture_FreeFunction)(Texture* texture);
+        void (*FrameFunction)();
+        void (*ShutdownFunction)();
     };
 
     extern RendererState renderer_state_global;

@@ -1,3 +1,4 @@
+#pragma once
 #include <render/render.hpp>
 
 //
@@ -19,21 +20,24 @@ namespace Volt
     {
         Vector2i size;
 
-        uint32_t id;                            // Texture id
+        uint32_t id;                                // Texture id
         
-        TextureFormat format; 
+        TextureFormat format;                       // Format of the texture
 
         uint32_t* pixels;
+        char shader_name[SHADER_MAX_NAME_LENGTH];
 
         // Todo: render-agnostic...
-        uint32_t vertexBuffer;                  // Vertex Buffer ID
-        uint32_t vertexArray;                   // Vertex Array ID
+        uint32_t vertex_buffer;                     // Vertex Buffer ID
+        uint32_t vertex_array;                      // Vertex Array ID
     };
 
     // Sorry for designing a memory allocator like this :(
     template <size_t SizeLinear>
-    Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* path = nullptr); // path is optional
+    Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* use_shader_name, const char* path = nullptr); // path is optional
 
+    void Render_DrawTexture(Texture* texture);
+    
     template <size_t SizeLinear>
     void Render_FreeTexture(Texture* texture); // path is optional
 }

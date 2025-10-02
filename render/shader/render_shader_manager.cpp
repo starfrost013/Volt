@@ -21,6 +21,7 @@ namespace Volt
     // Minimum size provided so that we don't endlessly resize ofr the first bit
     std::vector<char> shader_tempbuf(STR_TEMPBUF_MIN_SIZE);
 
+    // Load a shader as part of a shader set
     bool Shader_Load(const char* file_path, VoltShaderSet* shader_set, VoltShaderType shader_type)
     {
         // copy in the name of the file
@@ -62,11 +63,11 @@ namespace Volt
         Filesystem_CloseFile(file); 
 
         // create the shader. Is this even needed?
-                return true;
+        return true;
     }
 
-    bool Shader_LoadSet(const char* vertex_path, const char* fragment_path, 
-        const char* compute_path, const char* geometry_path)
+    // Load a shader set
+    bool Shader_LoadSet(const char* use_shader_name, const char* vertex_path, const char* fragment_path, const char* compute_path, const char* geometry_path)
     {
         if (!vertex_path
         && !fragment_path
@@ -78,6 +79,8 @@ namespace Volt
         }
 
         VoltShaderSet* shader_set = Memory_Alloc<VoltShaderSet>(TAG_RENDER_SHADER);
+
+        strncpy(shader_set->name, use_shader_name, SHADER_MAX_NAME_LENGTH);
 
         // Figure out the size of the file
 
@@ -133,6 +136,7 @@ namespace Volt
         return true; 
     }
 
+    // Unload a shader set
     bool Shader_UnloadSet(VoltShaderSet* set)
     {
         if (set == shader_set_head)
@@ -160,11 +164,13 @@ namespace Volt
         return true; 
     }
 
+    // Use a shader.
     void Shader_UseSet(VoltShaderSet* set)
     {
         renderer_state_global.Shader_UseFunction(set);
     }
 
+    // Shut down the render shader subsystem
     void Shader_Shutdown()
     {
         VoltShaderSet* shader_set = shader_set_head;
@@ -176,5 +182,19 @@ namespace Volt
             Shader_UnloadSet(shader_set);
             shader_set = next;
         }
+    }
+
+    // Obtains a shader by its name.
+    VoltShaderSet* Shader_GetByName(const char* use_shader_name)
+    {
+        VoltShaderSet* shader_set = shader_set_head;
+
+        while (shader_set)
+        {
+            if (!strncpy(shader_set->name, use_shader_name, SHADER_MAX_NAME_LENGTH))
+                return shader_set;
+        }
+
+        return nullptr;
     }
 }

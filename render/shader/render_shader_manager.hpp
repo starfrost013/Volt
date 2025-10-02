@@ -10,7 +10,7 @@
 
 namespace Volt
 {
-    #define MAX_SHADER_NAME_LENGTH      128 // Doesn't need to be as long as MAX_STRING_LENGTH
+    constexpr size_t SHADER_MAX_NAME_LENGTH = 64;
 
     // Used to compile the shader
     enum VoltShaderType
@@ -40,7 +40,7 @@ namespace Volt
         VoltShader geometry;
         
         uint32_t program_id;            // Backend program ID
-        char name[FS_MAX_PATH];         // Shader name ID
+        char name[SHADER_MAX_NAME_LENGTH];   // Shader name ID. Used to look up the shader (so we can load this info from files in the future)
         
         VoltShaderSet* prev; 
         VoltShaderSet* next; 
@@ -49,9 +49,10 @@ namespace Volt
     extern VoltShaderSet* shader_set_head;
     extern VoltShaderSet* shader_set_tail;
     
-    bool Shader_LoadSet(const char* vertex = nullptr, const char* fragment = nullptr, const char* compute = nullptr, const char* geometry = nullptr);
+    bool Shader_LoadSet(const char* use_shader_name, const char* vertex = nullptr, const char* fragment = nullptr, const char* compute = nullptr, const char* geometry = nullptr);
     bool Shader_UnloadSet(VoltShaderSet* set);
     void Shader_UseSet(VoltShaderSet* set);
+    VoltShaderSet* Shader_GetByName(const char* use_shader_name);
     
     void Shader_Shutdown();
 }

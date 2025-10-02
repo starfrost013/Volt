@@ -27,5 +27,7 @@ namespace Volt
     bool R_Null_CompileShader(VoltShaderSet* set);
     void R_Null_UseShader(VoltShaderSet* set);
     bool R_Null_FreeShader(VoltShaderSet* set);
+    void R_Null_CreateTexture(Texture* texture);
+    void R_Null_FreeTexture(Texture* texture);
 
 }

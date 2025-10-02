@@ -208,10 +208,22 @@ namespace Volt
 	// Returns the transposition of a 2x2 matrix.
 	Matrix22 Matrix22::Transpose()
 	{
-		return { matrix[0][0] = matrix[0][0], 
+		return { 
+			matrix[0][0] = matrix[0][0], 
 			matrix[0][1] = matrix[1][0],
 			matrix[1][0] = matrix[0][1], 
-			matrix[1][1] = matrix[1][1]};
+			matrix[1][1] = matrix[1][1]
+		};
+	}
+
+	Matrix22 Matrix22::Translate(const Matrix22& other)
+	{
+		return {
+			matrix[0][0] + other.matrix[0][0],
+			matrix[0][1] + other.matrix[0][1],
+			matrix[1][0] + other.matrix[1][0],
+			matrix[1][1] + other.matrix[1][1],
+		};
 	}
 
 	Matrix33 Matrix33::Transpose()
@@ -225,6 +237,19 @@ namespace Volt
 		return transposed;
 	}
 
+	// Translate a 3x3 matric.
+	Matrix33 Matrix33::Translate(const Matrix33& other)
+	{
+		Matrix33 new_matrix = {0};
+
+		for (uint8_t i = 0; i < 3; i++)
+			for (uint8_t j = 0; j < 3; j++)
+				new_matrix.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+
+		return new_matrix;
+	}
+
+	// Transpose a 4x4 matrix.
 	Matrix44 Matrix44::Transpose()
 	{
 		Matrix44 transposed;
@@ -236,7 +261,19 @@ namespace Volt
 		return transposed;
 	}
 
-	// Obtain Identity Matrix
+	// Translate a 4x4 matrix.
+	Matrix44 Matrix44::Translate(const Matrix44& other)
+	{
+		Matrix44 new_matrix = {0};
+
+		for (uint8_t i = 0; i < 4; i++)
+			for (uint8_t j = 0; j < 4; j++)
+				new_matrix.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+
+		return new_matrix;
+	}
+
+	// Obtain Identity Matrix methods
 
 	// Returns the 2x2 identity matrix.
 	Matrix22 Matrix22::GetIdentityMatrix()

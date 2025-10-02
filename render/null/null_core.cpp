@@ -14,6 +14,10 @@ namespace Volt
         renderer_state_global.Shader_CompileFunction = R_Null_CompileShader;
         renderer_state_global.Shader_UseFunction = R_Null_UseShader;
         renderer_state_global.Shader_FreeFunction = R_Null_FreeShader;
+        renderer_state_global.Texture_CreateFunction = R_Null_CreateTexture;
+        renderer_state_global.Texture_FreeFunction = R_Null_FreeTexture;
+        renderer_state_global.FrameFunction = R_Null_Frame;
+        renderer_state_global.ShutdownFunction = R_Null_Shutdown;
 
         Logging_LogChannel("******** R_Null_Init was successful! ********", LogChannel::Message);
     }
@@ -43,5 +47,15 @@ namespace Volt
     bool R_Null_FreeShader(VoltShaderSet* set)
     {
         return true; 
+    }
+
+    void R_Null_CreateTexture(Texture* texture)
+    {
+
+    }
+    
+    void R_Null_FreeTexture(Texture* texture)
+    {
+
     }
 }

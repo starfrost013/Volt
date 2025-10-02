@@ -52,6 +52,7 @@ namespace Volt
         else if (!strcasecmp(renderer->string, "null"))
             renderer_state_global.type = RendererType::Null;
 
+        // Init functions set up function pointers, there's no point using the function pointers
         switch (renderer_state_global.type)
         {
             case RendererType::GL4: // gl4 renderer
@@ -69,6 +70,8 @@ namespace Volt
 
     void Render_Frame()
     {
+        renderer_state_global.FrameFunction();
+
         // call the function depending on the type of renderer
         switch (renderer_state_global.type)
         {
@@ -85,6 +88,9 @@ namespace Volt
     // TODO: Shutdown when render size changes
     void Render_Shutdown()
     {
+        renderer_state_global.ShutdownFunction();
+
+
         switch (renderer_state_global.type)
         {
             case RendererType::GL4:

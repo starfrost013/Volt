@@ -89,9 +89,10 @@ namespace Volt
 	{
 		float matrix[2][2];
 
-		Matrix22 Transpose();						// Get the matrix of a 2x2 matrix.
-		float Determinant(const Matrix22& other);	// Gets the determinant of a 2x2 matrix.
-		Matrix22 GetInverse(const Matrix22& other);	// Gets theinverse of a 2x2 matrix.
+		Matrix22 Transpose();						// Get the transposition of a 2x2 matrix.
+		Matrix22 Translate(const Matrix22& other);	// Translate a 2x2 matrix by applying a transformation matrix to it
+		Matrix22 Scale(const Matrix22& other);		// Scale a 2x2 matrix.
+		Matrix22 Rotate(const Matrix22& other);		// Rotate a 2x2 matrix.
 
 		static Matrix22 GetIdentityMatrix();		// Get the 2x2 identity matrix.
 	};
@@ -100,9 +101,10 @@ namespace Volt
 	{
 		float matrix[3][3];
 
-		Matrix33 Transpose();						// Get the matrix of a 3x3 matrix.
-		float Determinant();						// Gets the determinant of a 3x3 matrix.
-		Matrix33 GetInverse(const Matrix33& other);	// Gets theinverse of a 3x3 matrix.
+		Matrix33 Transpose();						// Get the transposition of a 3x3 matrix.
+		Matrix33 Translate(const Matrix33& other);	// Translate a 3x3 matrix.
+		Matrix33 Scale(const Matrix33& other);		// Scale a 3x3 matrix.
+		Matrix33 Rotate(const Matrix33& other);		// Rotate a 3x3 matrix.
 
 		static Matrix33 GetIdentityMatrix();		// Get the 3x3 identity matrix.
 	};
@@ -111,9 +113,10 @@ namespace Volt
 	{
 		float matrix[4][4];
 
-		Matrix44 Transpose();						// Get the matrix of a 4x4 matrix.
-		float Determinant();						// Gets the determinant of a 4x4 matrix.
-		Matrix44 GetInverse(const Matrix44& other);	// Gets theinverse of a 4x4 matrix.
+		Matrix44 Transpose();						// Get the transposition of a 4x4 matrix.
+		Matrix44 Translate(const Matrix44& other);	// Translate a 3x3 matrix.
+		Matrix44 Scale(const Matrix44& other);		// Scale a 3x3 matrix.
+		Matrix44 Rotate(const Matrix44& other);		// Rotate a 3x3 matrix.
 
 		static Matrix44 GetIdentityMatrix();		// Get the 4x4 identity matrix.
 	};
