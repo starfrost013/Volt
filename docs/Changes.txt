@@ -5,7 +5,18 @@ Pre-Alpha 1.5
 
 Changes: 
 
+=== CORE ===
+* Added various integer vector types
+* Added the ability to scale a matrix by a vector ot another matrix 
+* Changed default log file name to Volt.log
+
 === EMULATION ===
+* Implement CGA placeholer since the BIOS now gets there 
+
+=== RENDERING ===
+* Implement the guts of a renderer but it's not hooked up yet
+	* Textures (Texture), Shaders (VoltShader, VoltShaderSet)
+
 Todo 
 
 Pre-Alpha 1.4

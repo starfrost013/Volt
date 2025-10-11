@@ -1,11 +1,11 @@
-#include <render/gl4/render_gl4.hpp>
-
 //
 // VOLT
 // Copyright © 2025 starfrost
 //
 // gl4_core.cpp: Core GL4 renderer functions - initialisation, main loop, shader stuff, and shutdown.
 //
+
+#include <render/gl4/render_gl4.hpp>
 
 namespace Volt
 {
@@ -29,6 +29,8 @@ namespace Volt
     };
 
     /* Functions only used in this translation unit */
+    void R_GL4_Init_SetupFunctions();
+    void R_GL4_Init_LoadAllShaders();
     void R_GL4_SetViewportSize(GLFWwindow* window, int32_t width, int32_t height);
     void R_GL4_OnFullscreenChanged();
     void R_GL4_Close(GLFWwindow* window);
@@ -39,6 +41,8 @@ namespace Volt
     float clear_b = 0.0f; 
     float clear_a = 1.0f; 
     float clear_frame_number = 0;
+
+    /* Functions */
 
     void R_GL4_Init_SetupFunctions()
     {
@@ -56,6 +60,23 @@ namespace Volt
         renderer_state_global.Texture_FreeFunction = R_GL4_FreeTexture;
         renderer_state_global.FrameFunction = R_GL4_Frame;
         renderer_state_global.ShutdownFunction = R_GL4_Shutdown;
+    }
+
+    void R_GL4_Init_LoadAllShaders()
+    {
+        Logging_LogChannel("Loading shaders...", LogChannel::Debug);
+        // Load a shader
+        // TODO: Load all shaders in the /shaders folder
+
+        bool succeeded = false;
+
+        succeeded = Shader_LoadSet("ShaderGeneric", "shaders/gpu_2d.frag", "shaders/gpu_2d.vert");
+        // this is for when we have to load like 5000000 shaders
+        if (!succeeded) goto fail;
+
+        return; 
+    fail: 
+        Logging_LogChannel("One or more shaders failed to load. Most likely, not much will happen", LogChannel::Error); // fatal?
     }
 
     // Initialises the GL4 renderer
@@ -120,6 +141,7 @@ namespace Volt
 
         // Set up function pointers for the rest of the engine
         R_GL4_Init_SetupFunctions();
+        R_GL4_Init_LoadAllShaders();
 
         // At this point it's safe to do rendering stuff, so set fullscreen if it's set
         R_GL4_OnFullscreenChanged();
