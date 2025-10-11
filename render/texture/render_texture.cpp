@@ -33,7 +33,7 @@ namespace Volt
         return texture; 
     }
 
-    void Render_DrawTexture(Texture* texture)
+    void Render_DrawTexture(Texture* texture, Vector2 position, Vector2 scale)
     {
         VoltShaderSet* shader_set = Shader_GetByName(texture->shader_name);
 
@@ -42,13 +42,16 @@ namespace Volt
 
         Shader_UseSet(shader_set);
 
-        glGenVertexArrays(1, &texture->vertex_array);
-        glGenBuffers(1, &texture->vertex_buffer);
+        Matrix44 model_matrix = {0};
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture->id);
-        
+        Vector4 scale_factor = { scale.x, scale.y, 1.0f, 1.0f };
 
+        model_matrix = model_matrix.Translate(Vector4(position.x, position.y, 0.0f, 0.0f));
+        model_matrix = model_matrix.Scale(scale_factor);
+
+        shader_set->SetMatrix4("model", model_matrix);
+
+        renderer_state_global.Texture_DrawFunction(texture);
     }
 
     template <size_t SizeLinear>

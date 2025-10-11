@@ -28,6 +28,7 @@ namespace Volt
         bool loaded;                    // Is this valid?
         char path[FS_MAX_PATH];         // A buffer holding the path
         uint32_t id;                    // Backend shader ID
+    
     };
 
     // Defines a set of shaders 
@@ -44,6 +45,13 @@ namespace Volt
         
         VoltShaderSet* prev; 
         VoltShaderSet* next; 
+        
+        void SetFloat(const char* name, float value);                   // Set shader parameter float
+        void SetInt(const char* name, int32_t value);                   // Set shader parameter int32
+        void SetVector2(const char* name, Vector2 value);               // Set shader parameter vec3
+        void SetVector3(const char* name, Vector3 value);               // Set shader parameter vec3
+        void SetVector4(const char* name, Vector4 value);               // Set shader parameter vec4
+        void SetMatrix4(const char* name, Matrix44 value);              // Set shader parameter matrix4
     };
 
     extern VoltShaderSet* shader_set_head;

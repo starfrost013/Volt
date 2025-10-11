@@ -170,19 +170,41 @@ namespace Volt
         renderer_state_global.Shader_UseFunction(set);
     }
 
-    // Shut down the render shader subsystem
-    void Shader_Shutdown()
+    // Sets a shader's float parameter.
+    void VoltShaderSet::SetFloat(const char* name, float value)
     {
-        VoltShaderSet* shader_set = shader_set_head;
+        renderer_state_global.Shader_SetFloat(this, name, value);
+    }      
 
-        while (shader_set)
-        {
-            // stop next being destroyed
-            VoltShaderSet* next = shader_set->next;
-            Shader_UnloadSet(shader_set);
-            shader_set = next;
-        }
-    }
+    // Sets a shader's int parameter.
+    void VoltShaderSet::SetInt(const char* name, int32_t value)
+    {
+        renderer_state_global.Shader_SetInt(this, name, value);
+    }      
+
+    // Sets a shader's Vector2 parameter.
+    void VoltShaderSet::SetVector2(const char* name, Vector2 value)
+    {
+        renderer_state_global.Shader_SetVector2(this, name, value);
+    }   
+              
+    // Sets a shader's Vector3 parameter.
+    void VoltShaderSet::SetVector3(const char* name, Vector3 value)
+    {
+        renderer_state_global.Shader_SetVector3(this, name, value);
+    }   
+           
+    // Sets a shader's Vector4 parameter.
+    void VoltShaderSet::SetVector4(const char* name, Vector4 value)
+    {
+        renderer_state_global.Shader_SetVector4(this, name, value);
+    }   
+
+    // Sets a shader's Matrix44 parameter.
+    void VoltShaderSet::SetMatrix4(const char* name, Matrix44 value)
+    {
+        renderer_state_global.Shader_SetMatrix4(this, name, value);
+    }             
 
     // Obtains a shader by its name.
     VoltShaderSet* Shader_GetByName(const char* use_shader_name)
@@ -197,4 +219,20 @@ namespace Volt
 
         return nullptr;
     }
+
+    // Shut down the render shader subsystem
+    void Shader_Shutdown()
+    {
+        VoltShaderSet* shader_set = shader_set_head;
+
+        while (shader_set)
+        {
+            // stop next being destroyed
+            VoltShaderSet* next = shader_set->next;
+            Shader_UnloadSet(shader_set);
+            shader_set = next;
+        }
+    }
+
+
 }

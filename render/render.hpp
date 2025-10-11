@@ -38,10 +38,17 @@ namespace Volt
         bool (*Shader_CompileFunction)(VoltShaderSet* set);
         void (*Shader_UseFunction)(VoltShaderSet* set);
         bool (*Shader_FreeFunction)(VoltShaderSet* set);
+        void (*Shader_SetFloat)(VoltShaderSet* set, const char* name, float value);
+        void (*Shader_SetInt)(VoltShaderSet* set, const char* name, int32_t value);
+        void (*Shader_SetVector2)(VoltShaderSet* set, const char* name, Vector2 value);
+        void (*Shader_SetVector3)(VoltShaderSet* set, const char* name, Vector3 value);
+        void (*Shader_SetVector4)(VoltShaderSet* set, const char* name, Vector4 value);
+        void (*Shader_SetMatrix4)(VoltShaderSet* set, const char* name, Matrix44 value);
         void (*Texture_CreateFunction)(Texture* texture);
+        void (*Texture_DrawFunction)(Texture* texture);
         void (*Texture_FreeFunction)(Texture* texture);
         void (*FrameFunction)();
-        void (*ShutdownFunction)();
+        void (*ShutdownFunction)();     
     };
 
     extern RendererState renderer_state_global;

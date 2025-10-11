@@ -50,12 +50,20 @@ namespace Volt
     void R_GL4_UseShader(VoltShaderSet* set);
     bool R_GL4_FreeShader(VoltShaderSet* set);
 
+    void R_GL4_ShaderSetFloat(VoltShaderSet* set, const char* name, float value);
+    void R_GL4_ShaderSetInt(VoltShaderSet* set, const char* name, int32_t value);
+    void R_GL4_ShaderSetVector2(VoltShaderSet* set, const char* name, Vector2 value);
+    void R_GL4_ShaderSetVector3(VoltShaderSet* set, const char* name, Vector3 value);
+    void R_GL4_ShaderSetVector4(VoltShaderSet* set, const char* name, Vector4 value);
+    void R_GL4_ShaderSetMatrix4(VoltShaderSet* set, const char* name, Matrix44 value);
+
     // Since this is just a sprite, we don't need to specify any subset of the coordinates for either the position or the texture.
     // It is just a 1 to 1 mapping and we can just do this
     // TODO: Batching?
     extern float generic_2d_vertex_buffer[];
     
     void R_GL4_CreateTexture(Texture* texture);
+    void R_GL4_DrawTexture(Texture* texture);
     void R_GL4_FreeTexture(Texture* texture);
 
 }

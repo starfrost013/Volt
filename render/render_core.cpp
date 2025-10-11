@@ -71,17 +71,6 @@ namespace Volt
     void Render_Frame()
     {
         renderer_state_global.FrameFunction();
-
-        // call the function depending on the type of renderer
-        switch (renderer_state_global.type)
-        {
-            case RendererType::GL4:
-                R_GL4_Frame();
-                break;
-            case RendererType::Null:
-                R_Null_Frame();
-                break;
-        }
     }
 
     // Shuts down the selected renderer.
@@ -89,19 +78,6 @@ namespace Volt
     void Render_Shutdown()
     {
         renderer_state_global.ShutdownFunction();
-
-
-        switch (renderer_state_global.type)
-        {
-            case RendererType::GL4:
-                Logging_LogChannel("Shutting down renderer: GL4", LogChannel::Message);
-                R_GL4_Shutdown();
-                break;
-            case RendererType::Null:
-                Logging_LogChannel("Shutting down renderer: Null", LogChannel::Message);
-                R_Null_Shutdown();
-                break;
-        }
 
         renderer_state_global.running = false; 
     }

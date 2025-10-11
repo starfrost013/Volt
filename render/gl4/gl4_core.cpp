@@ -45,7 +45,14 @@ namespace Volt
         renderer_state_global.Shader_CompileFunction = R_GL4_CompileShader;
         renderer_state_global.Shader_UseFunction = R_GL4_UseShader;
         renderer_state_global.Shader_FreeFunction = R_GL4_FreeShader;
+        renderer_state_global.Shader_SetInt = R_GL4_ShaderSetInt;
+        renderer_state_global.Shader_SetFloat = R_GL4_ShaderSetFloat;
+        renderer_state_global.Shader_SetVector2 = R_GL4_ShaderSetVector2;
+        renderer_state_global.Shader_SetVector3 = R_GL4_ShaderSetVector3;
+        renderer_state_global.Shader_SetVector4 = R_GL4_ShaderSetVector4;
+        renderer_state_global.Shader_SetMatrix4 = R_GL4_ShaderSetMatrix4;
         renderer_state_global.Texture_CreateFunction = R_GL4_CreateTexture;
+        renderer_state_global.Texture_DrawFunction = R_GL4_DrawTexture;
         renderer_state_global.Texture_FreeFunction = R_GL4_FreeTexture;
         renderer_state_global.FrameFunction = R_GL4_Frame;
         renderer_state_global.ShutdownFunction = R_GL4_Shutdown;
@@ -352,6 +359,8 @@ namespace Volt
             set->compute.id = 0;   
         }
 
+        Logging_LogChannel("Linked shader program %s", LogChannel::Error, set->name);
+
         return true; 
     }
 
@@ -364,6 +373,50 @@ namespace Volt
     {
         glDeleteProgram(set->program_id);
         return true; 
+    }
+
+    // Save us from having to explicitly call a function every time we want to set a shader uniform. And this is gcc only currently.
+    // Basically it's a macro without the nasty properties of macro
+    inline __attribute__((always_inline)) int32_t R_GL4_GetShaderUniformLocation(VoltShaderSet* set, const char* name)
+    {
+        int32_t ret = glGetUniformLocation(set->program_id, name);
+
+        if (ret == -1)
+            Logging_LogChannel("%s is not a shader object for shader %s", LogChannel::Warning, name, set->name);
+
+        return ret;
+    }
+
+    // These would ideally use templates, but they are different OpenGL functions
+
+    void R_GL4_ShaderSetFloat(VoltShaderSet* set, const char* name, float value)
+    {
+        glUniform1f(R_GL4_GetShaderUniformLocation(set, name), value);
+    }
+
+    void R_GL4_ShaderSetInt(VoltShaderSet* set, const char* name, int32_t value)
+    {
+        glUniform1i(R_GL4_GetShaderUniformLocation(set, name), value);
+    }
+
+    void R_GL4_ShaderSetVector2(VoltShaderSet* set, const char* name, Vector2 value)
+    {
+        glUniform2f(R_GL4_GetShaderUniformLocation(set, name), value.x, value.y);
+    }
+
+    void R_GL4_ShaderSetVector3(VoltShaderSet* set, const char* name, Vector3 value)
+    {
+        glUniform3f(R_GL4_GetShaderUniformLocation(set, name), value.x, value.y, value.z);
+    }
+
+    void R_GL4_ShaderSetVector4(VoltShaderSet* set, const char* name, Vector4 value)
+    {
+        glUniform4f(R_GL4_GetShaderUniformLocation(set, name), value.x, value.y, value.z, value.w);
+    }
+
+    void R_GL4_ShaderSetMatrix4(VoltShaderSet* set, const char* name, Matrix44 value)
+    {
+        glUniformMatrix4fv(R_GL4_GetShaderUniformLocation(set, name), 1, false, (float*)&value.matrix);
     }
 
     void R_GL4_CreateTexture(Texture* texture)
@@ -390,13 +443,21 @@ namespace Volt
         glBindVertexArray(0);
     
     }
+
+    void R_GL4_DrawTexture(Texture* texture)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture->id);
+        glBindVertexArray(texture->vertex_array);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindVertexArray(0); // unbind the vertex array    
+    }
     
     void R_GL4_FreeTexture(Texture* texture)
     {
         glDeleteVertexArrays(1, &texture->vertex_array);
         glDeleteBuffers(1, &texture->vertex_buffer);
         glDeleteTextures(1, &texture->id);
-
     }
 
     void R_GL4_Close(GLFWwindow* window)

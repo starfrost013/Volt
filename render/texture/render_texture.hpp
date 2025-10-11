@@ -36,7 +36,7 @@ namespace Volt
     template <size_t SizeLinear>
     Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* use_shader_name, const char* path = nullptr); // path is optional
 
-    void Render_DrawTexture(Texture* texture);
+    void Render_DrawTexture(Texture* texture, Vector2 position, Vector2 scale);
     
     template <size_t SizeLinear>
     void Render_FreeTexture(Texture* texture); // path is optional

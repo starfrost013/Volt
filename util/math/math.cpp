@@ -167,41 +167,40 @@ namespace Volt
 	// Vector Multiply
 
 	// Scales a two-dimensional vector by a scalar value.
-	Vector2 Vector2::operator*(float& scale)
+	Vector2 Vector2::operator*(float scale)
 	{
 		return { x * scale, y * scale };
 	}
 
 	// Scales a two-dimensional integer vector by a scalar value.
-	Vector2i Vector2i::operator*(float& scale)
+	Vector2i Vector2i::operator*(float scale)
 	{
 		return { x * scale, y * scale };
 	}
 
 	// Scales a three-dimensional vector by a scalar value.
-	Vector3 Vector3::operator*(float& scale)
+	Vector3 Vector3::operator*(float scale)
 	{
 		return { x * scale, y * scale, z * scale };
 	}
 
 	// Scales a three-dimensional integer vector by a scalar value.
-	Vector3i Vector3i::operator*(float& scale)
+	Vector3i Vector3i::operator*(float scale)
 	{
 		return { x * scale, y * scale, z * scale };
 	}
 
 	// Scales a four-dimensional vector by a scalar value.
-	Vector4 Vector4::operator*(float& scale)
+	Vector4 Vector4::operator*(float scale)
 	{
 		return { x * scale, y * scale, z * scale, w * scale };
 	}
 
 	// Scales a three-dimensional integer vector by a scalar value.
-	Vector4i Vector4i::operator*(float& scale)
+	Vector4i Vector4i::operator*(float scale)
 	{
-		return { x * scale, y * scale, z * scale };
+		return { x * scale, y * scale, z * scale, w * scale };
 	}
-
 
 	// Matrix Transposition
 
@@ -216,6 +215,7 @@ namespace Volt
 		};
 	}
 
+	// Translate a 2x2 matricx.
 	Matrix22 Matrix22::Translate(const Matrix22& other)
 	{
 		return {
@@ -226,6 +226,41 @@ namespace Volt
 		};
 	}
 
+	// Translate a 2x2 matrix by a vector2.
+	Matrix22 Matrix22::Translate(Vector2 scale)
+	{
+		return {
+			matrix[0][0] + scale.x, 
+			matrix[0][1] + scale.x,
+			matrix[1][0] + scale.y,
+			matrix[1][1] + scale.y,
+		};
+	}
+
+	// Scale a 2x2 matrix.
+	Matrix22 Matrix22::Scale(const Matrix22& other)
+	{
+		return {
+			matrix[0][0] * other.matrix[0][0],
+			matrix[0][1] * other.matrix[0][1],
+			matrix[1][0] * other.matrix[1][0],
+			matrix[1][1] * other.matrix[1][1],
+		};
+	}
+
+	// Scale a 2x2 matrix by a vector2.
+	Matrix22 Matrix22::Scale(Vector2 scale)
+	{
+		return
+		{
+			matrix[0][0] * scale.x,
+			matrix[0][1] * scale.y,
+			matrix[1][0] * scale.x,
+			matrix[1][1] * scale.y,
+		};
+	}				
+
+	// Transpose a 3x3 matrix.
 	Matrix33 Matrix33::Transpose()
 	{
 		Matrix33 transposed;
@@ -237,7 +272,7 @@ namespace Volt
 		return transposed;
 	}
 
-	// Translate a 3x3 matric.
+	// Translate a 3x3 matrix.
 	Matrix33 Matrix33::Translate(const Matrix33& other)
 	{
 		Matrix33 new_matrix = {0};
@@ -248,6 +283,51 @@ namespace Volt
 
 		return new_matrix;
 	}
+
+	// Translate a 2x2 matrix by a vector2.
+	Matrix33 Matrix33::Translate(Vector3 scale)
+	{
+		return {
+			matrix[0][0] + scale.x, 
+			matrix[0][1] + scale.x,
+			matrix[0][2] + scale.x,
+			matrix[1][0] + scale.y,
+			matrix[1][1] + scale.y,
+			matrix[1][2] + scale.y,
+			matrix[2][0] + scale.z,
+			matrix[2][1] + scale.z,
+			matrix[2][2] + scale.z,
+		};
+	}
+
+	// Scale a 3x3 matrix by another matrix.
+	Matrix33 Matrix33::Scale(const Matrix33& other)
+	{
+		Matrix33 new_matrix = {0};
+
+		for (uint8_t i = 0; i < 3; i++)
+			for (uint8_t j = 0; j < 3; j++)
+				new_matrix.matrix[i][j] = matrix[i][j] * other.matrix[i][j];
+
+		return new_matrix;
+	}
+
+	// Scale a 3x3 matrix by a vector3.
+	Matrix33 Matrix33::Scale(Vector3 scale)
+	{
+		return
+		{
+			matrix[0][0] * scale.x,
+			matrix[0][1] * scale.y,
+			matrix[0][2] * scale.z,
+			matrix[1][0] * scale.x,
+			matrix[1][1] * scale.y,
+			matrix[1][2] * scale.z,
+			matrix[2][0] * scale.x,
+			matrix[2][1] * scale.y,
+			matrix[2][2] * scale.z,
+		};
+	}				
 
 	// Transpose a 4x4 matrix.
 	Matrix44 Matrix44::Transpose()
@@ -273,6 +353,66 @@ namespace Volt
 		return new_matrix;
 	}
 
+
+	// Translate a 2x2 matrix by a vector2.
+	Matrix44 Matrix44::Translate(Vector4 scale)
+	{
+		return {
+			matrix[0][0] + scale.x, 
+			matrix[0][1] + scale.x,
+			matrix[0][2] + scale.x,
+			matrix[0][3] + scale.x,
+			matrix[1][0] + scale.y,
+			matrix[1][1] + scale.y,
+			matrix[1][2] + scale.y,
+			matrix[1][3] + scale.y,
+			matrix[2][0] + scale.z,
+			matrix[2][1] + scale.z,
+			matrix[2][2] + scale.z,
+			matrix[2][3] + scale.z,
+			matrix[3][0] + scale.w,
+			matrix[3][1] + scale.w,
+			matrix[3][2] + scale.w,
+			matrix[3][3] + scale.w,
+		};
+	}
+
+	// Scale a 4x4 matrix by another matrix.
+	Matrix44 Matrix44::Scale(const Matrix44& other)
+	{
+		Matrix44 new_matrix = {0};
+
+		for (uint8_t i = 0; i < 4; i++)
+			for (uint8_t j = 0; j < 4; j++)
+				new_matrix.matrix[i][j] = matrix[i][j] * other.matrix[i][j];
+
+		return new_matrix;
+	}
+
+	// Scale a 4x4 matrix by a vector4.
+	Matrix44 Matrix44::Scale(Vector4 scale)
+	{
+		return
+		{
+			matrix[0][0] * scale.x,
+			matrix[0][1] * scale.y,
+			matrix[0][2] * scale.z,
+			matrix[0][3] * scale.w,
+			matrix[1][0] * scale.x,
+			matrix[1][1] * scale.y,
+			matrix[1][2] * scale.z,
+			matrix[1][3] * scale.w,
+			matrix[2][0] * scale.x,
+			matrix[2][1] * scale.y,
+			matrix[2][2] * scale.z,
+			matrix[2][3] * scale.w,
+			matrix[3][0] * scale.x,
+			matrix[3][1] * scale.y,
+			matrix[3][2] * scale.z,
+			matrix[3][3] * scale.w,
+		};
+	}	
+	
 	// Obtain Identity Matrix methods
 
 	// Returns the 2x2 identity matrix.

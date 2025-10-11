@@ -84,7 +84,7 @@ add_executable (Volt
 "render/gl4/gl4_core.cpp"
 
 # Renderer - Null
-"render/null/null_core.cpp"
+"render/null/render_null.cpp"
 
 # SYS
 )
