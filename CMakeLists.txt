@@ -145,11 +145,11 @@ endif()
 add_custom_command(TARGET Volt POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_if_different
   ${CMAKE_BINARY_DIR}/${FINAL_BINARY_NAME}
-  ${CMAKE_BINARY_DIR}/out/${FINAL_BINARY_NAME}
+  ${CMAKE_BINARY_DIR}/install/${FINAL_BINARY_NAME}
   )
 
 add_custom_command(TARGET Volt POST_BUILD
   COMMAND ${CMAKE_COMMAND} -E copy_directory
   ${CMAKE_CURRENT_SOURCE_DIR}/assets
-  ${CMAKE_BINARY_DIR}/out
-)
+  ${CMAKE_BINARY_DIR}/install
+  )

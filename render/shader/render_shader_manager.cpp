@@ -43,9 +43,11 @@ namespace Volt
         const char* shader_code; 
 
         // TODO: WARNING: CRAP!
-        std::stringstream string;
-        string << file->stream.rdbuf();
-        target.code = string.str().c_str();
+        std::stringstream stringstream;
+        stringstream << file->stream.rdbuf();
+        std::string string = stringstream.str();
+
+        target.code = string.c_str();
 
         // Pass the file to the render backend in case some backend-specific processing is needed on the file data
         if (!renderer_state_global.Shader_CompileFunction(shader_set))

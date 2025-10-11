@@ -54,11 +54,15 @@ namespace Volt
 
     void Emulation_Shutdown()
     {
+        bool was_emulation_running = emulation_running;
+
         // Stop the emulation thread. 
         emulation_running = false;
         
-        // However, it may complete up to one instruction before terminating...So wait for it to do that.
-        emu_thread->join();
+        // Don't try and stop it if we are e.g. crashing out of an error
+        if (was_emulation_running)
+            emu_thread->join();            // However, it may complete up to one instruction before terminating...So wait for it to do that.
+
 
         emu_machine.Shutdown();
         IOx86_Shutdown();           // kill IOx86 last just in case

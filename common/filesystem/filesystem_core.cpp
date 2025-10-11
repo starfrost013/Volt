@@ -248,7 +248,7 @@ namespace Volt
         size_t start_pos = static_cast<size_t>(file->stream.tellg());
         file->stream.seekg(0, std::ios_base::end);
         size_t new_pos = static_cast<size_t>(file->stream.tellg());
-        file->stream.seekg(old_pos);
+        file->stream.seekg(start_pos, std::ios_base::beg);
 
         return static_cast<size_t>(new_pos - start_pos);
     }
