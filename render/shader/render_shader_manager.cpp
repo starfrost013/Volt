@@ -242,8 +242,10 @@ namespace Volt
 
         while (shader_set)
         {
-            if (!strncpy(shader_set->name, use_shader_name, SHADER_MAX_NAME_LENGTH))
+            if (!strncmp(shader_set->name, use_shader_name, SHADER_MAX_NAME_LENGTH))
                 return shader_set;
+
+            shader_set = shader_set->next;
         }
 
         return nullptr;

@@ -141,6 +141,11 @@ namespace Volt
     template <size_t SizeLinear>
     Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* use_shader_name, const char* path = nullptr) // size is optional
     {
+        VoltShaderSet* shader = Shader_GetByName(use_shader_name);
+
+        if (!shader)
+            Logging_LogChannel("Tried to draw a texture with unloaded shader %s", LogChannel::Fatal, use_shader_name);
+
         // Sorry for horrible design
         if (SizeLinear != (size.x * size.y))
             Logging_LogChannel("Invalid texture size allocation [temp!]", LogChannel::Fatal);

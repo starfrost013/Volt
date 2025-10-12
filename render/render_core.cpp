@@ -74,7 +74,7 @@ namespace Volt
 
         Vector2i size = Vector2i(1024, 768);
 
-        Render_CreateTexture<TEMP_SIZE_EMUTEXTURE>(Volt::TextureFormat::RGBA32, size, "Generic");
+        Render_CreateTexture<TEMP_SIZE_EMUTEXTURE>(Volt::TextureFormat::RGBA32, size, "ShaderGeneric");
 
         renderer_state_global.running = true; 
     }
