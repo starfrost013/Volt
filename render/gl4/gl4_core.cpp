@@ -284,6 +284,8 @@ namespace Volt
             return false;
         }
 
+        Logging_LogChannel("Successfully compiled shader %s", LogChannel::Debug, target->path);
+
         target->loaded = true; 
         return true;
     }
@@ -292,43 +294,33 @@ namespace Volt
     {
         // copy in the name of the file
 
+        // we might need to clean up if some shaders were successful and others weren't, so let's store the result here
         bool successful = true; 
+        char info_log[MAX_STRING_LENGTH] = {0};
 
         if (set->vertex.code)
-        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Vertex);
-            Logging_LogChannel("Compiled vertex shader %s", LogChannel::Debug, set->vertex.path);
-        }
     
-        if (!successful)
-            return false;
+        if (!successful) 
+            goto done; 
 
         if (set->fragment.code)
-        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Fragment);
-            if (successful) Logging_LogChannel("Compiled fragment shader %s", LogChannel::Debug, set->fragment.path);
-        }
 
-        if (!successful)
-            return false;
+        if (!successful) 
+            goto done;
 
         if (set->geometry.code)
-        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Geometry);
-            if (successful) Logging_LogChannel("Compiled geometry shader %s", LogChannel::Debug, set->geometry.path);
-        }
 
         if (!successful)
-            return false;
+            goto done; 
     
         if (set->compute.code)
-        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Compute);
-            if (successful) Logging_LogChannel("Compiled compute shader %s", LogChannel::Debug, set->compute.path);
-        }
 
         if (!successful)
-            return false;
+            goto done; 
 
         // Now, link the shaders into a shader program
         set->program_id = glCreateProgram();
@@ -352,21 +344,27 @@ namespace Volt
         glGetProgramiv(set->program_id, GL_COMPILE_STATUS, &program_compile_successful);
         glGetProgramiv(set->program_id, GL_LINK_STATUS, &program_link_successful);
 
-        char info_log[MAX_STRING_LENGTH] = {0};
-
         if (!program_compile_successful)
         {
             glGetProgramInfoLog(set->program_id, MAX_STRING_LENGTH, nullptr, info_log);
             Logging_LogChannel("******** Shader program compilation failure. ********\nInformation: %s", LogChannel::Error, info_log);
-            return false;
+            successful = false;
+            goto done;
         }
 
         if (!program_link_successful)
         {
             glGetProgramInfoLog(set->program_id, MAX_STRING_LENGTH, nullptr, info_log);
-            Logging_LogChannel("******** Shader program linking failure. ********\nInformation: %s", LogChannel::Error, info_log);
-            return false;
+            Logging_LogChannel("******** Shader program link failure. ********\nInformation: %s", LogChannel::Error, info_log);
+            successful = false; 
+            goto done;
         }
+
+        // we finished!
+        successful = true;
+
+// Cleanup section
+done: 
 
         // Once you have linked the program, you can delete the original loose shaders since they will be contained as part of the shader program
         if (set->vertex.loaded)
@@ -393,9 +391,10 @@ namespace Volt
             set->compute.id = 0;   
         }
 
-        Logging_LogChannel("Linked shader program %s!", LogChannel::Debug, set->name);
+        if (successful)
+            Logging_LogChannel("Successfully loaded ShaderSet %s!", LogChannel::Debug, set->name);
 
-        return true; 
+        return successful; 
     }
 
     void R_GL4_UseShader(VoltShaderSet* set)
