@@ -5,7 +5,6 @@
 // render_shader_manager.cpp: Core shader loader/unloader
 //
 
-
 #include "render_shader_manager.hpp"
 #include <render/render.hpp>
 
@@ -14,22 +13,25 @@ namespace Volt
     VoltShaderSet* shader_set_head;
     VoltShaderSet* shader_set_tail;
 
+    // 16 KB seems like a reasonable length, and it lets us use our tracked allocator
+    #define MAX_SHADER_LEN      16384
+
     // Load a shader as part of a shader set
     bool Shader_Load(const char* file_path, VoltShaderSet* shader_set, VoltShaderType shader_type)
     {
         // copy in the name of the file
-        VoltShader &target = shader_set->vertex;
+        VoltShader* target = &shader_set->vertex;
 
         // if its a vertex shader just use the value above
         if (shader_type == VoltShaderType::Fragment)
-            target = shader_set->fragment;
+            target = &shader_set->fragment;
         else if (shader_type == VoltShaderType::Geometry)
-            target = shader_set->geometry;
+            target = &shader_set->geometry;
         else if (shader_type == VoltShaderType::Compute)
-            target = shader_set->compute;
+            target = &shader_set->compute;
 
         //probably will be removed anyway
-        strncpy(target.path, file_path, FS_MAX_PATH);
+        strncpy(target->path, file_path, FS_MAX_PATH);
 
         VoltFile* file = Filesystem_OpenFile(file_path, VoltFileMode::Text);
 
@@ -40,18 +42,19 @@ namespace Volt
         }
 
         size_t size = Filesystem_GetFileSize(file);
-        const char* shader_code; 
 
         // TODO: WARNING: CRAP!
         std::stringstream stringstream;
         stringstream << file->stream.rdbuf();
         std::string string = stringstream.str();
+        const char* temp_code = string.c_str();
 
-        target.code = string.c_str();
+        // Allocate some temporary storage that we can reuse to hold the text of the shader program we are compiling
+        // TODO: This sucks!
+        if (!target->code)
+            target->code = Memory_Alloc<char, MAX_SHADER_LEN>(TAG_RENDER_SHADER);
 
-        // Pass the file to the render backend in case some backend-specific processing is needed on the file data
-        if (!renderer_state_global.Shader_CompileFunction(shader_set))
-            return false;
+        strncpy(target->code, temp_code, MAX_SHADER_LEN);
 
         // close it, we don't need the file anymore
         Filesystem_CloseFile(file); 
@@ -115,6 +118,10 @@ namespace Volt
             }
         }
 
+        // Pass the file to the render backend in case some backend-specific processing is needed on the file data e.g. compilation
+        if (!renderer_state_global.Shader_CompileFunction(shader_set))
+            return false;
+
         // put the file in the shader set chain
         if (!shader_set_head && !shader_set_tail)
         {
@@ -125,6 +132,35 @@ namespace Volt
             shader_set_tail->next = shader_set;
             shader_set_tail = shader_set;
             shader_set->prev = shader_set_tail;
+        }
+
+        // free our temporary buffers
+        // Would an array be better? I don't like the idea of having all that stay around in memory when its not needed
+        // but freeing has overhead
+        // TODO: This alsp sucks!
+
+        if (shader_set->vertex.code)
+        {
+            Memory_Free(shader_set->vertex.code);
+            shader_set->vertex.code = nullptr;
+        }
+
+        if (shader_set->fragment.code)
+        {
+            Memory_Free(shader_set->fragment.code);
+            shader_set->fragment.code = nullptr;
+        }
+
+        if (shader_set->compute.code)
+        {
+            Memory_Free(shader_set->compute.code);
+            shader_set->compute.code = nullptr;
+        }
+
+        if (shader_set->geometry.code)
+        {
+            Memory_Free(shader_set->geometry.code);
+            shader_set->geometry.code = nullptr;
         }
 
         return true; 

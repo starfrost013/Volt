@@ -24,7 +24,7 @@ namespace Volt
     struct VoltShader
     {
         // This is the shader code
-        const char* code;               // It's the code of the shader; is this a good idea? Only valid if !loaded
+        char* code;                     // It's the code of the shader; is this a good idea? Only valid if !loaded
         bool loaded;                    // Is this valid?
         char path[FS_MAX_PATH];         // A buffer holding the path
         uint32_t id;                    // Backend shader ID

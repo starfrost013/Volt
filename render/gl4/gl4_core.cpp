@@ -70,13 +70,13 @@ namespace Volt
 
         bool succeeded = false;
 
-        succeeded = Shader_LoadSet("ShaderGeneric", "shaders/gpu_2d.frag", "shaders/gpu_2d.vert");
+        succeeded = Shader_LoadSet("ShaderGeneric", "shaders/gpu_2d.vert", "shaders/gpu_2d.frag");
         // this is for when we have to load like 5000000 shaders
         if (!succeeded) goto fail;
 
         return; 
     fail: 
-        Logging_LogChannel("One or more shaders failed to load. Most likely, not much will happen", LogChannel::Error); // fatal?
+        Logging_LogChannel("One or more shaders failed to load. Try the Null renderer...", LogChannel::Fatal); // fatal?
     }
 
     // Initialises the GL4 renderer
@@ -247,30 +247,30 @@ namespace Volt
     bool R_GL4_CompileSingleShader(VoltShaderSet* set, VoltShaderType type)
     {
         auto shader_type = GL_VERTEX_SHADER;
-        VoltShader& target = set->vertex;
+        VoltShader* target = &set->vertex;
         int32_t successful;
 
         if (type == VoltShaderType::Fragment)
         {
             shader_type = GL_FRAGMENT_SHADER;
-            target = set->fragment;
+            target = &set->fragment;
         }
         if (type == VoltShaderType::Geometry)
         {
             shader_type = GL_GEOMETRY_SHADER;
-            target = set->geometry;
+            target = &set->geometry;
         }
         if (type == VoltShaderType::Compute)
         {
             shader_type = GL_COMPUTE_SHADER;
-            target = set->compute;
+            target = &set->compute;
         }
 
         auto shader = glCreateShader(shader_type);
-        glShaderSource(shader, 1, &target.code, nullptr);
+        glShaderSource(shader, 1, &target->code, nullptr);
         glCompileShader(shader);
 
-        target.id = shader; //check
+        target->id = shader; //check
 
         // See if the shader was successfully compiled!
         glGetShaderiv(shader, GL_COMPILE_STATUS, &successful);
@@ -284,7 +284,7 @@ namespace Volt
             return false;
         }
 
-        target.loaded = true; 
+        target->loaded = true; 
         return true;
     }
 
@@ -295,25 +295,37 @@ namespace Volt
         bool successful = true; 
 
         if (set->vertex.code)
+        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Vertex);
+            Logging_LogChannel("Compiled vertex shader %s", LogChannel::Debug, set->vertex.path);
+        }
     
         if (!successful)
             return false;
 
         if (set->fragment.code)
+        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Fragment);
+            if (successful) Logging_LogChannel("Compiled fragment shader %s", LogChannel::Debug, set->fragment.path);
+        }
 
         if (!successful)
             return false;
 
         if (set->geometry.code)
+        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Geometry);
+            if (successful) Logging_LogChannel("Compiled geometry shader %s", LogChannel::Debug, set->geometry.path);
+        }
 
         if (!successful)
             return false;
     
         if (set->compute.code)
+        {
             successful = R_GL4_CompileSingleShader(set, VoltShaderType::Compute);
+            if (successful) Logging_LogChannel("Compiled compute shader %s", LogChannel::Debug, set->compute.path);
+        }
 
         if (!successful)
             return false;
@@ -381,7 +393,7 @@ namespace Volt
             set->compute.id = 0;   
         }
 
-        Logging_LogChannel("Linked shader program %s", LogChannel::Error, set->name);
+        Logging_LogChannel("Linked shader program %s!", LogChannel::Debug, set->name);
 
         return true; 
     }
