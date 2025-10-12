@@ -1,5 +1,9 @@
 Volt Research Emulator (Experimental IBM PC emulator)
 
+
+Pre-Alpha 1.6
+
+
 Pre-Alpha 1.5
 11 October 2025 
 
@@ -16,8 +20,8 @@ Changes:
 === RENDERING ===
 * Implement the guts of a renderer but it's not hooked up yet
 	* Textures (Texture), Shaders (VoltShader, VoltShaderSet)
+* Renderers implement many more functions 
 
-Todo 
 
 Pre-Alpha 1.4
 7 September 2025

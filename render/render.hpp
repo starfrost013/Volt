@@ -176,5 +176,5 @@ namespace Volt
     }
 
     // COMMANDS always at the end
-    void Command_LoadShader();
+    void Command_LoadShader(CommandType origin);
 }

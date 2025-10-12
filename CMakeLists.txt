@@ -76,6 +76,7 @@ add_executable (Volt
 
 # Render & Display
 "render/render_core.cpp"
+"render/render_commands.cpp"
 "render/display/render_display.cpp"
 "render/shader/render_shader_manager.cpp"
 "render/texture/render_texture.cpp"

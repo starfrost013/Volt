@@ -5,11 +5,11 @@
 // render_commands.cpp: Exposes renderer interface to command engine
 //
 
-#include <common/common.hpp>
+#include <render/render.hpp>
 
 namespace Volt
 {
-    void Command_LoadShader()
+    void Command_LoadShader(CommandType origin)
     {
         uint32_t cmd_argc = Command_Argc();
 

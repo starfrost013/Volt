@@ -57,8 +57,8 @@ namespace Volt
         else if (!strcasecmp(renderer->string, "null"))
             renderer_state_global.type = RendererType::Null;
 
-        Command_Add("loadshader", Command_LoadShader);
-        
+        Command_Add("loadshader", CommandType::GlobalCommand, Command_LoadShader);
+
         // Init functions set up function pointers, there's no point using the function pointers
         switch (renderer_state_global.type)
         {
