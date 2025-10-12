@@ -6,7 +6,7 @@
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "installDir": "${sourceDir}/out/install/${presetName}",
+            "installDir": "${sourceDir}/out/build/${presetName}/install",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "cc",
                 "CMAKE_CXX_COMPILER": "c++"

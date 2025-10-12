@@ -465,7 +465,7 @@ done:
         // bind the buffer
         // TODO: how slow is this? we *can* use only 1 VBO/VAO for every texture, but then we give up UV :thinking:. We don't have many textures anyway.
         glBindBuffer(GL_ARRAY_BUFFER, texture->vertex_buffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(generic_2d_vertex_buffer), generic_2d_vertex_buffer, GL_STATIC_DRAW); // configurable?
+        glBufferData(GL_ARRAY_BUFFER, sizeof(generic_2d_vertex_buffer), generic_2d_vertex_buffer, GL_STATIC_DRAW); // configurable? 
 
         // bind the vertex buffer and load the vertex array into it for this texture
         glBindVertexArray(texture->vertex_array);
@@ -473,6 +473,8 @@ done:
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic_2d_vertex_buffer
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
+
+        glBindTexture(GL_TEXTURE_2D, 0);
     
     }
 

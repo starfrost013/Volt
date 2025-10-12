@@ -156,7 +156,15 @@ namespace Volt
         texture->format = format;
         strncpy(texture->shader_name, use_shader_name, SHADER_MAX_NAME_LENGTH);
         // Slab allocate 
-        texture->pixels = Memory_Alloc<uint32_t, SizeLinear>(TAG_RENDER_TEXTURE);
+        texture->pixels = Memory_Alloc<uint8_t, SizeLinear>(TAG_RENDER_TEXTURE);
+
+        // Version 0.000000000000000000000000000000001 ultra temporary code
+
+        // should generate random pixels incl. random alpha so some will not show up
+        for (size_t i = 0; i < SizeLinear; i++)
+        {
+            texture->pixels[i] = rand() % 255;
+        }
 
         //TODO: Vector2I?
         Logging_LogChannel("Render: Creating texture (size %.d,%.d)", LogChannel::Debug, size.x, size.y); 

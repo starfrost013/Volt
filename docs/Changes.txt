@@ -3,6 +3,8 @@ Volt Research Emulator (Experimental IBM PC emulator)
 
 Pre-Alpha 1.6
 
+Changes:
+* Fixed Shader_GetByName doing a nonsense and possibly disastrous copy between the strings being compared instead of copying 
 
 Pre-Alpha 1.5
 11 October 2025 

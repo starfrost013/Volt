@@ -24,6 +24,7 @@ namespace Volt
 
     // We're going to have to break the rules for this... (786432 bytes)
     #define TEMP_SIZE_EMUTEXTURE            1024 * 768
+    Texture* emutexture;
 
     // Selects and initialises the renderer.
     void Render_Init()
@@ -74,13 +75,15 @@ namespace Volt
 
         Vector2i size = Vector2i(1024, 768);
 
-        Render_CreateTexture<TEMP_SIZE_EMUTEXTURE>(Volt::TextureFormat::RGBA32, size, "ShaderGeneric");
+        emutexture = Render_CreateTexture<TEMP_SIZE_EMUTEXTURE>(Volt::TextureFormat::RGBA32, size, "ShaderGeneric");
 
         renderer_state_global.running = true; 
     }
 
     void Render_Frame()
     {
+        Render_DrawTexture(emutexture, { 0, 0 }, { 1, 1 });
+
         renderer_state_global.FrameFunction();
     }
 

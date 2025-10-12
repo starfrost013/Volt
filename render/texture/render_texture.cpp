@@ -12,9 +12,6 @@
 namespace Volt
 {
     // TODO: File loading
-    template <size_t SizeLinear>
-   
-
     void Render_DrawTexture(Texture* texture, Vector2 position, Vector2 scale)
     {
         VoltShaderSet* shader_set = Shader_GetByName(texture->shader_name);
