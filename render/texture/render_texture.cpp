@@ -11,27 +11,9 @@
 
 namespace Volt
 {
+    // TODO: File loading
     template <size_t SizeLinear>
-    Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* use_shader_name, const char* path)
-    {
-        // Sorry for horrible design
-        static_assert(SizeLinear == (size.x * size.y), "Incorrect texture size allocation!");
-
-        Texture* texture = Memory_Alloc<Texture>(TAG_RENDER_TEXTURE);
-
-        texture->size = size;
-        texture->format = format;
-        strncpy(texture->shader_name, use_shader_name, SHADER_MAX_NAME_LENGTH);
-        // Slab allocate 
-        texture->pixels = Memory_Alloc<uint32_t, SizeLinear>(TAG_RENDER_TEXTURE);
-
-        //TODO: Vector2I?
-        Logging_LogChannel("Render: Creating texture (size %.d,%.d)", LogChannel::Debug, size.x, size.y); 
-
-        renderer_state_global.Texture_CreateFunction(texture);
-
-        return texture; 
-    }
+   
 
     void Render_DrawTexture(Texture* texture, Vector2 position, Vector2 scale)
     {
@@ -52,16 +34,5 @@ namespace Volt
         shader_set->SetMatrix4("model", model_matrix);
 
         renderer_state_global.Texture_DrawFunction(texture);
-    }
-
-    template <size_t SizeLinear>
-    void Render_FreeTexture(Texture* texture)
-    {
-        if (!texture)
-            Logging_LogChannel("Tried to call Render_FreeTexture on nullptr!", LogChannel::Fatal); // does not return
-
-        static_assert(SizeLinear == (texture->size.x * texture->size.y), "Incorrect texture size allocation!");
-
-        renderer_state_global.Texture_FreeFunction(texture);    
     }
 }

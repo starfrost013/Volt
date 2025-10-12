@@ -5,7 +5,6 @@
 // render_shader_manager.cpp: Core shader loader/unloader
 //
 
-#include "render_shader_manager.hpp"
 #include <render/render.hpp>
 
 namespace Volt

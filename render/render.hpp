@@ -1,15 +1,12 @@
 #pragma once
 #include <common/common.hpp>
 #include <render/display/render_display.hpp>
-#include <render/shader/render_shader_manager.hpp>
-
-#include <render/texture/render_texture.hpp>
 
 // 
 // VOLT
 // Copyright © 2025 starfrost
 //
-// render.hpp: Shared header for files acorss all renderers
+// render.hpp: Shared header for files across all renderers
 //
 
 namespace Volt
@@ -28,6 +25,70 @@ namespace Volt
 
     // Defines
     #define WINDOW_TITLE_BUF_SIZE               256
+    constexpr size_t SHADER_MAX_NAME_LENGTH =   64;
+
+   // Used to compile the shader
+    enum VoltShaderType
+    {
+        Vertex,
+        Fragment,
+        Compute,
+        Geometry,
+    };
+
+    struct VoltShader
+    {
+        // This is the shader code
+        char* code;                     // It's the code of the shader; is this a good idea? Only valid if !loaded
+        bool loaded;                    // Is this valid?
+        char path[FS_MAX_PATH];         // A buffer holding the path
+        uint32_t id;                    // Backend shader ID
+    };
+
+    // Defines a set of shaders 
+    struct VoltShaderSet
+    {
+        // These are the only ones that we should use 
+        VoltShader vertex;
+        VoltShader fragment;
+        VoltShader compute;
+        VoltShader geometry;
+        
+        uint32_t program_id;            // Backend program ID
+        char name[SHADER_MAX_NAME_LENGTH];   // Shader name ID. Used to look up the shader (so we can load this info from files in the future)
+        
+        VoltShaderSet* prev; 
+        VoltShaderSet* next; 
+        
+        void SetFloat(const char* name, float value);                   // Set shader parameter float
+        void SetInt(const char* name, int32_t value);                   // Set shader parameter int32
+        void SetVector2(const char* name, Vector2 value);               // Set shader parameter vec3
+        void SetVector3(const char* name, Vector3 value);               // Set shader parameter vec3
+        void SetVector4(const char* name, Vector4 value);               // Set shader parameter vec4
+        void SetMatrix4(const char* name, Matrix44 value);              // Set shader parameter matrix4
+    };
+
+    // These are converted to real texture foramts using an std::unordered_map in each renderer
+    enum TextureFormat
+    {
+        RGBA32 = 0, 
+    };
+
+    struct Texture
+    {
+        Vector2i size;
+
+        uint32_t id;                                // Texture id
+        
+        TextureFormat format;                       // Format of the texture
+
+        uint32_t* pixels;
+        char shader_name[SHADER_MAX_NAME_LENGTH];
+
+        // Todo: render-agnostic...
+        uint32_t vertex_buffer;                     // Vertex Buffer ID
+        uint32_t vertex_array;                      // Vertex Array ID
+    };
 
     // State shared across all renderers
     struct RendererState
@@ -51,6 +112,7 @@ namespace Volt
         void (*ShutdownFunction)();     
     };
 
+
     extern RendererState renderer_state_global;
 
     // holds the global renderer type
@@ -65,5 +127,54 @@ namespace Volt
     void Render_Frame();
     void Render_Shutdown();
 
+    extern VoltShaderSet* shader_set_head;
+    extern VoltShaderSet* shader_set_tail;
+    
+    bool Shader_LoadSet(const char* use_shader_name, const char* vertex = nullptr, const char* fragment = nullptr, const char* compute = nullptr, const char* geometry = nullptr);
+    bool Shader_UnloadSet(VoltShaderSet* set);
+    void Shader_UseSet(VoltShaderSet* set);
+    VoltShaderSet* Shader_GetByName(const char* use_shader_name);
+    
+    void Shader_Shutdown();
 
+    // Sorry for designing a memory allocator like this :(
+    template <size_t SizeLinear>
+    Texture* Render_CreateTexture(TextureFormat format, Vector2i size, const char* use_shader_name, const char* path = nullptr) // size is optional
+    {
+        // Sorry for horrible design
+        if (SizeLinear != (size.x * size.y))
+            Logging_LogChannel("Invalid texture size allocation [temp!]", LogChannel::Fatal);
+
+        Texture* texture = Memory_Alloc<Texture>(TAG_RENDER_TEXTURE);
+
+        texture->size = size;
+        texture->format = format;
+        strncpy(texture->shader_name, use_shader_name, SHADER_MAX_NAME_LENGTH);
+        // Slab allocate 
+        texture->pixels = Memory_Alloc<uint32_t, SizeLinear>(TAG_RENDER_TEXTURE);
+
+        //TODO: Vector2I?
+        Logging_LogChannel("Render: Creating texture (size %.d,%.d)", LogChannel::Debug, size.x, size.y); 
+
+        renderer_state_global.Texture_CreateFunction(texture);
+
+        return texture; 
+    }
+
+    void Render_DrawTexture(Texture* texture, Vector2 position, Vector2 scale);
+    
+    template <size_t SizeLinear>
+    void Render_FreeTexture(Texture* texture)
+    {
+        if (!texture)
+            Logging_LogChannel("Tried to call Render_FreeTexture on nullptr!", LogChannel::Fatal); // does not return
+
+        if (SizeLinear != (texture->size.x * texture->size.y))
+            Logging_LogChannel("Invalid texture size allocation [temp!]", LogChannel::Fatal);
+
+        renderer_state_global.Texture_FreeFunction(texture); 
+    }
+
+    // COMMANDS always at the end
+    void Command_LoadShader();
 }

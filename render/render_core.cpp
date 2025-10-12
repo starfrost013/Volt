@@ -1,11 +1,13 @@
+// 
+// VOLT
+// Copyright © 2024-2025 starfrost
+//
+// render_core.cpp: Renderer-agnostic part of the renderer
+//
+
 #include <render/render.hpp>
 #include <render/gl4/render_gl4.hpp>
 #include <render/null/render_null.hpp>
-
-//
-// render_core.cpp
-// Holds the core renderer initialisation functions, that call the renderer specific functions
-//
 
 namespace Volt
 {
@@ -19,6 +21,9 @@ namespace Volt
 
     // Globals
     RendererState renderer_state_global;
+
+    // We're going to have to break the rules for this... (786432 bytes)
+    #define TEMP_SIZE_EMUTEXTURE            1024 * 768
 
     // Selects and initialises the renderer.
     void Render_Init()
@@ -52,6 +57,8 @@ namespace Volt
         else if (!strcasecmp(renderer->string, "null"))
             renderer_state_global.type = RendererType::Null;
 
+        Command_Add("loadshader", Command_LoadShader);
+        
         // Init functions set up function pointers, there's no point using the function pointers
         switch (renderer_state_global.type)
         {
@@ -64,6 +71,10 @@ namespace Volt
                 R_Null_Init();
                 break;
         }
+
+        Vector2i size = Vector2i(1024, 768);
+
+        Render_CreateTexture<TEMP_SIZE_EMUTEXTURE>(Volt::TextureFormat::RGBA32, size, "Generic");
 
         renderer_state_global.running = true; 
     }

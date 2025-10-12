@@ -241,7 +241,6 @@ namespace Volt
 
                 clear_frame_number++; 
         }
-
     }
 
     bool R_GL4_CompileSingleShader(VoltShaderSet* set, VoltShaderType type)
