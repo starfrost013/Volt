@@ -20,6 +20,7 @@ namespace Volt
             Logging_LogChannel("Tried to draw a texture with unloaded shader %s", LogChannel::Fatal, texture->shader_name);
 
         Shader_UseSet(shader_set);
+        shader_set->SetInt("image", 0); // set our sampler
 
         Matrix44 model_matrix = {0};
 

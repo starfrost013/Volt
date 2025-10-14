@@ -11,7 +11,7 @@
 */
 #version 430 core
 
-in vec2 coords;
+in vec2 coords;     // frmro vertex shader
 out vec4 colour;    // Final colour output
 
 uniform sampler2D image; // GPU surface texture
@@ -20,4 +20,4 @@ uniform sampler2D image; // GPU surface texture
 void main()
 {
     colour = texture(image, coords);
-}
+}   

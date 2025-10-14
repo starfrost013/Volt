@@ -22,8 +22,9 @@ namespace Volt
     // Globals
     RendererState renderer_state_global;
 
-    // We're going to have to break the rules for this... (786432 bytes)
-    #define TEMP_SIZE_EMUTEXTURE            1024 * 768
+    // We're going to have to break the rules for this... (786432 bytes * 4 for 32bpp)
+    #define TEMP_SIZE_EMUTEXTURE            1024 * 768 * 4
+
     Texture* emutexture;
 
     // Selects and initialises the renderer.

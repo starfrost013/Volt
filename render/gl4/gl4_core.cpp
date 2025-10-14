@@ -25,7 +25,7 @@ namespace Volt
 
     std::unordered_map<uint32_t, uint32_t> volt_formats_to_gl_formats =
     {
-        { TextureFormat::RGBA32, GL_RGBA32F }, // GL_RGBA == GL_RGBA32F
+        { TextureFormat::RGBA32, GL_RGBA }, 
     };
 
     /* Functions only used in this translation unit */
@@ -34,13 +34,6 @@ namespace Volt
     void R_GL4_SetViewportSize(GLFWwindow* window, int32_t width, int32_t height);
     void R_GL4_OnFullscreenChanged();
     void R_GL4_Close(GLFWwindow* window);
-
-    // TEMP CODE
-    float clear_r = 0.0f; 
-    float clear_g = 0.0f; 
-    float clear_b = 0.0f; 
-    float clear_a = 1.0f; 
-    float clear_frame_number = 0;
 
     /* Functions */
 
@@ -223,23 +216,12 @@ namespace Volt
         {
             case RendererStateGL4Task::Spin:
                 /* THE START - GET INPUT FROM THE INPUT SUBSYSTEM */
-                
-                // test code
-                float frame_number = float(clear_frame_number) / 1048576.0f;
-
-                clear_r = cos(frame_number * (180/M_PI));
-                clear_g = sin(frame_number * (180/M_PI));
-                clear_b = clear_r + clear_g;
-
-                glClearColor(clear_r, clear_g, clear_b, clear_a);
-
+                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
                 glClear(GL_COLOR_BUFFER_BIT);
 
                 /* THE END OF THE RENDERER LOOP */
                 glfwPollEvents(); 
                 glfwSwapBuffers(render_state_gl4.window);
-
-                clear_frame_number++; 
         }
     }
 
@@ -452,13 +434,7 @@ done:
     }
 
     void R_GL4_CreateTexture(Texture* texture)
-    {
-        glGenTextures(1, &texture->id);
-
-        glBindTexture(GL_TEXTURE_2D, texture->id);
-        glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
-        texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
-
+    {   
         glGenVertexArrays(1, &texture->vertex_array);
         glGenBuffers(1, &texture->vertex_buffer);
 
@@ -474,12 +450,17 @@ done:
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
+        glGenTextures(1, &texture->id);
+
+        glBindTexture(GL_TEXTURE_2D, texture->id);
+        glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
+        texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
+
         glBindTexture(GL_TEXTURE_2D, 0);
-    
     }
 
     void R_GL4_DrawTexture(Texture* texture)
-    {
+    {        
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->id);
         glBindVertexArray(texture->vertex_array);

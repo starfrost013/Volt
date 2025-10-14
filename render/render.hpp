@@ -82,7 +82,7 @@ namespace Volt
         
         TextureFormat format;                       // Format of the texture
 
-        uint32_t* pixels;
+        uint8_t* pixels;                            // sohuld be uint32_t so one unit == one texture
         char shader_name[SHADER_MAX_NAME_LENGTH];
 
         // Todo: render-agnostic...
@@ -146,10 +146,6 @@ namespace Volt
         if (!shader)
             Logging_LogChannel("Tried to draw a texture with unloaded shader %s", LogChannel::Fatal, use_shader_name);
 
-        // Sorry for horrible design
-        if (SizeLinear != (size.x * size.y))
-            Logging_LogChannel("Invalid texture size allocation [temp!]", LogChannel::Fatal);
-
         Texture* texture = Memory_Alloc<Texture>(TAG_RENDER_TEXTURE);
 
         texture->size = size;
@@ -162,10 +158,8 @@ namespace Volt
 
         // should generate random pixels incl. random alpha so some will not show up
         for (size_t i = 0; i < SizeLinear; i++)
-        {
             texture->pixels[i] = rand() % 255;
-        }
-
+            
         //TODO: Vector2I?
         Logging_LogChannel("Render: Creating texture (size %.d,%.d)", LogChannel::Debug, size.x, size.y); 
 
@@ -181,9 +175,6 @@ namespace Volt
     {
         if (!texture)
             Logging_LogChannel("Tried to call Render_FreeTexture on nullptr!", LogChannel::Fatal); // does not return
-
-        if (SizeLinear != (texture->size.x * texture->size.y))
-            Logging_LogChannel("Invalid texture size allocation [temp!]", LogChannel::Fatal);
 
         renderer_state_global.Texture_FreeFunction(texture); 
     }
