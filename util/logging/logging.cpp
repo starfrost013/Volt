@@ -95,7 +95,9 @@ namespace Volt
 		memset(date_buffer, 0x00, sizeof(date_buffer));
 		memset(log_string_buffer, 0x00, sizeof(log_string_buffer));
 
-		Util_DateGetCurrentString(date_buffer);
+		auto now = std::chrono::system_clock::now();
+		std::time_t now_time_t = std::chrono::system_clock::to_time_t(now);
+		snprintf(date_buffer, LOGGING_MAX_LENGTH_DATE, "%s", std::ctime(&now_time_t));
 
 		size_t date_buffer_length = strlen(date_buffer);
 

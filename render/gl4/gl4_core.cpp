@@ -445,7 +445,7 @@ done:
 
         // bind the vertex buffer and load the vertex array into it for this texture
         glBindVertexArray(texture->vertex_array);
-        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(texture->vertex_array);
         glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic_2d_vertex_buffer
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);

@@ -1,7 +1,8 @@
 #pragma once
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdint.h>
+#include <cstdarg>
+#include <cstdbool>
+#include <cstdio>
+#include <cstdint>
 
 //
 // Logging system
@@ -14,6 +15,7 @@
 // June 8, 2025		Use C++-style declarations, remove Logger_SetOptions and add fatal_function, a function pointer to call if a fatal log message occurs.
 // 					Move from 5 strncat calls to one snprintf call
 // June 28, 2025	Add superfatals for when memory corruption makes it not safe to continue
+// October 22, 2025	Completely use STD for everything and do not depend on any other functions, use C++ includes
 //
 
 namespace Volt

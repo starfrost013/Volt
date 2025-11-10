@@ -1,14 +1,11 @@
 #include "util/util.hpp"
 
-#include <stdio.h>
-#include <string.h>
-
 namespace Volt
 {
 	// various buffer size demands
 	#define CONSOLE_ESC_CHAR				"\x1B"	//Some commands don't use it
 	#define CONSOLE_TERMINAL_COMMAND_PREFIX "\x1B["
-	#define CONSOLE_COLOR_BUFFER_SIZE		17
+	#define CONSOLE_COLOR_BUFFER_SIZE		24		// maded a bit bigger for safety
 
 	void Util_ConsoleSetForegroundColor(ConsoleColor color)
 	{
@@ -20,18 +17,9 @@ namespace Volt
 		// 10 (max) + 1 + 4 + 1 for safety
 		char final_string[CONSOLE_COLOR_BUFFER_SIZE] = { 0 };
 
-		size_t remaining_characters = CONSOLE_COLOR_BUFFER_SIZE;
+		snprintf(final_string, CONSOLE_COLOR_BUFFER_SIZE, "%s%dm", CONSOLE_TERMINAL_COMMAND_PREFIX, color_final);
 
-		strncat(final_string, CONSOLE_TERMINAL_COMMAND_PREFIX, strlen(CONSOLE_TERMINAL_COMMAND_PREFIX));
-
-		auto string_length = strlen(final_string);
-		remaining_characters -= string_length;
-
-		snprintf(final_string + string_length, sizeof(final_string), "%d", color_final);
-		remaining_characters -= 1;
-		strncat(final_string, "m", remaining_characters);
-
-		printf(final_string);
+		printf("%s", final_string);
 	}
 
 	void Util_ConsoleSetBackgroundColor(ConsoleColor color)
@@ -44,18 +32,9 @@ namespace Volt
 		// 10 (max) + 1 + 4 + 1 for safety
 		char final_string[CONSOLE_COLOR_BUFFER_SIZE] = { 0 };
 
-		size_t remaining_characters = CONSOLE_COLOR_BUFFER_SIZE;
-
-		strncat(final_string, CONSOLE_TERMINAL_COMMAND_PREFIX, strlen(CONSOLE_TERMINAL_COMMAND_PREFIX));
-
-		auto string_length = strlen(final_string);
-		remaining_characters -= string_length;
-
-		snprintf(final_string + string_length, sizeof(final_string), "%d", color_final);
-		remaining_characters -= 1;
-		strncat(final_string, "m", remaining_characters);
-
-		printf(final_string);
+		snprintf(final_string, CONSOLE_COLOR_BUFFER_SIZE, "%s%dm", CONSOLE_TERMINAL_COMMAND_PREFIX, color_final);
+		
+		printf("%s", final_string);
 	}
 
 	void Util_ConsoleResetForegroundColor()
