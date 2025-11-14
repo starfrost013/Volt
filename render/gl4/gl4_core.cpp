@@ -15,12 +15,10 @@ namespace Volt
     float generic_2d_vertex_buffer[] = 
     {
         // <pos x> <pos y>  <tex x> <tex y>
+        0.0f, 0.0f, 0.0f, 0.0f,
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
-        0.0f, 0.0f, 0.0f, 0.0f, 
-        0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 1.0f, 1.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
     };
 
     float generic_2d_element_buffer[] =
@@ -443,7 +441,7 @@ done:
     {   
         glGenVertexArrays(1, &texture->vertex_array);
         glGenBuffers(1, &texture->vertex_buffer);
-
+        glGenBuffers(1, &texture->element_buffer);
 
         // bind the vertex buffer and load the vertex array into it for this texture
         glBindVertexArray(texture->vertex_array);
@@ -453,6 +451,9 @@ done:
         glBindBuffer(GL_ARRAY_BUFFER, texture->vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(generic_2d_vertex_buffer), generic_2d_vertex_buffer, GL_STATIC_DRAW); // configurable? 
         
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, texture->element_buffer);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(generic_2d_element_buffer), generic_2d_element_buffer, GL_STATIC_DRAW); // configurable? 
+
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic_2d_vertex_buffer
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float))); // size of one row in generic_2d_vertex_buffer
@@ -463,19 +464,30 @@ done:
 
         glGenTextures(1, &texture->id);
 
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
         glBindTexture(GL_TEXTURE_2D, texture->id);
         glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
         texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
+        
+        // is this needed?
+        glGenerateMipmap(GL_TEXTURE_2D);
 
         glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     void R_GL4_DrawTexture(Texture* texture)
-    {        
+    {  
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+                  
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->id);
         glBindVertexArray(texture->vertex_array);
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &generic_2d_element_buffer);
         glBindVertexArray(0); // unbind the vertex array    
     }
     

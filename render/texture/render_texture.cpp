@@ -20,16 +20,6 @@ namespace Volt
             Logging_LogChannel("Tried to draw a texture with unloaded shader %s", LogChannel::Fatal, texture->shader_name);
 
         Shader_UseSet(shader_set);
-        shader_set->SetInt("image", 0); // set our sampler
-
-        Matrix44 model_matrix = {0};
-
-        Vector4 scale_factor = { scale.x, scale.y, 1.0f, 1.0f };
-
-        model_matrix = model_matrix.Translate(Vector4(position.x, position.y, 0.0f, 0.0f));
-        model_matrix = model_matrix.Scale(scale_factor);
-
-        shader_set->SetMatrix4("model", model_matrix);
 
         renderer_state_global.Texture_DrawFunction(texture);
     }

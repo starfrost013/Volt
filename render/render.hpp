@@ -85,9 +85,10 @@ namespace Volt
         uint8_t* pixels;                            // sohuld be uint32_t so one unit == one texture
         char shader_name[SHADER_MAX_NAME_LENGTH];
 
-        // Todo: render-agnostic...
+        // Todo: render-agnostic...THIS IS VERY SLOW AND INEFFICIENT!
         uint32_t vertex_buffer;                     // Vertex Buffer ID
-        uint32_t vertex_array;                      // Vertex Array ID
+        uint32_t vertex_array;                      // Vertex Array
+        uint32_t element_buffer;                    // Element Buffer 
     };
 
     // State shared across all renderers
