@@ -106,11 +106,12 @@ namespace Volt
         void (*Shader_SetVector3)(VoltShaderSet* set, const char* name, Vector3 value);
         void (*Shader_SetVector4)(VoltShaderSet* set, const char* name, Vector4 value);
         void (*Shader_SetMatrix4)(VoltShaderSet* set, const char* name, Matrix44 value);
-        void (*Texture_CreateFunction)(Texture* texture);
-        void (*Texture_DrawFunction)(Texture* texture);
-        void (*Texture_FreeFunction)(Texture* texture);
-        void (*FrameFunction)();
-        void (*ShutdownFunction)();     
+        void (*Texture_Create)(Texture* texture);
+        void (*Texture_Draw)(Texture* texture);
+        void (*Texture_Free)(Texture* texture);
+        void (*Render_FrameStart)();
+        void (*Render_FrameEnd)();
+        void (*Render_Shutdown)();     
     };
 
 
@@ -164,7 +165,7 @@ namespace Volt
         //TODO: Vector2I?
         Logging_LogChannel("Render: Creating texture (size %.d,%.d)", LogChannel::Debug, size.x, size.y); 
 
-        renderer_state_global.Texture_CreateFunction(texture);
+        renderer_state_global.Texture_Create(texture);
 
         return texture; 
     }
@@ -177,7 +178,7 @@ namespace Volt
         if (!texture)
             Logging_LogChannel("Tried to call Render_FreeTexture on nullptr!", LogChannel::Fatal); // does not return
 
-        renderer_state_global.Texture_FreeFunction(texture); 
+        renderer_state_global.Texture_Free(texture); 
     }
 
     // COMMANDS always at the end

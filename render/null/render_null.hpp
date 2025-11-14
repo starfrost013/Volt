@@ -22,7 +22,8 @@ namespace Volt
     /* Functions */
 
     void R_Null_Init();
-    void R_Null_Frame();
+    void R_Null_FrameStart();
+    void R_Null_FrameEnd();
     void R_Null_Shutdown();
     bool R_Null_CompileShader(VoltShaderSet* set);
     void R_Null_UseShader(VoltShaderSet* set);

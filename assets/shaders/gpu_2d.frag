@@ -12,12 +12,12 @@
 #version 430 core
 
 in vec2 texCoord;     // frmro vertex shader
-out vec4 colour;    // Final colour output
+out vec4 FragColor;    // Final colour output
 
 uniform sampler2D image; // GPU surface texture
 
 // See what fun processing stuff we can do here!
 void main()
 {
-    colour = texture(image, texCoord);
+    FragColor = texture(image, texCoord);
 }   

@@ -21,6 +21,6 @@ namespace Volt
 
         Shader_UseSet(shader_set);
 
-        renderer_state_global.Texture_DrawFunction(texture);
+        renderer_state_global.Texture_Draw(texture);
     }
 }

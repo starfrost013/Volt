@@ -21,17 +21,24 @@ namespace Volt
         renderer_state_global.Shader_SetVector4 = R_Null_ShaderSetVector4;
         renderer_state_global.Shader_SetMatrix4 = R_Null_ShaderSetMatrix4;
 
-        renderer_state_global.Texture_CreateFunction = R_Null_CreateTexture;
-        renderer_state_global.Texture_DrawFunction = R_Null_DrawTexture;
-        renderer_state_global.Texture_FreeFunction = R_Null_FreeTexture;
-        renderer_state_global.FrameFunction = R_Null_Frame;
-        renderer_state_global.ShutdownFunction = R_Null_Shutdown;
+        renderer_state_global.Texture_Create = R_Null_CreateTexture;
+        renderer_state_global.Texture_Draw = R_Null_DrawTexture;
+        renderer_state_global.Texture_Free = R_Null_FreeTexture;
+        renderer_state_global.Render_FrameStart = R_Null_FrameStart;
+        renderer_state_global.Render_FrameEnd = R_Null_FrameEnd;
+        renderer_state_global.Render_Shutdown = R_Null_Shutdown;
 
         Logging_LogChannel("******** R_Null_Init was successful! ********", LogChannel::Message);
     }
 
     // Called on each frame to update the state of the wporld.
-    void R_Null_Frame()
+    void R_Null_FrameStart()
+    {
+
+    }
+
+    // Called on each frame to update the state of the wporld.
+    void R_Null_FrameEnd()
     {
 
     }

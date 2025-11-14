@@ -15,10 +15,10 @@ namespace Volt
     float generic_2d_vertex_buffer[] = 
     {
         // <pos x> <pos y>  <tex x> <tex y>
-        0.0f, 0.0f, 0.0f, 0.0f,
-        0.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, 0.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 0.0f, 1.0f,                 // top right
+        1.0f, -1.0f, 0.0f, 0.0f,               // bottom right       
+        -1.0f, -1.0f, 1.0f, 0.0f,             // bottom left
+        -1.0f, 1.0f, 1.0f, 1.0f,             // top left
     };
 
     float generic_2d_element_buffer[] =
@@ -52,11 +52,12 @@ namespace Volt
         renderer_state_global.Shader_SetVector3 = R_GL4_ShaderSetVector3;
         renderer_state_global.Shader_SetVector4 = R_GL4_ShaderSetVector4;
         renderer_state_global.Shader_SetMatrix4 = R_GL4_ShaderSetMatrix4;
-        renderer_state_global.Texture_CreateFunction = R_GL4_CreateTexture;
-        renderer_state_global.Texture_DrawFunction = R_GL4_DrawTexture;
-        renderer_state_global.Texture_FreeFunction = R_GL4_FreeTexture;
-        renderer_state_global.FrameFunction = R_GL4_Frame;
-        renderer_state_global.ShutdownFunction = R_GL4_Shutdown;
+        renderer_state_global.Texture_Create = R_GL4_CreateTexture;
+        renderer_state_global.Texture_Draw = R_GL4_DrawTexture;
+        renderer_state_global.Texture_Free = R_GL4_FreeTexture;
+        renderer_state_global.Render_FrameStart = R_GL4_FrameStart;
+        renderer_state_global.Render_FrameEnd = R_GL4_FrameEnd;
+        renderer_state_global.Render_Shutdown = R_GL4_Shutdown;
     }
 
     void R_GL4_Init_LoadAllShaders()
@@ -183,10 +184,8 @@ namespace Volt
 
             // restore decorations
             glfwWindowHint(GLFW_DECORATED, GLFW_TRUE);
-
             // leave fullscreen
             glfwSetWindowSize(render_state_gl4.window, int(render_width->value), int(render_height->value));
-
             // restore the window position
             glfwSetWindowPos(render_state_gl4.window, render_state_gl4.last_window_pos_x, render_state_gl4.last_window_pos_y);
         }
@@ -213,16 +212,19 @@ namespace Volt
         }
     }
 
+    void R_GL4_FrameStart()
+    {
+        glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+    
     // Called on each frame to update the state of the wporld.
-    void R_GL4_Frame()
+    void R_GL4_FrameEnd()
     {
         switch (render_state_gl4.task)
         {
             case RendererStateGL4Task::Spin:
                 /* THE START - GET INPUT FROM THE INPUT SUBSYSTEM */
-                glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-                glClear(GL_COLOR_BUFFER_BIT);
-
                 /* THE END OF THE RENDERER LOOP */
                 glfwPollEvents(); 
                 glfwSwapBuffers(render_state_gl4.window);
@@ -463,13 +465,13 @@ done:
         glBindVertexArray(0);
 
         glGenTextures(1, &texture->id);
+        glBindTexture(GL_TEXTURE_2D, texture->id);
 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        glBindTexture(GL_TEXTURE_2D, texture->id);
         glTexImage2D(GL_TEXTURE_2D, 0, volt_formats_to_gl_formats[texture->format], 
         texture->size.x, texture->size.y, 0, volt_formats_to_gl_formats[texture->format], GL_UNSIGNED_BYTE, (void*)texture->pixels);
         
@@ -480,21 +482,18 @@ done:
     }
 
     void R_GL4_DrawTexture(Texture* texture)
-    {  
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-                  
+    {              
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture->id);
         glBindVertexArray(texture->vertex_array);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, &generic_2d_element_buffer);
-        glBindVertexArray(0); // unbind the vertex array    
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     }
     
     void R_GL4_FreeTexture(Texture* texture)
     {
         glDeleteVertexArrays(1, &texture->vertex_array);
         glDeleteBuffers(1, &texture->vertex_buffer);
+        glDeleteBuffers(1, &texture->element_buffer);
         glDeleteTextures(1, &texture->id);
     }
 

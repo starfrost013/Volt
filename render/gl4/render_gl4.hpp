@@ -44,7 +44,8 @@ namespace Volt
     /* Functions */
 
     void R_GL4_Init();
-    void R_GL4_Frame();
+    void R_GL4_FrameStart();
+    void R_GL4_FrameEnd();
     void R_GL4_Shutdown();
     bool R_GL4_CompileShader(VoltShaderSet* set);
     void R_GL4_UseShader(VoltShaderSet* set);
