@@ -12,19 +12,13 @@
 
 #version 430 core
 
-// Input
-layout (location = 0) in vec4 vertex;
+layout (location = 0) in vec2 aPos;
+layout (location = 1) in vec2 aTexCoord;
 
-// Output: The texture coordinate
-out vec2 textureCoordinate; 
+out vec2 texCoord;
 
-// texture
-uniform mat4 model;
-uniform mat4 projection; 
-
-// perform an orthographic projection directly onto 2d space
 void main()
 {
-    textureCoordinate = vertex.zw;
-    gl_Position = projection * model * vec4(vertex.xy, 0.0, 1.0);
+    gl_Position = vec4(aPos, 0.0, 1.0);
+    texCoord = aTexCoord;
 }

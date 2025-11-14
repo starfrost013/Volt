@@ -14,13 +14,19 @@ namespace Volt
 
     float generic_2d_vertex_buffer[] = 
     {
-        // <pos x> <pos y> <tex x> <tex y>
+        // <pos x> <pos y>  <tex x> <tex y>
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
         0.0f, 0.0f, 0.0f, 0.0f, 
         0.0f, 1.0f, 0.0f, 1.0f,
         1.0f, 1.0f, 1.0f, 1.0f,
         1.0f, 0.0f, 1.0f, 0.0f,
+    };
+
+    float generic_2d_element_buffer[] =
+    {
+        0, 1, 3,
+        1, 2, 3
     };
 
     std::unordered_map<uint32_t, uint32_t> volt_formats_to_gl_formats =
@@ -351,25 +357,25 @@ done:
         if (set->vertex.loaded)
         {
             glDeleteShader(set->vertex.id);
-            set->vertex.id = 0;   
+            set->vertex.id = -1;   
         }
 
         if (set->fragment.loaded)
         {
             glDeleteShader(set->fragment.id);
-            set->fragment.id = 0;   
+            set->fragment.id = -1;   
         }
 
         if (set->geometry.loaded)
         {
             glDeleteShader(set->geometry.id);
-            set->geometry.id = 0;   
+            set->geometry.id = -1;   
         }
     
         if (set->compute.loaded)
         {
             glDeleteShader(set->compute.id);
-            set->compute.id = 0;   
+            set->compute.id = -1;   
         }
 
         if (successful)
@@ -438,15 +444,20 @@ done:
         glGenVertexArrays(1, &texture->vertex_array);
         glGenBuffers(1, &texture->vertex_buffer);
 
+
+        // bind the vertex buffer and load the vertex array into it for this texture
+        glBindVertexArray(texture->vertex_array);
+
         // bind the buffer
         // TODO: how slow is this? we *can* use only 1 VBO/VAO for every texture, but then we give up UV :thinking:. We don't have many textures anyway.
         glBindBuffer(GL_ARRAY_BUFFER, texture->vertex_buffer);
         glBufferData(GL_ARRAY_BUFFER, sizeof(generic_2d_vertex_buffer), generic_2d_vertex_buffer, GL_STATIC_DRAW); // configurable? 
+        
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic_2d_vertex_buffer
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4*sizeof(float), (void*)(2*sizeof(float))); // size of one row in generic_2d_vertex_buffer
+        glEnableVertexAttribArray(1);
 
-        // bind the vertex buffer and load the vertex array into it for this texture
-        glBindVertexArray(texture->vertex_array);
-        glEnableVertexAttribArray(texture->vertex_array);
-        glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4*sizeof(float), nullptr); // size of one row in generic_2d_vertex_buffer
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
 
